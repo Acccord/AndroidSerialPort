@@ -1,5 +1,6 @@
 ## 安卓串口通信工具
 超简易的串口通信工具，只需要初始化之后就可以开始串口数据收发，你完全不用考虑发送间隔和数据分包问题。
+- [English](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)
 
 ### 简单使用
 #### 第1步：配置

@@ -1,6 +1,7 @@
 ## Android serial communication tool
 Ultra-simple serial communication tools, you only need to initialize the serial port data transmission and reception,
 you do not have to consider the transmission interval and data subcontracting.
+- [中文](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)
 
 ### Simple to use
 #### Step 1: Configure
