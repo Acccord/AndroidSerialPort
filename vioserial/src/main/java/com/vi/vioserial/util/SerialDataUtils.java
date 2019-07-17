@@ -2,6 +2,7 @@ package com.vi.vioserial.util;
 
 /**
  * 数据转换工具类
+ * Data conversion tool class
  *
  * @author Vi
  * @date 2019-07-17 17:43
@@ -12,6 +13,7 @@ public class SerialDataUtils {
 
     /**
      * 判断奇数或偶数，位运算，最后一位是1则为奇数，为0是偶数
+     * Judging odd or even numbers, bit operations, the last bit is 1 is odd, 0 is even
      */
     public static int isOdd(int num) {
         return num & 1;
@@ -19,6 +21,7 @@ public class SerialDataUtils {
 
     /**
      * Hex字符串转int
+     * Hex string to int
      */
     public static int HexToInt(String inHex) {
         return Integer.parseInt(inHex, 16);
@@ -26,6 +29,7 @@ public class SerialDataUtils {
 
     /**
      * Hex字符串转byte
+     * Hex string to byte
      */
     public static byte HexToByte(String inHex) {
         return (byte) Integer.parseInt(inHex, 16);
@@ -33,6 +37,7 @@ public class SerialDataUtils {
 
     /**
      * 1字节转2个Hex字符
+     * 1 byte to 2 Hex characters
      */
     public static String Byte2Hex(Byte inByte) {
         return String.format("%02x", new Object[]{inByte}).toUpperCase();
@@ -40,6 +45,7 @@ public class SerialDataUtils {
 
     /**
      * 字节数组转转hex字符串
+     * Byte array to hex string
      */
     public static String ByteArrToHex(byte[] inBytArr) {
         StringBuilder strBuilder = new StringBuilder();
@@ -52,6 +58,7 @@ public class SerialDataUtils {
 
     /**
      * 字节数组转转hex字符串，可选长度
+     * Byte array to hex string, optional length
      */
     public static String ByteArrToHex(byte[] inBytArr, int offset, int byteCount) {
         StringBuilder strBuilder = new StringBuilder();
@@ -63,7 +70,8 @@ public class SerialDataUtils {
     }
 
     /**
-     * 转hex字符串转字节数组
+     * hex字符串转字节数组
+     * Hex string to byte array
      */
     public static byte[] HexToByteArr(String inHex) {
         byte[] result;
@@ -84,7 +92,8 @@ public class SerialDataUtils {
     }
 
     /**
-     * 转hex字符串转字节数组
+     * hex字符串转字节数组
+     * Hex string to byte array
      */
     public static byte[] HexToByteArr2(String inHex) {
         byte[] result;
@@ -106,6 +115,7 @@ public class SerialDataUtils {
 
     /**
      * 字符串转换为16进制字符串
+     * String to a hex string
      *
      * @param s
      * @return
@@ -122,6 +132,7 @@ public class SerialDataUtils {
 
     /**
      * 16进制字符串转换为字符串
+     * Convert a hex string to a string
      *
      * @param s
      * @return

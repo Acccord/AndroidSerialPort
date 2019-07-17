@@ -14,7 +14,7 @@ import java.io.OutputStream;
 import java.security.InvalidParameterException;
 
 /**
- * 串口辅助工具类
+ * Serial port auxiliary tool class
  *
  * @author Vi
  * @date 2019-07-17 17:43
@@ -104,7 +104,7 @@ public abstract class VioSerialHelper {
         try {
             mOutputStream.write(bOutArray);
 
-            if (mSerialDataListener != null) {//监听串口数据发送
+            if (mSerialDataListener != null) {
                 String hexString = SerialDataUtils.ByteArrToHex(bOutArray).trim();
                 mSerialDataListener.onSend(hexString);
             }

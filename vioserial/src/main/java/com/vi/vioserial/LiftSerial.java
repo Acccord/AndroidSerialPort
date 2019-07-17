@@ -74,7 +74,7 @@ public class LiftSerial {
     }
 
     /**
-     * 添加回调
+     * Add callback
      */
     public void addDataListener(OnLiftDataListener dataListener) {
         if (mListener == null) {
@@ -84,7 +84,7 @@ public class LiftSerial {
     }
 
     /**
-     * 移除回调
+     * Remove callback
      */
     public void removeDataListener(OnLiftDataListener dataListener) {
         if (mListener != null) {
@@ -102,7 +102,7 @@ public class LiftSerial {
     }
 
     /**
-     * 监听串口数据
+     * Listening to serial data
      */
     public void setSerialDataListener(OnSerialDataListener dataListener) {
         if (mBaseSerial != null) {
@@ -114,7 +114,7 @@ public class LiftSerial {
     }
 
     /**
-     * 串口是否打开
+     * Serial port status (open/close)
      *
      * @return
      */
@@ -129,7 +129,7 @@ public class LiftSerial {
     }
 
     /**
-     * 关闭串口
+     * Close the serial port
      */
     public void close() {
         if (mBaseSerial != null) {

@@ -13,7 +13,6 @@ public class Logger {
     private static final String COMMON_TAG = "serial";
     public static boolean SHOW_LOG = false;
 
-    //单例
     public static Logger getInstace() {
         if (mInstace == null)
             mInstace = new Logger();

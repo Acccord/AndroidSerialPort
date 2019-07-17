@@ -20,7 +20,7 @@ import java.security.InvalidParameterException;
  */
 
 public abstract class BaseSerial extends VioSerialHelper {
-    private static String TAG = "VioSerial";
+    private static String TAG = "BaseSerial";
 
     public BaseSerial(String sPort, int iBaudRate) {
         super(sPort, iBaudRate);
@@ -40,44 +40,43 @@ public abstract class BaseSerial extends VioSerialHelper {
 
     @Override
     protected void onDataReceived(String ComRecData) {
-        //把数据抛到主线程
         Message message = new Message();
         message.obj = ComRecData;
         mHandler.sendMessage(message);
     }
 
     /**
-     * 打开串口
+     * Open serial port
      *
-     * @param connectListener 串口链接监听
+     * @param connectListener Serial connection status monitoring
      */
     public void openSerial(OnConnectListener connectListener) {
         try {
             super.open();
-            Logger.getInstace().i(TAG, "【单片机】打开串口成功");
+            Logger.getInstace().i(TAG, "Open the serial port successfully");
             if (connectListener != null) {
                 connectListener.onSuccess();
             }
         } catch (SecurityException e) {
-            Logger.getInstace().e(TAG, "【单片机】打开串口失败:没有串口读/写权限!");
+            Logger.getInstace().e(TAG, "Failed to open the serial port: no serial port read/write permission!");
             if (connectListener != null) {
-                connectListener.onError("打开串口失败:没有串口读/写权限!");
+                connectListener.onError("Failed to open the serial port: no serial port read/write permission!");
             }
         } catch (IOException e) {
-            Logger.getInstace().e(TAG, "【单片机】打开串口失败:未知错误!");
+            Logger.getInstace().e(TAG, "Failed to open serial port: unknown error!");
             if (connectListener != null) {
-                connectListener.onError("打开串口失败:未知错误!");
+                connectListener.onError("Failed to open serial port: unknown error!");
             }
         } catch (InvalidParameterException e) {
-            Logger.getInstace().e(TAG, "【单片机】打开串口失败:参数错误!");
+            Logger.getInstace().e(TAG, "Failed to open the serial port: the parameter is wrong!");
             if (connectListener != null) {
-                connectListener.onError("打开串口失败:参数错误!");
+                connectListener.onError("Failed to open the serial port: the parameter is wrong!");
             }
         }
     }
 
     /**
-     * 发送HEX数据
+     * Send HEX data
      *
      * @param sHex
      */
@@ -89,7 +88,7 @@ public abstract class BaseSerial extends VioSerialHelper {
     }
 
     /**
-     * 发送字符串数据
+     * Send string data
      *
      * @param sTxt
      */
@@ -106,7 +105,7 @@ public abstract class BaseSerial extends VioSerialHelper {
     }
 
     /**
-     * 发送字节数据
+     * Send byte data
      *
      * @param bOutArray
      */
@@ -117,7 +116,7 @@ public abstract class BaseSerial extends VioSerialHelper {
     }
 
     /**
-     * 是否显示log
+     * is show log
      *
      * @param isShowLog
      */

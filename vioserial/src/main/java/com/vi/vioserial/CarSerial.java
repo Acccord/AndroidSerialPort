@@ -82,7 +82,7 @@ public class CarSerial {
     }
 
     /**
-     * 添加回调
+     * Add callback
      */
     public void addDataListener(OnCarDataListener dataListener) {
         if (mListener == null) {
@@ -92,7 +92,7 @@ public class CarSerial {
     }
 
     /**
-     * 移除回调
+     * Remove callback
      */
     public void removeDataListener(OnCarDataListener dataListener) {
         if (mListener != null) {
@@ -110,7 +110,7 @@ public class CarSerial {
     }
 
     /**
-     * 监听串口数据
+     * Listening to serial data
      */
     public void setSerialDataListener(OnSerialDataListener dataListener) {
         if (mBaseSerial != null) {
@@ -122,7 +122,7 @@ public class CarSerial {
     }
 
     /**
-     * 串口是否打开
+     * Serial port status (open/close)
      *
      * @return
      */
@@ -137,7 +137,7 @@ public class CarSerial {
     }
 
     /**
-     * 关闭串口
+     * Close the serial port
      */
     public void close() {
         if (mBaseSerial != null) {

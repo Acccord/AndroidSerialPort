@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 public class NormalSerial {
-    private static String TAG = "TempSerial";
+    private static String TAG = "NormalSerial";
 
     private volatile static NormalSerial instance;
 
@@ -62,7 +62,7 @@ public class NormalSerial {
     }
 
     /**
-     * 添加回调
+     * Add callback
      */
     public void addDataListener(OnNormalDataListener dataListener) {
         if (mListener == null) {
@@ -72,7 +72,7 @@ public class NormalSerial {
     }
 
     /**
-     * 移除回调
+     * Remove callback
      */
     public void removeDataListener(OnNormalDataListener dataListener) {
         if (mListener != null) {
@@ -90,7 +90,7 @@ public class NormalSerial {
     }
 
     /**
-     * 监听串口数据
+     * Listening to serial data
      */
     public void setSerialDataListener(OnSerialDataListener dataListener) {
         if (mBaseSerial != null) {
@@ -102,7 +102,7 @@ public class NormalSerial {
     }
 
     /**
-     * 串口是否打开
+     * Serial port status (open/close)
      *
      * @return
      */
@@ -117,7 +117,7 @@ public class NormalSerial {
     }
 
     /**
-     * 关闭串口
+     * Close the serial port
      */
     public void close() {
         if (mBaseSerial != null) {
@@ -130,7 +130,7 @@ public class NormalSerial {
     }
 
     /**
-     * 发送数据
+     * send data
      *
      * @param data
      */

@@ -86,7 +86,7 @@ public class VioSerial {
     }
 
     /**
-     * 添加回调
+     * Add callback
      */
     public void addDataListener(OnVioDataListener dataListener) {
         if (mVioDataListener == null) {
@@ -96,7 +96,7 @@ public class VioSerial {
     }
 
     /**
-     * 移除回调
+     * Remove callback
      */
     public void removeDataListener(OnVioDataListener dataListener) {
         if (mVioDataListener != null) {
@@ -114,7 +114,7 @@ public class VioSerial {
     }
 
     /**
-     * 监听串口数据
+     * Listening to serial data
      */
     public void setSerialDataListener(OnSerialDataListener dataListener) {
         if (mBaseSerial != null) {
@@ -126,7 +126,7 @@ public class VioSerial {
     }
 
     /**
-     * 串口是否打开
+     * Serial port status (open/close)
      *
      * @return
      */
@@ -141,7 +141,7 @@ public class VioSerial {
     }
 
     /**
-     * 关闭串口
+     * Close the serial port
      */
     public void close() {
         if (mBaseSerial != null) {
@@ -154,7 +154,7 @@ public class VioSerial {
     }
 
     /**
-     * 发送数据
+     * send data
      *
      * @param data
      */
