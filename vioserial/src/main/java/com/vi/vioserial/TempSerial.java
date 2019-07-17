@@ -1,0 +1,157 @@
+package com.vi.vioserial;
+
+import android.text.TextUtils;
+
+import com.google.gson.Gson;
+import com.vi.vioserial.bean.TempBean;
+import com.vi.vioserial.listener.OnConnectListener;
+import com.vi.vioserial.listener.OnSerialDataListener;
+import com.vi.vioserial.listener.OnTempDataListener;
+import com.vi.vioserial.util.Logger;
+import com.vi.vioserial.util.SerialDataUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Vi
+ * @date 2019-07-17 17:49
+ * @e-mail cfop_f2l@163.com
+ */
+
+public class TempSerial {
+    private static String TAG = "TempSerial";
+
+    private volatile static TempSerial instance;
+
+    private BaseSerial mBaseSerial;
+    private List<OnTempDataListener> mListener;
+    private Gson mGson;
+
+    public static TempSerial instance() {
+        if (instance == null) {
+            synchronized (TempSerial.class) {
+                if (instance == null) {
+                    instance = new TempSerial();
+                }
+            }
+        }
+        return instance;
+    }
+
+    private TempSerial() {
+        mGson = new Gson();
+    }
+
+    public synchronized void init(String portStr, int ibaudRate) {
+        init(portStr, ibaudRate, null);
+    }
+
+    public synchronized void init(String portStr, int ibaudRate, OnConnectListener connectListener) {
+        if (TextUtils.isEmpty(portStr) || ibaudRate == 0) {
+            throw new IllegalArgumentException("Serial port and baud rate cannot be empty");
+        }
+        if (this.mBaseSerial == null) {
+            mBaseSerial = new BaseSerial(portStr, ibaudRate) {
+                @Override
+                public void onDataBack(String data) {
+                    String dataStr = SerialDataUtils.hexStringToString(data);
+
+                    if (mListener != null) {
+                        for (int i = mListener.size() - 1; i >= 0; i--) {
+                            TempBean tempBean = mGson.fromJson(dataStr, TempBean.class);
+                            mListener.get(i).tempDataBack(tempBean);
+                        }
+                    }
+                }
+            };
+            mBaseSerial.openSerial(connectListener);
+        } else {
+            Logger.getInstace().i(TAG, "Serial port has been initialized");
+        }
+    }
+
+    /**
+     * 添加回调
+     */
+    public void addDataListener(OnTempDataListener dataListener) {
+        if (mListener == null) {
+            mListener = new ArrayList<>();
+        }
+        mListener.add(dataListener);
+    }
+
+    /**
+     * 移除回调
+     */
+    public void removeDataListener(OnTempDataListener dataListener) {
+        if (mListener != null) {
+            mListener.remove(dataListener);
+        }
+    }
+
+    /**
+     * Remove all
+     */
+    public void clearAllDataListener() {
+        if (mListener != null) {
+            mListener.clear();
+        }
+    }
+
+    /**
+     * 监听串口数据
+     */
+    public void setSerialDataListener(OnSerialDataListener dataListener) {
+        if (mBaseSerial != null) {
+            mBaseSerial.setSerialDataListener(dataListener);
+        } else {
+            Logger.getInstace().e(TAG, "The serial port is closed or not initialized");
+            //throw new IllegalArgumentException("The serial port is closed or not initialized");
+        }
+    }
+
+    /**
+     * 串口是否打开
+     *
+     * @return
+     */
+    public boolean isOpen() {
+        if (mBaseSerial != null) {
+            return mBaseSerial.isOpen();
+        } else {
+            Logger.getInstace().e(TAG, "The serial port is closed or not initialized");
+            //throw new IllegalArgumentException("The serial port is closed or not initialized");
+            return false;
+        }
+    }
+
+    /**
+     * 关闭串口
+     */
+    public void close() {
+        if (mBaseSerial != null) {
+            mBaseSerial.close();
+            mBaseSerial = null;
+        } else {
+            Logger.getInstace().e(TAG, "The serial port is closed or not initialized");
+            //throw new IllegalArgumentException("The serial port is closed or not initialized");
+        }
+    }
+
+    public void readTemp() {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("wkcmd", 2);
+        sendData(mGson.toJson(map));
+    }
+
+    public void sendData(String data) {
+        if (isOpen()) {
+            String commandHex = SerialDataUtils.stringToHexString(data);
+            mBaseSerial.sendHex(commandHex);
+        }
+    }
+
+}
