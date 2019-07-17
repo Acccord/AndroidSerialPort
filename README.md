@@ -37,6 +37,7 @@ NormalSerial.instance().sendData(String data)
 
 #### 第4步：串口返回的数据接收
 ```
-//dataListener为串口的接收数据回调，默认接收的类型为hex，需要String用SerialDataUtils工具转换一下
- NormalSerial.instance().addDataListener(OnNormalDataListener dataListener)
+//dataListener为串口的接收数据回调，默认接收的类型为hex
+//需要其他数据类型的，本项目提供了一个SerialDataUtils工具转换就行了
+NormalSerial.instance().addDataListener(OnNormalDataListener dataListener)
 ```
