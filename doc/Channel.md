@@ -72,7 +72,7 @@ void cellResult(int result);
 - 4，获取货道出货结果
 ``` java
 /**
-  * 发送获取出货结果指令，一般清空下一秒读取一次出货结果
+  * 发送获取出货结果指令，一般情况下一秒读取一次出货结果
   *
   * @param lightType 光幕类型 0-未使用光幕 （427主板：1-简易光幕 2-盒装光幕）（101主板：1-电机转一圈 2-电机转动直到检测到结果为止）
   */
@@ -82,38 +82,37 @@ VioSerial.instance().readSpring(int lightType);
 /**
  * DataStatus参数
  * @param channelResult 货道出货结果
- *
  * 0 = 成功。
  * 1 = 过流。负载过重,或者卡货
  * 2 = 欠流。一般是电线断开,或者负载未安装
  * 3 = 超时。指超过7秒仍未检测到电机到位信号。（一般是由于负载过重、卡货或开关电源干扰引起）
  * 4 = 光幕自检失败，未启动电机。
  * 5 = 有反馈电磁铁门未开
- * 6 = 427板子 出货失败
- * 9 = 427板子 出货中
+ * 6 = 出货失败（427板子）
+ * 9 = 出货中（427板子）
  *
  * ----------
  *
  * @param lightResult 货物经过光幕的时间，
- *
  * 0 = 无掉货
  * 1~200 = 表示货物经过光栅的时间（单位ms）
  */
 void springResult(DataStatus dataStatus);
 
 //注意：如果"货道出货"指令中lightType=0，则channelResult为最终出货结果；
-//如果"货道出货"指令中lightType!=0，则根据lightResult作为最终出货结果，0表示无掉货，不等于0表示有货物掉落；
+//如果"货道出货"指令中lightType!=0，则根据lightResult作为最终出货结果，0表示无掉货，大于0表示有货物掉落；
 ```
 
 - 5，开门锁
 ``` java
-    VioSerial.instance().openLock();
+//该方法通过继电器开门
+VioSerial.instance().openLock();
 ```
 
 - 6，机器重启
 ``` java
 //目前只支持427主板，其他主板重启方法请根据联系我
-VioSerial.instance(.restartSerial();
+VioSerial.instance().restartSerial();
 ```
 
 ## 其他说明

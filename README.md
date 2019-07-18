@@ -95,3 +95,11 @@ setSerialDataListener(OnSerialDataListener dataListener)|void|监听串口数据
 - 1.0.0
     - 2019-07-18
     - 发布1.0.0版本
+
+### 其他API
+以下内容需配合特定硬件使用，仅限特定开发人士参考。
+- [主板API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/Channel.md)
+- [温控板API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/TempApi.md)
+- [升降板API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LiftApi.md)
+- [小推车API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/CarApi.md)
+- [Locker API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LockerApi.md)
