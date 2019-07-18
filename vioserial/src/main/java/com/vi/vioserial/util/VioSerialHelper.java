@@ -179,5 +179,9 @@ public abstract class VioSerialHelper {
         return _isOpen;
     }
 
+    public void setDelay(int delay) {
+        iDelay = delay;
+    }
+
     protected abstract void onDataReceived(String ComRecData);
 }

@@ -9,6 +9,7 @@ import com.vi.vioserial.listener.OnNormalDataListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
+ * 快速使用
  * @author Vi
  * @date 2019-07-17 16:50
  * @e-mail cfop_f2l@163.com

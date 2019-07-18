@@ -2,7 +2,7 @@
 超简易的串口通信工具，只需要初始化之后就可以开始串口数据收发，你完全不用考虑发送间隔和数据分包问题。
 - [English](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)
 
-### 简单使用
+### 快速使用
 #### 第1步：配置
 在项目的build.gradle添加
 ```
@@ -20,7 +20,7 @@ dependencies {
 ```
 
 #### 第2步：初始化
-```
+``` java
 //portStr=串口号；ibaudRate=波特率；
 NormalSerial.instance().init(String portStr, int ibaudRate);
 
@@ -30,15 +30,67 @@ NormalSerial.instance().init(String portStr, int ibaudRate, OnConnectListener co
 ```
 
 #### 第3步：往串口发数据
-```
+``` java
 //data=你要发送的数据，就这样的你的数据就发到串口上了
 NormalSerial.instance().sendData(String data)
 
 ```
 
 #### 第4步：串口返回的数据接收
-```
+``` java
 //dataListener为串口的接收数据回调，默认接收的类型为hex
 //需要其他数据类型的，本项目提供了一个SerialDataUtils工具转换就行了
 NormalSerial.instance().addDataListener(OnNormalDataListener dataListener)
 ```
+
+### 自定义使用
+#### 第1步：配置（同上）
+
+#### 第2步：创建实类
+``` java
+//portStr=串口号；ibaudRate=波特率；
+BaseSerial mBaseSerial = new BaseSerial(String portStr, int ibaudRate) {
+                           @Override
+                           public void onDataBack(String data) {
+                               //这里是串口的数据返回，默认返回类型为16进制字符串
+                           }
+                       };
+```
+
+#### 第3步：打开串口
+``` java
+//connectListener:监听串口是否正常打开
+mBaseSerial.openSerial(OnConnectListener connectListener);
+```
+
+#### 第4步：串口数据发送
+``` java
+//发送HEX字符串
+mBaseSerial.sendHex(String sHex);
+
+//发送字符串
+mBaseSerial.sendTxt(String sTxt);
+
+//发送字节数组
+mBaseSerial.sendByteArray(byte[] bOutArray);
+```
+
+#### 其他方法介绍
+方法名|返回参数|介绍
+--|:--:|--:
+close()|void|关闭串口
+getBaudRate()|int|获取连接串口的波特率
+getPort()|String|获取连接串口的串口号
+isOpen()|boolean|串口是否打开
+onDataBack(String data)|void|串口数据接收回调，该方法在主线程
+openSerial(OnConnectListener connectListener)|void|打开串口；OnConnectListener为串口打开状态回调结果
+sendHex(String sHex)|void|向串口发送HEX字符串
+sendTxt(String sTxt)|void|向串口发送字符串
+sendByteArray(byte[] bOutArray)|void|向串口发送字节数组
+setDelay(int delay)|void|串口数据的发送间隔，默认300ms
+setSerialDataListener(OnSerialDataListener dataListener)|void|监听串口数据的发送和接收，该方法可用于log打印；注意该方法回调不是在主线程
+
+### 更新记录
+- 1.0.0
+    - 2019-07-18
+    - 发布1.0.0版本
