@@ -1,6 +1,6 @@
 ## 温控板API
 
-### 第1步：配置（已配置请忽略）[参考配置](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)
+### 第1步：[配置](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)（已配置请忽略）
 
 ### 第2步：初始化
 ``` java
