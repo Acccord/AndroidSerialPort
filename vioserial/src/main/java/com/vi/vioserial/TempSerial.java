@@ -141,13 +141,58 @@ public class TempSerial {
         }
     }
 
+    /**
+     * Setting temperature
+     *
+     * @param isCold    Whether to turn on refrigeration
+     * @param Upper1    Cooling temperature upper limit
+     * @param Lower1    Cooling temperature lower limit
+     * @param isDefrost Whether to open the defrost
+     * @param Upper2    Defrost temperature upper limit
+     * @param Lower2    Defrost temperature lower limit
+     * @param isHot     Whether to turn on heating
+     * @param Upper3    Heating temperature upper limit
+     * @param Lower3    Heating temperature lower limit
+     */
+    public void setTemp(boolean isCold, int Upper1, int Lower1,
+                        boolean isDefrost, int Upper2, int Lower2,
+                        boolean isHot, int Upper3, int Lower3) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("wkcmd", 1);
+        //Refrigeration
+        if (isCold) {
+            map.put("Upper1", Upper1);
+            map.put("Lower1", Lower1);
+        }
+        //Defrost
+        if (isDefrost) {
+            map.put("Upper2", Upper2);
+            map.put("Lower2", Lower2);
+        }
+        //heating
+        if (isHot) {
+            map.put("Upper3", Upper3);
+            map.put("Lower3", Lower3);
+        }
+        sendData(mGson.toJson(map));
+    }
+
+    /**
+     * Empty temperature setting
+     */
+    public void clearTempSet(){
+        Map<String, Integer> map = new HashMap<>();
+        map.put("wkcmd", 1);
+        sendData(mGson.toJson(map));
+    }
+
     public void readTemp() {
         Map<String, Integer> map = new HashMap<>();
         map.put("wkcmd", 2);
         sendData(mGson.toJson(map));
     }
 
-    public void sendData(String data) {
+    private void sendData(String data) {
         if (isOpen()) {
             String commandHex = SerialDataUtils.stringToHexString(data);
             mBaseSerial.sendHex(commandHex);
