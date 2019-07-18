@@ -1,7 +1,7 @@
 ## LOCKER API
 - [中文](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LockerApi.md)
 
-### Step 1: [Configuration](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)（Ignored, please ignore）
+### Step 1: [Configuration](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)（Ignored, please ignore）
 
 ### Step 2: Initialize
 ``` java
