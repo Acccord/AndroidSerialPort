@@ -42,6 +42,7 @@ NormalSerial.instance().sendData(String data)
 //需要其他数据类型的，本项目提供了一个SerialDataUtils工具转换就行了
 NormalSerial.instance().addDataListener(OnNormalDataListener dataListener)
 ```
+总结：快速使用只需要的init成功后，就可以调用sendData往串口发送数据，同时addDataListener来监听串口数据返回。如需使用其他功能使用，可参考下面的**自定义使用**。
 
 ### 自定义使用
 #### 第1步：配置（同上）
@@ -63,7 +64,7 @@ BaseSerial mBaseSerial = new BaseSerial(String portStr, int ibaudRate) {
 mBaseSerial.openSerial(OnConnectListener connectListener);
 ```
 
-#### 第4步：串口数据发送
+#### 第4步：向串口发送数据
 ``` java
 //发送HEX字符串
 mBaseSerial.sendHex(String sHex);
