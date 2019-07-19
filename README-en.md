@@ -5,7 +5,7 @@ you do not have to consider the transmission interval and data subcontracting.
 
 ### Quick use
 #### Step 1: Configure
-Added in the project's build.gradle
+Add it in your root build.gradle at the end of repositories:
 ```
 allprojects {
     repositories {
@@ -13,10 +13,10 @@ allprojects {
     }
 }
 ```
-Added in module build.gradle
+Add the dependency
 ```
 dependencies {
-    implementation 'xxxxxxxxxxxx'//I haven't released yet...
+    implementation 'com.github.Acccord:AndroidSerialPort:1.0.0'
 }
 ```
 
