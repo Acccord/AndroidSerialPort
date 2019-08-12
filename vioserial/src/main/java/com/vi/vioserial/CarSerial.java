@@ -151,31 +151,31 @@ public class CarSerial {
 
     public void readVersion(int add) {
         Map<String, Object> map = new HashMap<>();
-        map.put("ADD", add);
-        map.put("mType", "ver");
+        map.put("add", add);
+        map.put("mtype", "ver");
         sendData(mGson.toJson(map));
     }
 
     public void readStatus(int add) {
         Map<String, Object> map = new HashMap<>();
-        map.put("mType", "status");
+        map.put("mtype", "status");
         map.put("add", add);
         sendData(new Gson().toJson(map));
     }
 
     public void sendAction(int add, int m1, int action) {
         Map<String, Object> map = new HashMap<>();
-        map.put("Mtype", "action");
-        map.put("ADD", add);
-        map.put("MOTOR1", m1);
-        map.put("MOTOR2", action);
+        map.put("mtype", "action");
+        map.put("add", add);
+        map.put("motor1", m1);
+        map.put("motor2", action);
         sendData(new Gson().toJson(map));
     }
 
     public void cloceDoor(int add) {
         Map<String, Object> map = new HashMap<>();
-        map.put("mType", "close");
-        map.put("ADD", add);
+        map.put("mtype", "close");
+        map.put("add", add);
         sendData(new Gson().toJson(map));
     }
 

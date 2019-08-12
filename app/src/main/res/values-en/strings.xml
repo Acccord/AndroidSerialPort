@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">AndroidSerialPort</string>
+
+    <string name="text_serial_input">Please input the serial port</string>
+    <string name="text_rate_input">Please input the baud rate</string>
+    <string name="text_connect">Connection</string>
+    <string name="text_disconnect">Disconnect</string>
+    <string name="text_write_something">Please input the content to send</string>
+    <string name="text_send">send</string>
+    <string name="text_send_data">Serial port data:</string>
+    <string name="text_receive_data">Serial port received data:</string>
+
+    <string name="text_full_data">Please input the serial port and baud rate</string>
+    <string name="text_open_success">The serial port is successfully opened.</string>
+    <string name="text_open_fail">Serial port failed to open: %s</string>
+    <string name="text_full_send_Data">Sending content cannot be empty</string>
+    <string name="text_serial_open_fail">The serial port has not been successfully opened.</string>
+    <string name="text_other">Other ></string>
+</resources>

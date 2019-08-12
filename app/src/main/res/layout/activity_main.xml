@@ -19,14 +19,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
-                android:hint="请输入串口"/>
+                android:hint="@string/text_serial_input"/>
 
         <EditText
                 android:id="@+id/mEtBTL"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
-                android:hint="请输入波特率"
+                android:hint="@string/text_rate_input"
                 android:inputType="number"/>
 
         <Button
@@ -34,7 +34,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="连接串口"/>
+                android:text="@string/text_connect"/>
 
     </LinearLayout>
 
@@ -49,20 +49,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:hint="请输入要发送的内容"/>
+                android:hint="@string/text_write_something"/>
 
         <Button
                 android:id="@+id/mBtnSend"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="发送数据"/>
+                android:text="@string/text_send"/>
 
     </LinearLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:background="@color/black"
             android:orientation="horizontal">
 
@@ -72,7 +73,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="串口发送的数据:"
+                android:text="@string/text_send_data"
                 android:textColor="@color/white"/>
 
         <View
@@ -86,9 +87,16 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="串口接收的数据:"
+                android:text="@string/text_receive_data"
                 android:textColor="@color/white"/>
 
     </LinearLayout>
 
+    <TextView
+            android:id="@+id/mTvOther"
+            android:layout_gravity="end"
+            android:layout_marginTop="16dp"
+            android:text="@string/text_other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 </LinearLayout>

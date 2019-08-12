@@ -92,9 +92,11 @@ setDelay(int delay)|void|串口数据的发送间隔，默认300ms
 setSerialDataListener(OnSerialDataListener dataListener)|void|监听串口数据的发送和接收，该方法可用于log打印；注意该方法回调不是在主线程
 
 ### 更新记录
-- 1.0.0
-    - 2019-07-18
+- 1.0.0 【2019-07-18】
     - 发布1.0.0版本
+- 暂未发布 【2019-08-12】
+    - minSdkVersion改为14
+    - 小推车API优化
 
 ### 其他API
 以下内容需配合特定硬件使用，仅限特定开发人士参考。
