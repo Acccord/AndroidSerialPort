@@ -1,4 +1,5 @@
 ## 主板API
+> 提示：对接过程中所需要的参数（如主板类型、串口号、波特率...等）跟硬件相关，需要在对接过程中联系相关人员。
 
 ### 第1步：[配置](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)（已配置请忽略）
 
@@ -13,7 +14,7 @@
 VioSerial.instance().init(String serialType, String portStr, int ibaudRate);
 
 /**
- * 如果你想知道初始化的结果，比如是否初始化成功，你可以这样写
+ * 如果想知道初始化的结果，比如是否初始化成功，可以添加初始化结果监听
  * @param connectListener   串口打开结果回调
  */
 VioSerial.instance().init(String serialType, String portStr, int ibaudRate, OnConnectListener connectListener);
@@ -111,7 +112,7 @@ VioSerial.instance().openLock();
 
 - 6，机器重启
 ``` java
-//目前只支持427主板，其他主板重启方法请根据联系我
+//目前只支持427主板，其他主板重启方法请联系相关人员。
 VioSerial.instance().restartSerial();
 ```
 
