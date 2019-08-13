@@ -19,14 +19,19 @@ dependencies {
 }
 ```
 
-#### 第2步：初始化
+#### 第2步：打开串口
 ``` java
-//portStr=串口号；ibaudRate=波特率；
-NormalSerial.instance().init(String portStr, int ibaudRate);
-
-//如果你想知道初始化的结果，比如是否初始化成功，你可以这样写
-NormalSerial.instance().init(String portStr, int ibaudRate, OnConnectListener connectListener);
-
+/**
+ * 打开串口
+ * @param portStr   串口号
+ * @param ibaudRate 波特率
+ *
+ * @return 0：打开串口成功
+ *        -1：无法打开串口：没有串口读/写权限！
+ *        -2：无法打开串口：未知错误！
+ *        -3：无法打开串口：参数错误！
+ */
+NormalSerial.instance().open(String portStr, int ibaudRate);
 ```
 
 #### 第3步：往串口发数据
@@ -60,8 +65,15 @@ BaseSerial mBaseSerial = new BaseSerial(String portStr, int ibaudRate) {
 
 #### 第3步：打开串口
 ``` java
-//connectListener:监听串口是否正常打开
-mBaseSerial.openSerial(OnConnectListener connectListener);
+/**
+ * 打开串口
+ *
+ * @return 0：打开串口成功
+ *        -1：无法打开串口：没有串口读/写权限！
+ *        -2：无法打开串口：未知错误！
+ *        -3：无法打开串口：参数错误！
+ */
+mBaseSerial.openSerial();
 ```
 
 #### 第4步：向串口发送数据
@@ -84,7 +96,7 @@ getBaudRate()|int|获取连接串口的波特率
 getPort()|String|获取连接串口的串口号
 isOpen()|boolean|串口是否打开
 onDataBack(String data)|void|串口数据接收回调，该方法在主线程
-openSerial(OnConnectListener connectListener)|void|打开串口；OnConnectListener为串口打开状态回调结果
+openSerial()|int|打开串口；0=打开串口成功; -1=无法打开串口：没有串口读/写权限; -2=无法打开串口：未知错误; -3=无法打开串口：参数错误！
 sendHex(String sHex)|void|向串口发送HEX字符串
 sendTxt(String sTxt)|void|向串口发送字符串
 sendByteArray(byte[] bOutArray)|void|向串口发送字节数组
@@ -94,8 +106,9 @@ setSerialDataListener(OnSerialDataListener dataListener)|void|监听串口数据
 ### 更新记录
 - 1.0.0 【2019-07-18】
     - 发布1.0.0版本
-- 暂未发布 【2019-08-12】
+- 1.1.0 【2019-08-13】
     - minSdkVersion改为14
+    - 打开串口回调方法优化
     - 小推车API优化
 
 ### 其他API

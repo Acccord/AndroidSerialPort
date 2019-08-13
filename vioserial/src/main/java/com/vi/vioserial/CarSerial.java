@@ -6,7 +6,6 @@ import com.vi.vioserial.bean.CarAction;
 import com.vi.vioserial.bean.CarStatus;
 import com.vi.vioserial.bean.CarVersion;
 import com.vi.vioserial.listener.OnCarDataListener;
-import com.vi.vioserial.listener.OnConnectListener;
 import com.vi.vioserial.listener.OnSerialDataListener;
 import com.vi.vioserial.util.Logger;
 import com.vi.vioserial.util.SerialDataUtils;
@@ -46,42 +45,43 @@ public class CarSerial {
         mGson = new Gson();
     }
 
-    public synchronized void init(String portStr, int ibaudRate) {
-        init(portStr, ibaudRate, null);
-    }
-
-    public synchronized void init(String portStr, int ibaudRate, OnConnectListener connectListener) {
-        if (TextUtils.isEmpty(portStr) || ibaudRate == 0) {
+    public synchronized int open(String portStr) {
+        if (TextUtils.isEmpty(portStr)) {
             throw new IllegalArgumentException("Serial port and baud rate cannot be empty");
         }
-        if (this.mBaseSerial == null) {
-            mBaseSerial = new BaseSerial(portStr, ibaudRate) {
-                @Override
-                public void onDataBack(String data) {
-                    String dataStr = SerialDataUtils.hexStringToString(data);
-                    if (mListener != null) {
-                        for (int i = mListener.size() - 1; i >= 0; i--) {
-                            if (dataStr.contains("ver")) {
-                                CarVersion carVersion = mGson.fromJson(dataStr, CarVersion.class);
-                                mListener.get(i).carVersion(carVersion);
-                            } else if (dataStr.contains("switch")) {
-                                CarStatus carStatus = mGson.fromJson(dataStr, CarStatus.class);
-                                mListener.get(i).carStatus(carStatus);
-                            } else if (dataStr.contains("action")) {
-                                CarAction carAction = mGson.fromJson(dataStr, CarAction.class);
-                                mListener.get(i).carAction(carAction);
-                            }
+        if (this.mBaseSerial != null) {
+            close();
+        }
+        int ibaudRate = 19200;
+        mBaseSerial = new BaseSerial(portStr, ibaudRate) {
+            @Override
+            public void onDataBack(String data) {
+                String dataStr = SerialDataUtils.hexStringToString(data);
+                if (mListener != null) {
+                    for (int i = mListener.size() - 1; i >= 0; i--) {
+                        if (dataStr.contains("ver")) {
+                            CarVersion carVersion = mGson.fromJson(dataStr, CarVersion.class);
+                            mListener.get(i).carVersion(carVersion);
+                        } else if (dataStr.contains("switch")) {
+                            CarStatus carStatus = mGson.fromJson(dataStr, CarStatus.class);
+                            mListener.get(i).carStatus(carStatus);
+                        } else if (dataStr.contains("action")) {
+                            CarAction carAction = mGson.fromJson(dataStr, CarAction.class);
+                            mListener.get(i).carAction(carAction);
                         }
                     }
                 }
-            };
-            mBaseSerial.openSerial(connectListener);
-        } else {
-            Logger.getInstace().i(TAG, "Serial port has been initialized");
+            }
+        };
+        int openStatus = mBaseSerial.openSerial();
+        if (openStatus != 0) {
+            close();
         }
+        return openStatus;
     }
 
     /**
+     * 添加串口返回数据回调
      * Add callback
      */
     public void addDataListener(OnCarDataListener dataListener) {
@@ -92,6 +92,7 @@ public class CarSerial {
     }
 
     /**
+     * 移除串口返回数据回调
      * Remove callback
      */
     public void removeDataListener(OnCarDataListener dataListener) {
@@ -101,6 +102,7 @@ public class CarSerial {
     }
 
     /**
+     * 移除全部回调
      * Remove all
      */
     public void clearAllDataListener() {
@@ -110,7 +112,10 @@ public class CarSerial {
     }
 
     /**
+     * 监听串口数据
      * Listening to serial data
+     * 该方法必须在串口打开成功后调用
+     * This method must be called after the serial port is successfully opened.
      */
     public void setSerialDataListener(OnSerialDataListener dataListener) {
         if (mBaseSerial != null) {
@@ -122,9 +127,10 @@ public class CarSerial {
     }
 
     /**
+     * 串口是否打开
      * Serial port status (open/close)
      *
-     * @return
+     * @return true/false
      */
     public boolean isOpen() {
         if (mBaseSerial != null) {
@@ -137,6 +143,7 @@ public class CarSerial {
     }
 
     /**
+     * 关闭串口
      * Close the serial port
      */
     public void close() {

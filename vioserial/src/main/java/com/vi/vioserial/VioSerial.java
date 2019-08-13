@@ -1,12 +1,10 @@
 package com.vi.vioserial;
 
 import android.text.TextUtils;
-
 import com.vi.vioserial.impl.Data101ReviImpl;
 import com.vi.vioserial.impl.Data101SendImpl;
 import com.vi.vioserial.impl.Data427ReviImpl;
 import com.vi.vioserial.impl.Data427SendImpl;
-import com.vi.vioserial.listener.OnConnectListener;
 import com.vi.vioserial.listener.OnSerialDataListener;
 import com.vi.vioserial.listener.OnSerialDataParse;
 import com.vi.vioserial.listener.OnSerialDataSend;
@@ -47,45 +45,48 @@ public class VioSerial {
         return instance;
     }
 
-    public synchronized void init(String serialType, String portStr, int ibaudRate) {
-        init(serialType, portStr, ibaudRate, null);
-    }
-
-    public synchronized void init(String serialType, String portStr, int ibaudRate, OnConnectListener connectListener) {
-        if (TextUtils.isEmpty(portStr) || ibaudRate == 0) {
+    public synchronized int open(String serialType, String portStr) {
+        if (TextUtils.isEmpty(portStr)) {
             throw new IllegalArgumentException("Serial port and baud rate cannot be empty");
         }
-        if (this.mBaseSerial == null) {
-            switch (serialType) {
-                case SERIAL_101:
-                    this.mSerialDataParse = new Data101ReviImpl();
-                    this.mSerialDataSend = new Data101SendImpl();
-                    break;
-                case SERIAL_427:
-                    this.mSerialDataParse = new Data427ReviImpl();
-                    this.mSerialDataSend = new Data427SendImpl();
-                    break;
-                default:
-                    throw new IllegalArgumentException("serial type error");
-            }
-            mDefaultSerialType = serialType;
-
-            mBaseSerial = new BaseSerial(portStr, ibaudRate) {
-                @Override
-                public void onDataBack(String data) {
-                    if (mVioDataListener == null || mVioDataListener.size() == 0 || mSerialDataParse == null) {
-                        return;
-                    }
-                    mSerialDataParse.parseData(data, mVioDataListener);
-                }
-            };
-            mBaseSerial.openSerial(connectListener);
-        } else {
-            Logger.getInstace().i(TAG, "Serial port has been initialized");
+        if (this.mBaseSerial != null) {
+            close();
         }
+        int ibaudRate;
+        switch (serialType) {
+            case SERIAL_101:
+                ibaudRate = 9600;
+                this.mSerialDataParse = new Data101ReviImpl();
+                this.mSerialDataSend = new Data101SendImpl();
+                break;
+            case SERIAL_427:
+                ibaudRate = 19200;
+                this.mSerialDataParse = new Data427ReviImpl();
+                this.mSerialDataSend = new Data427SendImpl();
+                break;
+            default:
+                throw new IllegalArgumentException("serial type error");
+        }
+        mDefaultSerialType = serialType;
+
+        mBaseSerial = new BaseSerial(portStr, ibaudRate) {
+            @Override
+            public void onDataBack(String data) {
+                if (mVioDataListener == null || mVioDataListener.size() == 0 || mSerialDataParse == null) {
+                    return;
+                }
+                mSerialDataParse.parseData(data, mVioDataListener);
+            }
+        };
+        int openStatus = mBaseSerial.openSerial();
+        if (openStatus != 0) {
+            close();
+        }
+        return openStatus;
     }
 
     /**
+     * 添加串口返回数据回调
      * Add callback
      */
     public void addDataListener(OnVioDataListener dataListener) {
@@ -96,6 +97,7 @@ public class VioSerial {
     }
 
     /**
+     * 移除串口返回数据回调
      * Remove callback
      */
     public void removeDataListener(OnVioDataListener dataListener) {
@@ -105,6 +107,7 @@ public class VioSerial {
     }
 
     /**
+     * 移除全部回调
      * Remove all
      */
     public void clearAllDataListener() {
@@ -114,7 +117,10 @@ public class VioSerial {
     }
 
     /**
+     * 监听串口数据
      * Listening to serial data
+     * 该方法必须在串口打开成功后调用
+     * This method must be called after the serial port is successfully opened.
      */
     public void setSerialDataListener(OnSerialDataListener dataListener) {
         if (mBaseSerial != null) {
@@ -126,9 +132,10 @@ public class VioSerial {
     }
 
     /**
+     * 串口是否打开
      * Serial port status (open/close)
      *
-     * @return
+     * @return true/false
      */
     public boolean isOpen() {
         if (mBaseSerial != null) {
@@ -141,6 +148,7 @@ public class VioSerial {
     }
 
     /**
+     * 关闭串口
      * Close the serial port
      */
     public void close() {
@@ -156,7 +164,7 @@ public class VioSerial {
     /**
      * send data
      *
-     * @param data
+     * @param data data
      */
     private void sendData(String data) {
         if (isOpen()) {
@@ -205,50 +213,61 @@ public class VioSerial {
 
     //*********************** 427 **********************/
 
+    @Deprecated
     public void restartSerial() {
         String dataStr = mSerialDataSend.OnRestartSerial();
         sendData(dataStr);
     }
 
+    @Deprecated
     public void appStart() {
         String dataStr = mSerialDataSend.OnAppStart();
         sendData(dataStr);
     }
 
+    @Deprecated
     public void retunrCoin(int coin) {
         String dataStr = mSerialDataSend.OnReturnCoin(coin);
         sendData(dataStr);
     }
 
+    @Deprecated
     public void retunrBill(int count) {
         String dataStr = mSerialDataSend.OnReturnBill(count);
         sendData(dataStr);
     }
 
+    @Deprecated
     public void changeCoin(int coinStatus) {
         sendData(mSerialDataSend.OnChangeCoin(coinStatus));
     }
 
+    @Deprecated
     public void changeBill(int billStatus) {
         sendData(mSerialDataSend.OnChangeBill(billStatus));
     }
 
+    @Deprecated
     public void clearMoney() {
         sendData(mSerialDataSend.OnClearMoney());
     }
 
+    @Deprecated
     public void readCoin() {
         sendData(mSerialDataSend.OnReadCoin());
     }
 
+    @Deprecated
     public void readBill() {
         sendData(mSerialDataSend.OnReadBill());
     }
 
+    @Deprecated
     public void changeTempBill(int status) {
         sendData(mSerialDataSend.OnChangeTempBill(status));
     }
 
+    @Deprecated
     public void readMoney() {
         sendData(mSerialDataSend.OnReadMoney());
     }

@@ -75,6 +75,17 @@ public abstract class VioSerialHelper {
     }
 
     public void close() {
+        try {
+            if(mInputStream!=null){
+                mInputStream.close();
+            }
+            if(mOutputStream!=null){
+                mOutputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         if (mReadThread != null) {
             mReadThread.interrupt();
         }

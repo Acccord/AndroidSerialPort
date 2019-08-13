@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.vi.androidserialport.R
 import com.vi.vioserial.VioSerial
-import com.vi.vioserial.listener.OnConnectListener
 import com.vi.vioserial.listener.OnSerialDataListener
 import kotlinx.android.synthetic.main.activity_vio.*
 
@@ -59,51 +58,57 @@ class VioActivity : AppCompatActivity() {
             val ck = mEtCK.text.toString()
             val btl = mEtBTL.text.toString()
             if (ck.isBlank() || btl.isBlank()) {
-                Toast.makeText(this@VioActivity, "请输入串口和波特率", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@VioActivity, resources.getString(R.string.text_full_data), Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
             if (!isOpenSerial) {
-                //初始化
-                VioSerial.instance().init(VioSerial.SERIAL_101, ck, btl.toInt(), object : OnConnectListener {
-                    override fun onSuccess() {
-                        isOpenSerial = true
-                        mBtnConnect.text = "断开连接"
-                        Toast.makeText(this@VioActivity, "串口打开成功", Toast.LENGTH_SHORT).show()
-                    }
+                //打开串口
+                val openStatus = VioSerial.instance().open(VioSerial.SERIAL_101, ck)
+                if (openStatus == 0) {
+                    isOpenSerial = true
+                    mBtnConnect.text = resources.getString(R.string.text_disconnect)
+                    Toast.makeText(
+                        this@VioActivity,
+                        resources.getString(R.string.text_open_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                    override fun onError(errorData: String?) {
-                        isOpenSerial = false
-                        mBtnConnect.text = "连接串口"
-                        Toast.makeText(this@VioActivity, "串口打开失败：$errorData", Toast.LENGTH_SHORT).show()
-                    }
+                    //监听串口数据回调
+                    VioSerial.instance().setSerialDataListener(object : OnSerialDataListener {
+                        override fun onSend(hexData: String?) {
+                            val message = Message.obtain()
+                            message.what = 0
+                            message.obj = hexData
+                            mHandler.sendMessage(message)
+                        }
 
-                })
+                        override fun onReceive(hexData: String?) {
 
-                //监听串口数据回调
-                VioSerial.instance().setSerialDataListener(object : OnSerialDataListener {
-                    override fun onSend(hexData: String?) {
-                        val message = Message.obtain()
-                        message.what = 0
-                        message.obj = hexData
-                        mHandler.sendMessage(message)
-                    }
+                        }
 
-                    override fun onReceive(hexData: String?) {
+                        override fun onReceiveFullData(hexData: String?) {
+                            val message = Message.obtain()
+                            message.what = 1
+                            message.obj = hexData
+                            mHandler.sendMessage(message)
+                        }
 
-                    }
+                    })
+                } else {
+                    isOpenSerial = false
+                    mBtnConnect.text = resources.getString(R.string.text_connect)
+                    Toast.makeText(
+                        this@VioActivity,
+                        String.format(resources.getString(R.string.text_open_fail), openStatus),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
-                    override fun onReceiveFullData(hexData: String?) {
-                        val message = Message.obtain()
-                        message.what = 1
-                        message.obj = hexData
-                        mHandler.sendMessage(message)
-                    }
-
-                })
             } else {
                 isOpenSerial = false
-                mBtnConnect.text = "连接串口"
+                mBtnConnect.text = resources.getString(R.string.text_connect)
                 VioSerial.instance().close()
             }
         }
@@ -112,7 +117,8 @@ class VioActivity : AppCompatActivity() {
         mBtnTurn.setOnClickListener {
             val ck = mEtInput.text.toString()
             if (ck.isBlank() || ck.length != 3) {
-                Toast.makeText(this@VioActivity, "请输入正确的货道号", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@VioActivity, resources.getString(R.string.text_channel_correct), Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
             VioSerial.instance().openChannel(ck, 0)

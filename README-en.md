@@ -20,14 +20,19 @@ dependencies {
 }
 ```
 
-#### Step 2: Initialize
+#### Step 2: Open serial port
 ``` java
-//portStr: serial port number; ibaudRate: baud rate;
-NormalSerial.instance().init(String portStr, int ibaudRate);
-
-//If you want to know the result of the initialization, such as whether the initialization is successful, you can write
-NormalSerial.instance().init(String portStr, int ibaudRate, OnConnectListener connectListener);
-
+/**
+ * Open serial port
+ * @param portStr   serial port number
+ * @param ibaudRate baud rate
+ *
+ * @return 0：Open the serial port successfully
+ *        -1：Failed to open the serial port: no serial port read/write permission!
+ *        -2：Failed to open serial port: unknown error!
+ *        -3：Failed to open the serial port: the parameter is wrong!
+ */
+NormalSerial.instance().open(String portStr, int ibaudRate);
 ```
 
 #### Step 3: Send data to the serial port
@@ -62,8 +67,15 @@ BaseSerial mBaseSerial = new BaseSerial(String portStr, int ibaudRate) {
 
 #### Step 3: Open the serial port
 ``` java
-//connectListener: Listening to the serial port open status
-mBaseSerial.openSerial(OnConnectListener connectListener);
+/**
+ * Open serial port
+ *
+ * @return 0：Open the serial port successfully
+ *        -1：Failed to open the serial port: no serial port read/write permission!
+ *        -2：Failed to open serial port: unknown error!
+ *        -3：Failed to open the serial port: the parameter is wrong!
+ */
+mBaseSerial.openSerial();
 ```
 
 #### Step 4：Send data to the serial port
@@ -86,7 +98,7 @@ getBaudRate()|int|Get the baud rate of the serial port
 getPort()|String|Get the serial port number
 isOpen()|boolean|is open
 onDataBack(String data)|void|Serial data reception callback, the method is in the main thread
-openSerial(OnConnectListener connectListener)|void|Open serial port；OnConnectListener is the serial port open state callback result
+openSerial()|int|0：Open the serial port successfully; -1：Failed to open the serial port: no serial port read/write permission; -2：Failed to open serial port: unknown error; -3：Failed to open the serial port: the parameter is wrong!
 sendHex(String sHex)|void|Send a HEX string to the serial port
 sendTxt(String sTxt)|void|Send a string to the serial port
 sendByteArray(byte[] bOutArray)|void|Send a byte array to the serial port
@@ -94,6 +106,9 @@ setDelay(int delay)|void|Serial data transmission interval, default 300ms
 setSerialDataListener(OnSerialDataListener dataListener)|void|Listening to the sending and receiving of serial data, this method can be used for log printing; note that the method callback is not in the main thread
 
 ### update record
-- 1.0.0
-    - 2019-07-18
+- 1.0.0 [2019-07-18]
     - Release version 1.0.0
+- 1.1.0 [2019-08-13]
+    - minSdkVersion changed to 14
+    - Open serial port callback method optimization
+    - Other API optimization

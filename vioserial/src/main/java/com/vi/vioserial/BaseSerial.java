@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
 
-import com.vi.vioserial.listener.OnConnectListener;
 import com.vi.vioserial.util.Logger;
 import com.vi.vioserial.util.SerialDataUtils;
 import com.vi.vioserial.util.VioSerialHelper;
@@ -45,40 +44,44 @@ public abstract class BaseSerial extends VioSerialHelper {
         mHandler.sendMessage(message);
     }
 
+    @Override
+    public void close() {
+        super.close();
+        if (mHandler != null) {
+            mHandler = null;
+        }
+    }
+
     /**
+     * 打开串口
      * Open serial port
      *
-     * @param connectListener Serial connection status monitoring
+     * @return 0:success 成功
+     * -1：无法打开串口：没有串口读/写权限！
+     * -2：无法打开串口：未知错误！
+     * -3：无法打开串口：参数错误！
      */
-    public void openSerial(OnConnectListener connectListener) {
+    public int openSerial() {
         try {
             super.open();
             Logger.getInstace().i(TAG, "Open the serial port successfully");
-            if (connectListener != null) {
-                connectListener.onSuccess();
-            }
+            return 0;
         } catch (SecurityException e) {
             Logger.getInstace().e(TAG, "Failed to open the serial port: no serial port read/write permission!");
-            if (connectListener != null) {
-                connectListener.onError("Failed to open the serial port: no serial port read/write permission!");
-            }
+            return -1;
         } catch (IOException e) {
             Logger.getInstace().e(TAG, "Failed to open serial port: unknown error!");
-            if (connectListener != null) {
-                connectListener.onError("Failed to open serial port: unknown error!");
-            }
+            return -2;
         } catch (InvalidParameterException e) {
             Logger.getInstace().e(TAG, "Failed to open the serial port: the parameter is wrong!");
-            if (connectListener != null) {
-                connectListener.onError("Failed to open the serial port: the parameter is wrong!");
-            }
+            return -3;
         }
     }
 
     /**
      * Send HEX data
      *
-     * @param sHex
+     * @param sHex hex data
      */
     public void sendHex(String sHex) {
         byte[] bOutArray = SerialDataUtils.HexToByteArr(sHex);
@@ -90,7 +93,7 @@ public abstract class BaseSerial extends VioSerialHelper {
     /**
      * Send string data
      *
-     * @param sTxt
+     * @param sTxt string data
      */
     public void sendTxt(String sTxt) {
         byte[] bOutArray = new byte[0];
@@ -107,7 +110,7 @@ public abstract class BaseSerial extends VioSerialHelper {
     /**
      * Send byte data
      *
-     * @param bOutArray
+     * @param bOutArray byte data
      */
     public void sendByteArray(byte[] bOutArray) {
         Message msg = Message.obtain();
@@ -118,7 +121,7 @@ public abstract class BaseSerial extends VioSerialHelper {
     /**
      * is show log
      *
-     * @param isShowLog
+     * @param isShowLog true=show
      */
     public void setShowLog(boolean isShowLog) {
         Logger.SHOW_LOG = isShowLog;

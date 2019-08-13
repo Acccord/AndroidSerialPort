@@ -12,8 +12,9 @@
 
     <string name="text_full_data">请输入串口和波特率</string>
     <string name="text_open_success">串口打开成功</string>
-    <string name="text_open_fail">串口打开失败：%s</string>
+    <string name="text_open_fail">串口打开失败：%d</string>
     <string name="text_full_send_Data">发送内容不能为空</string>
     <string name="text_serial_open_fail">串口还未成功打开</string>
     <string name="text_other">其他 ></string>
+    <string name="text_channel_correct">请输入正确的货道号</string>
 </resources>

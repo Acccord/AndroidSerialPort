@@ -16,4 +16,5 @@
     <string name="text_full_send_Data">Sending content cannot be empty</string>
     <string name="text_serial_open_fail">The serial port has not been successfully opened.</string>
     <string name="text_other">Other ></string>
+    <string name="text_channel_correct">Please enter the correct cargo road number</string>
 </resources>

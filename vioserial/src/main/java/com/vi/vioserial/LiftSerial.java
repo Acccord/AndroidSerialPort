@@ -3,7 +3,6 @@ package com.vi.vioserial;
 import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.vi.vioserial.bean.LiftBean;
-import com.vi.vioserial.listener.OnConnectListener;
 import com.vi.vioserial.listener.OnLiftDataListener;
 import com.vi.vioserial.listener.OnSerialDataListener;
 import com.vi.vioserial.util.Logger;
@@ -44,36 +43,37 @@ public class LiftSerial {
         mGson = new Gson();
     }
 
-    public synchronized void init(String portStr, int ibaudRate) {
-        init(portStr, ibaudRate, null);
-    }
-
-    public synchronized void init(String portStr, int ibaudRate, OnConnectListener connectListener) {
-        if (TextUtils.isEmpty(portStr) || ibaudRate == 0) {
+    public synchronized int open(String portStr) {
+        if (TextUtils.isEmpty(portStr)) {
             throw new IllegalArgumentException("Serial port and baud rate cannot be empty");
         }
-        if (this.mBaseSerial == null) {
-            mBaseSerial = new BaseSerial(portStr, ibaudRate) {
-                @Override
-                public void onDataBack(String data) {
-                    //HEX字符转换为字符串
-                    String dataStr = SerialDataUtils.hexStringToString(data);
-                    LiftBean liftBean = mGson.fromJson(dataStr, LiftBean.class);
-                    //高度
-                    if (mListener != null && dataStr.length() > 8) {
-                        for (int i = mListener.size() - 1; i >= 0; i--) {
-                            mListener.get(i).liftDataBack(liftBean);
-                        }
+        if (this.mBaseSerial != null) {
+            close();
+        }
+        int ibaudRate = 19200;
+        mBaseSerial = new BaseSerial(portStr, ibaudRate) {
+            @Override
+            public void onDataBack(String data) {
+                //HEX字符转换为字符串
+                String dataStr = SerialDataUtils.hexStringToString(data);
+                LiftBean liftBean = mGson.fromJson(dataStr, LiftBean.class);
+                //高度
+                if (mListener != null && dataStr.length() > 8) {
+                    for (int i = mListener.size() - 1; i >= 0; i--) {
+                        mListener.get(i).liftDataBack(liftBean);
                     }
                 }
-            };
-            mBaseSerial.openSerial(connectListener);
-        } else {
-            Logger.getInstace().i(TAG, "Serial port has been initialized");
+            }
+        };
+        int openStatus = mBaseSerial.openSerial();
+        if (openStatus != 0) {
+            close();
         }
+        return openStatus;
     }
 
     /**
+     * 添加串口返回数据回调
      * Add callback
      */
     public void addDataListener(OnLiftDataListener dataListener) {
@@ -84,6 +84,7 @@ public class LiftSerial {
     }
 
     /**
+     * 移除串口返回数据回调
      * Remove callback
      */
     public void removeDataListener(OnLiftDataListener dataListener) {
@@ -93,6 +94,7 @@ public class LiftSerial {
     }
 
     /**
+     * 移除全部回调
      * Remove all
      */
     public void clearAllDataListener() {
@@ -102,7 +104,10 @@ public class LiftSerial {
     }
 
     /**
+     * 监听串口数据
      * Listening to serial data
+     * 该方法必须在串口打开成功后调用
+     * This method must be called after the serial port is successfully opened.
      */
     public void setSerialDataListener(OnSerialDataListener dataListener) {
         if (mBaseSerial != null) {
@@ -114,9 +119,10 @@ public class LiftSerial {
     }
 
     /**
+     * 串口是否打开
      * Serial port status (open/close)
      *
-     * @return
+     * @return true/false
      */
     public boolean isOpen() {
         if (mBaseSerial != null) {
@@ -129,6 +135,7 @@ public class LiftSerial {
     }
 
     /**
+     * 关闭串口
      * Close the serial port
      */
     public void close() {

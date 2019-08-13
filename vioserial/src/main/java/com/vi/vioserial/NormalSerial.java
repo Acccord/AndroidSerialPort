@@ -1,8 +1,6 @@
 package com.vi.vioserial;
 
 import android.text.TextUtils;
-
-import com.vi.vioserial.listener.OnConnectListener;
 import com.vi.vioserial.listener.OnNormalDataListener;
 import com.vi.vioserial.listener.OnSerialDataListener;
 import com.vi.vioserial.util.Logger;
@@ -35,33 +33,33 @@ public class NormalSerial {
         return instance;
     }
 
-    public synchronized void init(String portStr, int ibaudRate) {
-        init(portStr, ibaudRate, null);
-    }
-
-    public synchronized void init(String portStr, int ibaudRate, OnConnectListener connectListener) {
+    public synchronized int open(String portStr, int ibaudRate) {
         if (TextUtils.isEmpty(portStr) || ibaudRate == 0) {
             throw new IllegalArgumentException("Serial port and baud rate cannot be empty");
         }
-        if (this.mBaseSerial == null) {
-            mBaseSerial = new BaseSerial(portStr, ibaudRate) {
-                @Override
-                public void onDataBack(String data) {
-                    //温度
-                    if (mListener != null) {
-                        for (int i = mListener.size() - 1; i >= 0; i--) {
-                            mListener.get(i).normalDataBack(data);
-                        }
+        if (this.mBaseSerial != null) {
+            close();
+        }
+        mBaseSerial = new BaseSerial(portStr, ibaudRate) {
+            @Override
+            public void onDataBack(String data) {
+                //温度
+                if (mListener != null) {
+                    for (int i = mListener.size() - 1; i >= 0; i--) {
+                        mListener.get(i).normalDataBack(data);
                     }
                 }
-            };
-            mBaseSerial.openSerial(connectListener);
-        } else {
-            Logger.getInstace().i(TAG, "Serial port has been initialized");
+            }
+        };
+        int openStatus = mBaseSerial.openSerial();
+        if (openStatus != 0) {
+            close();
         }
+        return openStatus;
     }
 
     /**
+     * 添加串口返回数据回调
      * Add callback
      */
     public void addDataListener(OnNormalDataListener dataListener) {
@@ -72,6 +70,7 @@ public class NormalSerial {
     }
 
     /**
+     * 移除串口返回数据回调
      * Remove callback
      */
     public void removeDataListener(OnNormalDataListener dataListener) {
@@ -81,6 +80,7 @@ public class NormalSerial {
     }
 
     /**
+     * 移除全部回调
      * Remove all
      */
     public void clearAllDataListener() {
@@ -90,7 +90,10 @@ public class NormalSerial {
     }
 
     /**
+     * 监听串口数据
      * Listening to serial data
+     * 该方法必须在串口打开成功后调用
+     * This method must be called after the serial port is successfully opened.
      */
     public void setSerialDataListener(OnSerialDataListener dataListener) {
         if (mBaseSerial != null) {
@@ -102,9 +105,10 @@ public class NormalSerial {
     }
 
     /**
+     * 串口是否打开
      * Serial port status (open/close)
      *
-     * @return
+     * @return true/false
      */
     public boolean isOpen() {
         if (mBaseSerial != null) {

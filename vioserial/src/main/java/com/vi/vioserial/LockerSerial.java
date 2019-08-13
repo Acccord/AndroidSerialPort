@@ -4,7 +4,6 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.vi.vioserial.listener.OnConnectListener;
 import com.vi.vioserial.listener.OnLockerDataListener;
 import com.vi.vioserial.listener.OnSerialDataListener;
 import com.vi.vioserial.util.Logger;
@@ -45,33 +44,32 @@ public class LockerSerial {
         mGson = new Gson();
     }
 
-    public synchronized void init(String portStr, int ibaudRate) {
-        init(portStr, ibaudRate, null);
-    }
-
-    public synchronized void init(String portStr, int ibaudRate, OnConnectListener connectListener) {
+    public synchronized int open(String portStr, int ibaudRate) {
         if (TextUtils.isEmpty(portStr) || ibaudRate == 0) {
             throw new IllegalArgumentException("Serial port and baud rate cannot be empty");
         }
-        if (this.mBaseSerial == null) {
-            mBaseSerial = new BaseSerial(portStr, ibaudRate) {
-                @Override
-                public void onDataBack(String data) {
-                    String dataStr = SerialDataUtils.hexStringToString(data);
-                    if (dataStr.contains("read")) {
-                        JsonObject returnData = new JsonParser().parse(dataStr).getAsJsonObject();
-                        if (mListener != null) {
-                            for (int i = mListener.size() - 1; i >= 0; i--) {
-                                mListener.get(i).boxStatus(returnData);
-                            }
+        if (this.mBaseSerial != null) {
+            close();
+        }
+        mBaseSerial = new BaseSerial(portStr, ibaudRate) {
+            @Override
+            public void onDataBack(String data) {
+                String dataStr = SerialDataUtils.hexStringToString(data);
+                if (dataStr.contains("read")) {
+                    JsonObject returnData = new JsonParser().parse(dataStr).getAsJsonObject();
+                    if (mListener != null) {
+                        for (int i = mListener.size() - 1; i >= 0; i--) {
+                            mListener.get(i).boxStatus(returnData);
                         }
                     }
                 }
-            };
-            mBaseSerial.openSerial(connectListener);
-        } else {
-            Logger.getInstace().i(TAG, "Serial port has been initialized");
+            }
+        };
+        int openStatus = mBaseSerial.openSerial();
+        if (openStatus != 0) {
+            close();
         }
+        return openStatus;
     }
 
     /**

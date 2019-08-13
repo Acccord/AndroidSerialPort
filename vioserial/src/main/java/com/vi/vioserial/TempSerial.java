@@ -1,10 +1,8 @@
 package com.vi.vioserial;
 
 import android.text.TextUtils;
-
 import com.google.gson.Gson;
 import com.vi.vioserial.bean.TempBean;
-import com.vi.vioserial.listener.OnConnectListener;
 import com.vi.vioserial.listener.OnSerialDataListener;
 import com.vi.vioserial.listener.OnTempDataListener;
 import com.vi.vioserial.util.Logger;
@@ -45,32 +43,32 @@ public class TempSerial {
         mGson = new Gson();
     }
 
-    public synchronized void init(String portStr, int ibaudRate) {
-        init(portStr, ibaudRate, null);
-    }
-
-    public synchronized void init(String portStr, int ibaudRate, OnConnectListener connectListener) {
-        if (TextUtils.isEmpty(portStr) || ibaudRate == 0) {
+    public synchronized int open(String portStr) {
+        if (TextUtils.isEmpty(portStr)) {
             throw new IllegalArgumentException("Serial port and baud rate cannot be empty");
         }
-        if (this.mBaseSerial == null) {
-            mBaseSerial = new BaseSerial(portStr, ibaudRate) {
-                @Override
-                public void onDataBack(String data) {
-                    String dataStr = SerialDataUtils.hexStringToString(data);
+        if (this.mBaseSerial != null) {
+            close();
+        }
+        int ibaudRate = 19200;
+        mBaseSerial = new BaseSerial(portStr, ibaudRate) {
+            @Override
+            public void onDataBack(String data) {
+                String dataStr = SerialDataUtils.hexStringToString(data);
 
-                    if (mListener != null) {
-                        for (int i = mListener.size() - 1; i >= 0; i--) {
-                            TempBean tempBean = mGson.fromJson(dataStr, TempBean.class);
-                            mListener.get(i).tempDataBack(tempBean);
-                        }
+                if (mListener != null) {
+                    for (int i = mListener.size() - 1; i >= 0; i--) {
+                        TempBean tempBean = mGson.fromJson(dataStr, TempBean.class);
+                        mListener.get(i).tempDataBack(tempBean);
                     }
                 }
-            };
-            mBaseSerial.openSerial(connectListener);
-        } else {
-            Logger.getInstace().i(TAG, "Serial port has been initialized");
+            }
+        };
+        int openStatus = mBaseSerial.openSerial();
+        if (openStatus != 0) {
+            close();
         }
+        return openStatus;
     }
 
     /**
@@ -180,7 +178,7 @@ public class TempSerial {
     /**
      * Empty temperature setting
      */
-    public void clearTempSet(){
+    public void clearTempSet() {
         Map<String, Integer> map = new HashMap<>();
         map.put("wkcmd", 1);
         sendData(mGson.toJson(map));

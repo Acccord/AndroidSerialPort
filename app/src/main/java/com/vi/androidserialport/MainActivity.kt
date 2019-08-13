@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.vi.androidserialport.test.VioActivity
 import com.vi.vioserial.NormalSerial
-import com.vi.vioserial.listener.OnConnectListener
 import com.vi.vioserial.listener.OnNormalDataListener
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -19,7 +18,7 @@ import kotlinx.android.synthetic.main.activity_main.*
  */
 class MainActivity : AppCompatActivity(), OnNormalDataListener {
 
-    var isOpenSerial = false //串口是否打开
+    var isOpenSerial = false //串口是否打开 Is the serial port open?
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,31 +46,27 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
             }
 
             if (!isOpenSerial) {
-                //初始化 initialization
-                NormalSerial.instance().init(ck, btl.toInt(), object : OnConnectListener {
-                    override fun onSuccess() {
-                        isOpenSerial = true
-                        mBtnConnect.text = resources.getString(R.string.text_disconnect)
-                        Toast.makeText(
-                            this@MainActivity,
-                            resources.getString(R.string.text_open_success),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                //打开串口 Open serial port
+                val openStatus = NormalSerial.instance().open(ck, btl.toInt())
+                if (openStatus == 0) {
+                    isOpenSerial = true
+                    mBtnConnect.text = resources.getString(R.string.text_disconnect)
+                    Toast.makeText(
+                        this@MainActivity,
+                        resources.getString(R.string.text_open_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    isOpenSerial = false
+                    mBtnConnect.text = resources.getString(R.string.text_connect)
+                    Toast.makeText(
+                        this@MainActivity,
+                        String.format(resources.getString(R.string.text_open_fail), openStatus),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
-                    override fun onError(errorData: String?) {
-                        isOpenSerial = false
-                        mBtnConnect.text = resources.getString(R.string.text_connect)
-                        Toast.makeText(
-                            this@MainActivity,
-                            String.format(resources.getString(R.string.text_open_fail), errorData),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                })
-
-                //添加数据接收回调
+                //添加数据接收回调 Add data receive callback
                 NormalSerial.instance().addDataListener(this)
             } else {
                 isOpenSerial = false
@@ -80,7 +75,7 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
             }
         }
 
-        //往串口发送数据
+        //往串口发送数据 Send data to the serial port
         mBtnSend.setOnClickListener {
             val input = mEtInput.text.toString()
             if (input.isBlank()) {
