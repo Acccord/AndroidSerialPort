@@ -1,5 +1,5 @@
 ## 安卓串口通信工具
-超简易的串口通信工具，只需要初始化之后就可以开始串口数据收发，你完全不用考虑发送间隔和数据分包问题。
+简单的串口通信工具，只需要初始化之后就可以开始串口数据收发，完全不用考虑发送间隔和数据分包问题。
 - [English](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)
 
 ### 快速使用
@@ -36,7 +36,7 @@ NormalSerial.instance().open(String portStr, int ibaudRate);
 
 #### 第3步：往串口发数据
 ``` java
-//data=你要发送的数据，就这样的你的数据就发到串口上了
+//data=准备发送的数据，就这样数据就发到串口上了
 NormalSerial.instance().sendData(String data)
 
 ```
