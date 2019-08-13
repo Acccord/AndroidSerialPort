@@ -1,8 +1,5 @@
 ## 温控板API
 
-### 更新记录
-- 2019-08-13 优化串口打开方式和回调结果
-
 ### 第1步：[配置](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)（已配置请忽略）
 
 ### 第2步：打开串口
@@ -81,3 +78,6 @@ void tempDataBack(TempBean tempBean);
 ## 其他说明
 该温控版可设置功能分别是制冷、除霜、加热，具体开启哪些功能由上面setTemp参数决定。温控版上装了三个温度探头，对应的值为TempBean中的tmp1，tmp2，tmp3
 探头1的位置一般是机器仓内，所以一般用temp1为当前机器内温度；temp2一般对应的为冷凝器的温度；temp3对应的一般为加热器的温度。
+
+### 更新记录
+- 2019-08-13 优化串口打开方式和回调结果

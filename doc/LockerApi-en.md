@@ -1,9 +1,6 @@
 ## LOCKER API
 - [中文](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LockerApi.md)
 
-### update record
-- 2019-08-13 Optimize serial port open mode and callback result
-
 ### Step 1: [Configuration](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)（Ignore the article after it has been configured.）
 
 ### Step 2: Open serial port
@@ -62,3 +59,6 @@ LockerSerial.instance().readBox();
  */
 void boxStatus(JsonObject jsonObject);
 ```
+
+### update record
+- 2019-08-13 Optimize serial port open mode and callback result

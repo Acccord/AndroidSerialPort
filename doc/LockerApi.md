@@ -1,9 +1,6 @@
 ## LOCKER API
 - [English](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LockerApi-en.md)
 
-### 更新记录
-- 2019-08-13 优化串口打开方式和回调结果
-
 ### 第1步：[配置](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)（已配置请忽略）
 
 ### 第2步：打开串口
@@ -62,3 +59,6 @@ LockerSerial.instance().readBox();
  */
 void boxStatus(JsonObject jsonObject);
 ```
+
+### 更新记录
+- 2019-08-13 优化串口打开方式和回调结果
