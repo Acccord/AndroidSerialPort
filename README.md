@@ -15,7 +15,7 @@ allprojects {
 在模块的build.gradle添加
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.0.0'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.1.0'
 }
 ```
 
