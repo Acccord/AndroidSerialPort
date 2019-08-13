@@ -1,23 +1,24 @@
 ## LOCKER API
 - [中文](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LockerApi.md)
 
+### update record
+- 2019-08-13 Optimize serial port open mode and callback result
+
 ### Step 1: [Configuration](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)（Ignore the article after it has been configured.）
 
-### Step 2: Initialize
+### Step 2: Open serial port
 ``` java
 /**
- * Initialize
- * @param portStr       serial port number
- * @param ibaudRate     baud rate
- */
-LockerSerial.instance().init(String portStr, int ibaudRate);
-
-/**
- * If you want to know the result of the initialization, such as whether the initialization is successful, you can write
+ * Open serial port
+ * @param portStr   serial port number
+ * @param ibaudRate baud rate
  *
- * @param connectListener   Serial port open result callback
+ * @return 0：Open the serial port successfully
+ *        -1：Failed to open the serial port: no serial port read/write permission!
+ *        -2：Failed to open serial port: unknown error!
+ *        -3：Failed to open the serial port: the parameter is wrong!
  */
-LockerSerial.instance().init(String portStr, int ibaudRate, OnConnectListener connectListener);
+LockerSerial.instance().open(String portStr, int ibaudRate);
 ```
 
 ### Step 3: Data reception

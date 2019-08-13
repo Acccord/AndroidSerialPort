@@ -1,21 +1,22 @@
 ## 温控板API
 
+### 更新记录
+- 2019-08-13 优化串口打开方式和回调结果
+
 ### 第1步：[配置](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)（已配置请忽略）
 
-### 第2步：初始化
+### 第2步：打开串口
 ``` java
 /**
- * 初始化
- * @param portStr       串口号
- * @param ibaudRate     波特率
+ * 打开串口
+ * @param portStr   串口号
+ *
+ * @return 0：打开串口成功
+ *        -1：无法打开串口：没有串口读/写权限！
+ *        -2：无法打开串口：未知错误！
+ *        -3：无法打开串口：参数错误！
  */
-TempSerial.instance().init(String portStr, int ibaudRate);
-
-/**
- * 如果你想知道初始化的结果，比如是否初始化成功，你可以这样写
- * @param connectListener   串口打开结果回调
- */
-TempSerial.instance().init(String portStr, int ibaudRate, OnConnectListener connectListener);
+TempSerial.instance().open(String portStr);
 ```
 
 ### 第3步：数据接收

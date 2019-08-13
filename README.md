@@ -1,5 +1,5 @@
 ## 安卓串口通信工具
-简单的串口通信工具，只需要初始化之后就可以开始串口数据收发，完全不用考虑发送间隔和数据分包问题。
+简单的串口通信工具，只需要初始化之后就可以开始串口数据收发，不用考虑发送间隔和数据分包问题。
 - [English](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)
 
 ### 快速使用

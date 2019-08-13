@@ -1,23 +1,24 @@
 ## 主板API
 > 提示：对接过程中所需要的参数（如主板类型、串口号、波特率...等）跟硬件相关，需要在对接过程中联系相关人员。
 
+### 更新记录
+- 2019-08-13 优化串口打开方式和回调结果
+
 ### 第1步：[配置](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)（已配置请忽略）
 
-### 第2步：初始化
+### 第2步：打开串口
 ``` java
-/**
- * 初始化
- * @param serialType    主板类型（VioSerial.NO_101/VioSerial.NO_427）
- * @param portStr       串口号
- * @param ibaudRate     波特率
- */
-VioSerial.instance().init(String serialType, String portStr, int ibaudRate);
-
-/**
- * 如果想知道初始化的结果，比如是否初始化成功，可以添加初始化结果监听
- * @param connectListener   串口打开结果回调
- */
-VioSerial.instance().init(String serialType, String portStr, int ibaudRate, OnConnectListener connectListener);
+ /**
+  * 打开串口
+  * @param serialType   主板类型（VioSerial.NO_101/VioSerial.NO_427）
+  * @param portStr      串口号
+  *
+  * @return 0：打开串口成功
+  *        -1：无法打开串口：没有串口读/写权限！
+  *        -2：无法打开串口：未知错误！
+  *        -3：无法打开串口：参数错误！
+  */
+VioSerial.instance().open(String serialType, String portStr);
 ```
 
 ### 第3步：数据接收
@@ -52,7 +53,7 @@ void version(DataVersion dataVersion);
  */
 VioSerial.instance().openChannel(String channel, int lightType);
 
-//该命令发送后，正常情况下电机会进行转动，出货结果请在下面"出货结果"中读取，一般情况下一秒读取一次。
+//该命令发送后，正常情况下电机会进行转动，出货结果请在下面"出货结果"中读取，一般情况下一秒读取一次，读取到结果后停止读取。
 ```
 
 - 3，格子机出货
@@ -73,7 +74,7 @@ void cellResult(int result);
 - 4，获取货道出货结果
 ``` java
 /**
-  * 发送获取出货结果指令，一般情况下一秒读取一次出货结果
+  * 发送获取出货结果指令，一般情况下一秒读取一次出货结果，读取到结果后停止读取
   *
   * @param lightType 光幕类型 0-未使用光幕 （427主板：1-简易光幕 2-盒装光幕）（101主板：1-电机转一圈 2-电机转动直到检测到结果为止）
   */
