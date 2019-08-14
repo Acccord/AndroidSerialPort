@@ -109,7 +109,6 @@ setSerialDataListener(OnSerialDataListener dataListener)|void|监听串口数据
 - 1.1.0 【2019-08-13】
     - minSdkVersion改为14
     - 打开串口回调方法优化
-    - 小推车API优化
 
 ### 其他API
 以下内容需配合特定硬件使用，仅限特定开发人士参考。
