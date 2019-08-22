@@ -97,9 +97,9 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
             mTvSendData.append("\n$input")
         }
 
-        mTvOther.setOnClickListener {
-            startActivity(Intent(this@MainActivity, VioActivity::class.java))
-        }
+//        mTvOther.setOnClickListener {
+//            startActivity(Intent(this@MainActivity, VioActivity::class.java))
+//        }
 
         mTvSendData.setOnClickListener { mTvSendData.text = "" }
         mTvReviData.setOnClickListener { mTvReviData.text = "" }

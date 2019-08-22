@@ -166,7 +166,7 @@ public class VioSerial {
      *
      * @param data data
      */
-    private void sendData(String data) {
+    public void sendData(String data) {
         if (isOpen()) {
             mBaseSerial.sendHex(data);
         }

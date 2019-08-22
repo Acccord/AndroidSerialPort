@@ -1,7 +1,21 @@
 ## LOCKER API
 - [English](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LockerApi-en.md)
 
-### 第1步：[配置](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)（已配置请忽略）
+#### 第1步：配置
+在项目的build.gradle添加
+```
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+在模块的build.gradle添加
+```
+dependencies {
+    implementation 'com.github.Acccord:AndroidSerialPort:1.1.1'
+}
+```
 
 ### 第2步：打开串口
 ``` java

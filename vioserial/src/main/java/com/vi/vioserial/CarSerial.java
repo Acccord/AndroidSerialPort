@@ -170,12 +170,28 @@ public class CarSerial {
         sendData(new Gson().toJson(map));
     }
 
-    public void sendAction(int add, int m1, int action) {
+    public void sendAction(int add, int m1, int m2) {
         Map<String, Object> map = new HashMap<>();
         map.put("mtype", "action");
         map.put("add", add);
         map.put("motor1", m1);
-        map.put("motor2", action);
+        map.put("motor2", m2);
+        sendData(new Gson().toJson(map));
+    }
+
+    public void sendM1(int add, int m1) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("mtype", "action");
+        map.put("add", add);
+        map.put("motor1", m1);
+        sendData(new Gson().toJson(map));
+    }
+
+    public void sendM2(int add, int m2) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("mtype", "action");
+        map.put("add", add);
+        map.put("motor2", m2);
         sendData(new Gson().toJson(map));
     }
 

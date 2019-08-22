@@ -1,7 +1,21 @@
 ## LOCKER API
 - [中文](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LockerApi.md)
 
-### Step 1: [Configuration](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)（Ignore the article after it has been configured.）
+#### Step 1: Configure
+Add it in your root build.gradle at the end of repositories:
+```
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+Add the dependency
+```
+dependencies {
+    implementation 'com.github.Acccord:AndroidSerialPort:1.1.1'
+}
+```
 
 ### Step 2: Open serial port
 ``` java

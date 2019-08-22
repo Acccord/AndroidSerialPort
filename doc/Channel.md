@@ -1,7 +1,21 @@
 ## 主板API
 > 提示：对接过程中所需要的参数（如主板类型、串口号、波特率...等）跟硬件相关，需要在对接过程中联系相关人员。
 
-### 第1步：[配置](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)（已配置请忽略）
+#### 第1步：配置
+在项目的build.gradle添加
+```
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+在模块的build.gradle添加
+```
+dependencies {
+    implementation 'com.github.Acccord:AndroidSerialPort:1.1.1'
+}
+```
 
 ### 第2步：打开串口
 ``` java

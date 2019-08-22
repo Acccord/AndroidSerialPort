@@ -15,7 +15,7 @@ allprojects {
 在模块的build.gradle添加
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.1.0'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.1.1'
 }
 ```
 
@@ -109,12 +109,6 @@ setSerialDataListener(OnSerialDataListener dataListener)|void|监听串口数据
 - 1.1.0 【2019-08-13】
     - minSdkVersion改为14
     - 打开串口回调方法优化
-    - 小推车API优化
-
-### 其他API
-以下内容需配合特定硬件使用，仅限特定开发人士参考。
-- [主板API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/Channel.md)
-- [温控板API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/TempApi.md)
-- [升降板API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LiftApi.md)
-- [小推车API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/CarApi.md)
-- [Locker API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LockerApi.md)
+    - 内部Api更新
+- 1.1.1 【2019-08-22】
+    - 内部Api更新

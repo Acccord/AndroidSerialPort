@@ -93,6 +93,7 @@
     </LinearLayout>
 
     <TextView
+            android:visibility="gone"
             android:id="@+id/mTvOther"
             android:layout_gravity="end"
             android:layout_marginTop="16dp"
