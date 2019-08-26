@@ -23,7 +23,7 @@ public class Data101ReviImpl implements OnSerialDataParse {
     public void parseData(String data, List<OnVioDataListener> mVioDataListener) {
         if (TextUtils.isEmpty(data) || data.length() < 40) {
             for (int i = mVioDataListener.size() - 1; i >= 0; i--) {
-                mVioDataListener.get(i).error("串口数据读取不完整，请检查是否有其他程序占用该串口！");
+                mVioDataListener.get(i).error("-1");
             }
             return;
         }
@@ -32,10 +32,12 @@ public class Data101ReviImpl implements OnSerialDataParse {
         int crcData = CRC16Util.calcCrc16(bytes);
         if (!CRC16Util.getCrc(crcData).toUpperCase().equals(data.substring(36, 40))) {
             for (int i = mVioDataListener.size() - 1; i >= 0; i--) {
-                mVioDataListener.get(i).error("数据验证失败，请检查是否有其他程序占用该串口！");
+                mVioDataListener.get(i).error("-2");
             }
             return;
         }
+
+        data = data.toUpperCase();
 
         if (data.startsWith("0001")) {
             for (int i = mVioDataListener.size() - 1; i >= 0; i--) {
@@ -47,7 +49,11 @@ public class Data101ReviImpl implements OnSerialDataParse {
             }
         } else if (data.startsWith("0005")) {
             for (int i = mVioDataListener.size() - 1; i >= 0; i--) {
-                mVioDataListener.get(i).cellResult(parseCell(data));
+                mVioDataListener.get(i).openResult(parseOpenResult(data));
+            }
+        } else if (data.startsWith("001B")) {
+            for (int i = mVioDataListener.size() - 1; i >= 0; i--) {
+                mVioDataListener.get(i).lightResult(parseLight(data));
             }
         }
     }
@@ -78,7 +84,12 @@ public class Data101ReviImpl implements OnSerialDataParse {
         return dataStatus;
     }
 
-    private int parseCell(String dataStr) {
+    private int parseOpenResult(String dataStr) {
+        String Z1 = dataStr.substring(4, 6);
+        return Integer.parseInt(Z1, 16);
+    }
+
+    private int parseLight(String dataStr) {
         String Z1 = dataStr.substring(4, 6);
         return Integer.parseInt(Z1, 16);
     }

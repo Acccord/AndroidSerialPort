@@ -19,7 +19,9 @@ public interface OnVioDataListener {
 
     void springResult(DataStatus dataStatus);
 
-    void cellResult(int result);
+    void openResult(int result);
+
+    void lightResult(int result);
 
     void coin(CoinBean coinBean);
 
@@ -29,6 +31,6 @@ public interface OnVioDataListener {
 
     void returnCoin(RestBean returnCoinBean);
 
-    void error(String message);
+    void error(String code);
 
 }

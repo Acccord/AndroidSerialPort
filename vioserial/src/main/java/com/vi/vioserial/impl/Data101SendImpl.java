@@ -48,6 +48,23 @@ public class Data101SendImpl implements OnSerialDataSend {
     }
 
     @Override
+    public String OnLightOpen() {
+        return S101Command.getSerialDataHEX("1", S101Command.H1A);
+    }
+
+    @Override
+    public String OnLightRead() {
+        return S101Command.getSerialDataHEX("1", S101Command.H1B);
+    }
+
+    @Override
+    public String OnLightClose() {
+        return S101Command.getSerialDataHEX("1", S101Command.H1C);
+    }
+
+    //*********************** 427 **********************/
+
+    @Override
     public String OnRestartSerial() {
         return "OnRestartSerial";
     }
@@ -57,51 +74,49 @@ public class Data101SendImpl implements OnSerialDataSend {
         return "OnAppStart";
     }
 
-    //*********************** 427 **********************/
-
     @Override
     public String OnReturnCoin(int coin) {
-        return "";
+        return "OnReturnCoin";
     }
 
     @Override
     public String OnReturnBill(int count) {
-        return "";
+        return "OnReturnBill";
     }
 
     @Override
     public String OnChangeCoin(int coinStatus) {
-        return "";
+        return "OnChangeCoin";
     }
 
     @Override
     public String OnChangeBill(int billStatus) {
-        return "";
+        return "OnChangeBill";
     }
 
     @Override
     public String OnClearMoney() {
-        return "";
+        return "OnClearMoney";
     }
 
     @Override
     public String OnReadCoin() {
-        return "";
+        return "OnReadCoin";
     }
 
     @Override
     public String OnReadBill() {
-        return "";
+        return "OnReadBill";
     }
 
     @Override
     public String OnChangeTempBill(int status) {
-        return "";
+        return "OnChangeTempBill";
     }
 
     @Override
     public String OnReadMoney() {
-        return "";
+        return "OnReadMoney";
     }
 
 }

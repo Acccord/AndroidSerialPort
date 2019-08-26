@@ -192,7 +192,7 @@ public class VioSerial {
         openChannel("1", channel, 0, lightType);
     }
 
-    private void openChannel(String pcbAdd, String channel, int motorType, int lightType) {
+    public void openChannel(String pcbAdd, String channel, int motorType, int lightType) {
         String dataStr = mSerialDataSend.OnOpenChanel(pcbAdd, channel, motorType, lightType);
         sendData(dataStr);
     }
@@ -209,6 +209,19 @@ public class VioSerial {
         sendData(mSerialDataSend.OnOpenLock(0));
         sendData(mSerialDataSend.OnOpenLock(1));
         sendData(mSerialDataSend.OnOpenLock(0));
+    }
+    //*********************** 101 **********************/
+
+    public void lightOpen() {
+        sendData(mSerialDataSend.OnLightOpen());
+    }
+
+    public void lightRead() {
+        sendData(mSerialDataSend.OnLightRead());
+    }
+
+    public void lightClose() {
+        sendData(mSerialDataSend.OnLightClose());
     }
 
     //*********************** 427 **********************/

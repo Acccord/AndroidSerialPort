@@ -16,6 +16,12 @@ public interface OnSerialDataSend {
 
     String OnOpenLock(int type);
 
+    String OnLightOpen();
+
+    String OnLightRead();
+
+    String OnLightClose();
+
     String OnRestartSerial();
 
     String OnAppStart();

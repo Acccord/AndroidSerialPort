@@ -15,7 +15,7 @@ allprojects {
 在模块的build.gradle添加
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.1.1'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.2.0'
 }
 ```
 
@@ -111,4 +111,6 @@ setSerialDataListener(OnSerialDataListener dataListener)|void|监听串口数据
     - 打开串口回调方法优化
     - 内部Api更新
 - 1.1.1 【2019-08-22】
+    - 内部Api更新
+- 1.2.0 【2019-08-26】
     - 内部Api更新

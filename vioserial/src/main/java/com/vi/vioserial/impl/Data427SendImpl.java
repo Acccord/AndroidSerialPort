@@ -39,6 +39,21 @@ public class Data427SendImpl implements OnSerialDataSend {
     }
 
     @Override
+    public String OnLightOpen() {
+        return "1A";
+    }
+
+    @Override
+    public String OnLightRead() {
+        return "1B";
+    }
+
+    @Override
+    public String OnLightClose() {
+        return "1C";
+    }
+
+    @Override
     public String OnRestartSerial() {
         return S427Command.getSerialDataHEX("1", S427Command.READ_RELAY3, "1");
     }

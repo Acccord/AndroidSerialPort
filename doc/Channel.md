@@ -13,7 +13,7 @@ allprojects {
 在模块的build.gradle添加
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.1.1'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.2.0'
 }
 ```
 
@@ -21,7 +21,7 @@ dependencies {
 ``` java
  /**
   * 打开串口
-  * @param serialType   主板类型（VioSerial.NO_101/VioSerial.NO_427）
+  * @param serialType   主板类型（VioSerial.SERIAL_101/VioSerial.SERIAL_427）
   * @param portStr      串口号
   *
   * @return 0：打开串口成功
@@ -43,6 +43,20 @@ VioSerial.instance().addDataListener(OnVioDataListener dataListener);
 //在不使用的时候移除回调
 VioSerial.instance().removeDataListener(OnVioDataListener dataListener);
 ```
+nVioDataListener回调内容详细
+
+方法|释义|回调参数详细|主板类型
+--|:--:|:--|--:
+void version(DataVersion dataVersion)|版本号，readVersion方法返回|Version: 版本号<br>Testmode:1物理按钮被点击 0默认值|通用
+void springResult(DataStatus dataStatus)|出货结果，readSpring方法返回|channelResult: 货道出货结果<br>&nbsp;&nbsp;0 = 成功<br>&nbsp;&nbsp;1 = 过流。负载过重,或者卡货<br>&nbsp;&nbsp;2 = 欠流。一般是电线断开,或者负载未安装<br>&nbsp;&nbsp;3 = 超时。指超过7秒仍未检测到电机到位信号。（一般是由于负载过重、卡货或开关电源干扰引起）<br>&nbsp;&nbsp;4 = 光幕自检失败，未启动电机。<br>&nbsp;&nbsp;5 = 有反馈电磁铁门未开<br>&nbsp;&nbsp;6 = 427板子 出货失败<br>&nbsp;&nbsp;9 = 427板子 出货中<br><br>lightResult: 货物经过光幕的时间<br>&nbsp;&nbsp;0 = 无掉货<br>&nbsp;&nbsp;1~200 = 表示货物经过光栅的时间（单位ms）|通用
+void openResult(int result)| 电机转动结果，openChannel方法返回|result: 电机转动结果<br>&nbsp;&nbsp;0=已启动；<br>&nbsp;&nbsp;1=无效的电机索引号；<br>&nbsp;&nbsp;2=另一台电机在运行；|通用
+void lightResult(int result)|光幕读取结果，lightRead方法返回|result: 光幕读取结果<br>&nbsp;&nbsp;0=遮挡；<br>&nbsp;&nbsp;1=未遮挡|101
+void coin(CoinBean coinBean)|硬币器状态||427
+void bill(BillBean billBean)|纸币器状态||427
+void money(MoneyBean moneyBean)|读取纸硬币金额||427
+void returnCoin(RestBean returnCoinBean)|找零状态||427
+void coin(CoinBean coinBean)|硬币器状态||427
+void error(String code)|SDK报错|code: 错误码<br>&nbsp;&nbsp;-1=串口数据读取不完整，请检查是否有其他程序占用该串口！<br>&nbsp;&nbsp;-2=数据验证失败，请检查是否有其他程序占用该串口！|通用
 
 ### 功能命令
 - 1，获取下位机版本号
@@ -64,7 +78,8 @@ void version(DataVersion dataVersion);
  */
 VioSerial.instance().openChannel(String channel, int lightType);
 
-//该命令发送后，正常情况下电机会进行转动，出货结果请在下面"出货结果"中读取，一般情况下一秒读取一次，读取到结果后停止读取。
+//电机转动结果返回，一般情况下该命令发送后，正常情况下电机会进行转动，出货结果请在下面【获取货道出货结果】中读取，一般情况下一秒读取一次，读取到结果后停止读取。
+void openResult(int result)
 ```
 
 - 3，格子机出货
@@ -77,21 +92,21 @@ VioSerial.instance().openChannel(String channel, int lightType);
   */
 VioSerial.instance().openCell(String channel, int lightType);
 
-//格子机出货结果会直接在OnVioDataListener以下方法中会返回出货结果
+//格子机出货结果，直接用电机转动结果返回作为出货结果
 //result-> 0=已启动；1=无效的电机索引号；2=另一台电机在运行；
-void cellResult(int result);
+void openResult(int result)
 ```
 
 - 4，获取货道出货结果
 ``` java
 /**
-  * 发送获取出货结果指令，一般情况下一秒读取一次出货结果，读取到结果后停止读取
+  * 发送获取出货结果指令，一般情况下一秒读取一次出货结果，读取到结果后停止读取，最多8秒
   *
   * @param lightType 光幕类型 0-未使用光幕 （427主板：1-简易光幕 2-盒装光幕）（101主板：1-电机转一圈 2-电机转动直到检测到结果为止）
   */
 VioSerial.instance().readSpring(int lightType);
 
-//数据返回（OnVioDataListener以下方法中会返回出货结果）。
+//结果返回（OnVioDataListener以下方法中会返回出货结果）。
 /**
  * DataStatus参数
  * @param channelResult 货道出货结果
@@ -128,9 +143,46 @@ VioSerial.instance().openLock();
 VioSerial.instance().restartSerial();
 ```
 
+- 7，打开光幕
+``` java
+//目前只支持101主板
+VioSerial.instance().lightOpen();
+```
+
+- 8，读取光幕
+``` java
+//目前只支持101主板
+VioSerial.instance().lightRead();
+
+//光幕读取结果（OnVioDataListener以下方法中会返回光幕读取结果）。
+//result 0=遮挡;1=未遮挡
+void lightResult(int result)|
+```
+
+- 9，关闭光幕
+``` java
+//目前只支持101主板
+VioSerial.instance().lightClose();
+```
+
+### 业务流程
+- 出货流程
+    - 1，调用上面【2，货道出货】，根据结果判断电机是否转动成功，电机转动成功进行下一步
+    - 2，电机转动成功后8秒内，每一秒读取一次出货结果【4，获取货道出货结果】
+    - 3，读取到出货结果后流程结束，最多读取8秒
+- 光幕自检流程
+    - 1，调用【7，打开光幕】
+    - 2，一秒后调用【8，读取光幕】获取检测结果
+    - 3，检测到结果后调用【9，关闭光幕】
+
+
 ## 其他说明
 ### 更新记录
-- 2019-08-13 优化串口打开方式和回调结果
+- 2019-08-13 【1.1.1】
+    - 优化串口打开方式和回调结果
+- 2019-08-26 【1.2.0】
+    - 加入光幕检测功能
+    - 优化电机转动结果回调
 
 ### 专用名词介绍
 - 主板

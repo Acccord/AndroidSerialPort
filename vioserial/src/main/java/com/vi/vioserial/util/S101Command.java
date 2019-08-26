@@ -8,8 +8,6 @@ package com.vi.vioserial.util;
 
 public class S101Command {
 
-    private static String TAG = "S101Command";
-
     public static final String H01 = "01";
 
     public static final String H03 = "03";
@@ -23,6 +21,12 @@ public class S101Command {
     public static final String H08 = "08";
 
     public static final String H09 = "09";
+
+    public static final String H1A = "1A";
+
+    public static final String H1B = "1B";
+
+    public static final String H1C = "1C";
 
     public static final String FF = "FF";
 

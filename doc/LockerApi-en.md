@@ -13,7 +13,7 @@ allprojects {
 Add the dependency
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.1.1'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.2.0'
 }
 ```
 
