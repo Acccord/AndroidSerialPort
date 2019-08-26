@@ -16,7 +16,7 @@ allprojects {
 Add the dependency
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.1.1'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.2.0'
 }
 ```
 
@@ -113,4 +113,6 @@ setSerialDataListener(OnSerialDataListener dataListener)|void|Listening to the s
     - Open serial port callback method optimization
     - Internal api update
 - 1.1.1 [2019-08-22]
+    - Internal api update
+- 1.2.0 [2019-08-26]
     - Internal api update
