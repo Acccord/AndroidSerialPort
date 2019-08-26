@@ -19,7 +19,7 @@ public class Data427ReviImpl implements OnSerialDataParse {
     public void parseData(String data, List<OnVioDataListener> mVioDataListener) {
         if (!data.contains("232A") && !data.contains("0D0A")) {
             for (int i = mVioDataListener.size() - 1; i >= 0; i--) {
-                mVioDataListener.get(i).error("串口数据读取不完整，请检查是否有其他程序占用该串口！");
+                mVioDataListener.get(i).error("-1");
             }
             return;
         }

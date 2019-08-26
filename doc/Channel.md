@@ -43,7 +43,7 @@ VioSerial.instance().addDataListener(OnVioDataListener dataListener);
 //在不使用的时候移除回调
 VioSerial.instance().removeDataListener(OnVioDataListener dataListener);
 ```
-nVioDataListener回调内容详细
+OnVioDataListener回调方法参数详细解释
 
 方法|释义|回调参数详细|主板类型
 --|:--:|:--|--:
@@ -156,7 +156,7 @@ VioSerial.instance().lightRead();
 
 //光幕读取结果（OnVioDataListener以下方法中会返回光幕读取结果）。
 //result 0=遮挡;1=未遮挡
-void lightResult(int result)|
+void lightResult(int result);
 ```
 
 - 9，关闭光幕
@@ -169,7 +169,7 @@ VioSerial.instance().lightClose();
 - 出货流程
     - 1，调用上面【2，货道出货】，根据结果判断电机是否转动成功，电机转动成功进行下一步
     - 2，电机转动成功后8秒内，每一秒读取一次出货结果【4，获取货道出货结果】
-    - 3，读取到出货结果后流程结束，最多读取8秒
+    - 3，读取到出货结果后流程结束，停止读取，最多读取8秒
 - 光幕自检流程
     - 1，调用【7，打开光幕】
     - 2，一秒后调用【8，读取光幕】获取检测结果
