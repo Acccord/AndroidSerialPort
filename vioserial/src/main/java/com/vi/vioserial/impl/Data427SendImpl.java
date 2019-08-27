@@ -40,17 +40,17 @@ public class Data427SendImpl implements OnSerialDataSend {
 
     @Override
     public String OnLightOpen() {
-        return "1A";
+        return "";
     }
 
     @Override
     public String OnLightRead() {
-        return "1B";
+        return "";
     }
 
     @Override
     public String OnLightClose() {
-        return "1C";
+        return "";
     }
 
     @Override

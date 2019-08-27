@@ -66,57 +66,57 @@ public class Data101SendImpl implements OnSerialDataSend {
 
     @Override
     public String OnRestartSerial() {
-        return "OnRestartSerial";
+        return "";
     }
 
     @Override
     public String OnAppStart() {
-        return "OnAppStart";
+        return "";
     }
 
     @Override
     public String OnReturnCoin(int coin) {
-        return "OnReturnCoin";
+        return "";
     }
 
     @Override
     public String OnReturnBill(int count) {
-        return "OnReturnBill";
+        return "";
     }
 
     @Override
     public String OnChangeCoin(int coinStatus) {
-        return "OnChangeCoin";
+        return "";
     }
 
     @Override
     public String OnChangeBill(int billStatus) {
-        return "OnChangeBill";
+        return "";
     }
 
     @Override
     public String OnClearMoney() {
-        return "OnClearMoney";
+        return "";
     }
 
     @Override
     public String OnReadCoin() {
-        return "OnReadCoin";
+        return "";
     }
 
     @Override
     public String OnReadBill() {
-        return "OnReadBill";
+        return "";
     }
 
     @Override
     public String OnChangeTempBill(int status) {
-        return "OnChangeTempBill";
+        return "";
     }
 
     @Override
     public String OnReadMoney() {
-        return "OnReadMoney";
+        return "";
     }
 
 }
