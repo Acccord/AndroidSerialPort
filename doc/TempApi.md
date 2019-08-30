@@ -95,3 +95,8 @@ void tempDataBack(TempBean tempBean);
 
 ### 更新记录
 - 2019-08-13 优化串口打开方式和回调结果
+
+### 快捷导航
+- [主板API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/Channel.md)
+- [升降板API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LiftApi.md)
+- [小推车API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/CarApi.md)

@@ -203,3 +203,8 @@ VioSerial.instance().lightClose();
 第三位数字 -> 货道顺序：第一个货道为0，第二个货道为1 ...依次类推。注意货道顺序从0开始，最多到9，也就是每层最多十个货道。
 例：第一层第一个货道为110；第二层第二个货道为121；第五层第七个货道为156 ...
 ```
+
+### 快捷导航
+- [温控板API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/TempApi.md)
+- [升降板API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/LiftApi.md)
+- [小推车API](https://github.com/Acccord/AndroidSerialPort/blob/master/doc/CarApi.md)
