@@ -88,6 +88,7 @@ public abstract class BaseSerial extends VioSerialHelper {
      * @param sHex hex data
      */
     public void sendHex(String sHex) {
+        sHex = sHex.trim().replaceAll(" ", "");
         byte[] bOutArray = SerialDataUtils.HexToByteArr(sHex);
         Message msg = Message.obtain();
         msg.obj = bOutArray;
