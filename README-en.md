@@ -116,3 +116,5 @@ setSerialDataListener(OnSerialDataListener dataListener)|void|Listening to the s
     - Internal api update
 - 1.2.0 [2019-08-26]
     - Internal api update
+- 1.3.0 【2019-09-19】
+    - Increase stop bit, data bit, parity, flow control settings

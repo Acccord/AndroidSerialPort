@@ -1,5 +1,5 @@
 ## 安卓串口通信工具
-简单的串口通信工具，一分钟搞定串口通信。
+简单的串口通信工具，一分钟搞定串口通信。可设置停止位、数据位、奇偶校验、流控。
 - [English](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)
 
 ### 快速使用
@@ -114,3 +114,5 @@ setSerialDataListener(OnSerialDataListener dataListener)|void|监听串口数据
     - 内部Api更新
 - 1.2.0 【2019-08-26】
     - 内部Api更新
+- 1.3.0 【2019-09-19】
+    - 增加停止位、数据位、奇偶校验、流控设置

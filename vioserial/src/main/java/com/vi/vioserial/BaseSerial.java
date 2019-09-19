@@ -21,6 +21,10 @@ import java.security.InvalidParameterException;
 public abstract class BaseSerial extends VioSerialHelper {
     private static String TAG = "BaseSerial";
 
+    public BaseSerial() {
+        super();
+    }
+
     public BaseSerial(String sPort, int iBaudRate) {
         super(sPort, iBaudRate);
     }

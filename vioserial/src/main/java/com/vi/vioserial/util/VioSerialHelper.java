@@ -28,15 +28,26 @@ public abstract class VioSerialHelper {
     private OutputStream mOutputStream;
     private InputStream mInputStream;
     private ReadThread mReadThread;
-    private String sPort;
-    private int iBaudRate;
+
     private boolean _isOpen = false;
     private int iDelay = 300;
+
+    //属性
+    private String sPort;//串口号
+    private int iBaudRate;//波特率
+    private int mStopBits = 1;//停止位，1 或 2  （默认 1）
+    private int mDataBits = 8;// 数据位，5 ~ 8  （默认8）
+    private int mParity = 0;//奇偶校验，0 None（默认）； 1 Odd； 2 Even
+    private int mFlowCon = 0;//流控
 
     private Handler mWorkHandler;
     private HandlerThread mHandlerThread;
 
     private OnSerialDataListener mSerialDataListener = null;
+
+    public VioSerialHelper() {
+
+    }
 
     public VioSerialHelper(String sPort, int iBaudRate) {
         this.sPort = sPort;
@@ -48,7 +59,7 @@ public abstract class VioSerialHelper {
     }
 
     public void open() throws SecurityException, IOException, InvalidParameterException {
-        mSerialPort = new SerialPort(new File(sPort), iBaudRate, 0);
+        mSerialPort = new SerialPort(new File(sPort), iBaudRate, mStopBits, mDataBits, mParity, mFlowCon, 0);
         mOutputStream = mSerialPort.getOutputStream();
         mInputStream = mSerialPort.getInputStream();
         mReadThread = new ReadThread();
@@ -76,10 +87,10 @@ public abstract class VioSerialHelper {
 
     public void close() {
         try {
-            if(mInputStream!=null){
+            if (mInputStream != null) {
                 mInputStream.close();
             }
-            if(mOutputStream!=null){
+            if (mOutputStream != null) {
                 mOutputStream.close();
             }
         } catch (IOException e) {
@@ -195,4 +206,52 @@ public abstract class VioSerialHelper {
     }
 
     protected abstract void onDataReceived(String ComRecData);
+
+    public String getsPort() {
+        return sPort;
+    }
+
+    public void setsPort(String sPort) {
+        this.sPort = sPort;
+    }
+
+    public int getiBaudRate() {
+        return iBaudRate;
+    }
+
+    public void setiBaudRate(int iBaudRate) {
+        this.iBaudRate = iBaudRate;
+    }
+
+    public int getmStopBits() {
+        return mStopBits;
+    }
+
+    public void setmStopBits(int mStopBits) {
+        this.mStopBits = mStopBits;
+    }
+
+    public int getmDataBits() {
+        return mDataBits;
+    }
+
+    public void setmDataBits(int mDataBits) {
+        this.mDataBits = mDataBits;
+    }
+
+    public int getmParity() {
+        return mParity;
+    }
+
+    public void setmParity(int mParity) {
+        this.mParity = mParity;
+    }
+
+    public int getmFlowCon() {
+        return mFlowCon;
+    }
+
+    public void setmFlowCon(int mFlowCon) {
+        this.mFlowCon = mFlowCon;
+    }
 }
