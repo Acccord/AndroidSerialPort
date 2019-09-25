@@ -189,14 +189,6 @@ public abstract class VioSerialHelper {
         mFullData += tempData;
     }
 
-    public int getBaudRate() {
-        return iBaudRate;
-    }
-
-    public String getPort() {
-        return sPort;
-    }
-
     public boolean isOpen() {
         return _isOpen;
     }

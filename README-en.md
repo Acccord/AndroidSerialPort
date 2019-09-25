@@ -1,11 +1,29 @@
 ## Android serial communication tool
-Ultra-simple serial communication tools, you only need to initialize the serial port data transmission and reception,
-you do not have to consider the transmission interval and data subcontracting.
+It was migrated from Google's official serial communication library and expanded on this basis. Provides a packaged API for serial communication in one minute. Stop bits, data bits, parity, and flow control can be set.
 - [中文](https://github.com/Acccord/AndroidSerialPort/blob/master/README.md)
 
-### Quick use
-#### Step 1: Configure
-Add it in your root build.gradle at the end of repositories:
+
+## MENU
+ - Configuration
+ - Proguard
+ - Quick use
+    - Step 1: Open the serial port
+    - Step 2: Send data to the serial port
+    - Step 3: Data reception returned by the serial port
+ - Custom use
+    - Step 1: Create a real class
+    - Step 2: Parameter configuration
+    - Step 3: Open the serial port
+    - Step 4: Send data to the serial port
+    - Detailed API
+ - GOOGLE serial communication API
+    - Set su path
+    - View device serial port list
+ - Update record
+
+
+## Configuration
+Added in the project's build.gradle
 ```
 allprojects {
     repositories {
@@ -13,14 +31,27 @@ allprojects {
     }
 }
 ```
-Add the dependency
+Added in module build.gradle
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.2.0'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.3.0'
 }
 ```
 
-#### Step 2: Open serial port
+
+## Proguard
+```
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+-keep class android.serialport.* {*;}
+
+```
+
+## Quick use
+For the lack of special serial communication settings, use the default serial port configuration
+
+### Step 1: Open the serial port
 ``` java
 /**
  * Open serial port
@@ -35,29 +66,31 @@ dependencies {
 NormalSerial.instance().open(String portStr, int ibaudRate);
 ```
 
-#### Step 3: Send data to the serial port
+#### Step 2: Send data to the serial port
 ``` java
 //data: The data you want to send, so your data is sent to the serial port.
 NormalSerial.instance().sendData(String data)
 
 ```
 
-#### Step 4: Data reception returned by the serial port
+#### Step 3: Data reception returned by the serial port
 ``` java
 //dataListener is the receive data callback of the serial port. The default receiving type is hex.
 //Need other data types, this project provides a SerialDataUtils tool conversion on the line
 NormalSerial.instance().addDataListener(OnNormalDataListener dataListener)
 ```
-Summary: After the fast use of only the required init, you can use sendData to send data to the serial port, and addDataListener to listen to the serial port data return. For other features to use, please refer to the following **Custom Use**.
+Summary: After the fast use of only the required open, you can use sendData to send data to the serial port, and addDataListener to listen to the serial port data return. For other features to use, please refer to the following **Custom Use**.
 
 
-### Custom use
-#### Step 1: Configuration (ibid.)
-
-#### Step 2: Create a class
+## Quick use
+### Step 1: Create a real class
 ``` java
-//portStr = serial port number; ibaudRate = baud rate;
-BaseSerial mBaseSerial = new BaseSerial(String portStr, int ibaudRate) {
+/**
+ * Open serial port
+ * @param portStr   Serial port number
+ * @param ibaudRate Baud rate
+ */
+BaseSerial mBaseSerial = new BaseSerial() {
                            @Override
                            public void onDataBack(String data) {
                                //Here is the serial port data return, the default return type is hex string
@@ -65,7 +98,46 @@ BaseSerial mBaseSerial = new BaseSerial(String portStr, int ibaudRate) {
                        };
 ```
 
-#### Step 3: Open the serial port
+### Step 2: Parameter configuration
+``` java
+/**
+ * Set the serial port
+ * @param portStr Serial port number
+ */
+mBaseSerial.setsPort(String sPort);
+
+/**
+ * Set baud rate
+ * @param iBaudRate Baud rate
+ */
+mBaseSerial.setiBaudRate( int iBaudRate);
+
+/**
+ * Stop bit [1 or 2]
+ * @param mStopBits Stop bit (default 1)
+ */
+mBaseSerial.setmStopBits( int mStopBits);
+
+/**
+ * Data bit [5 ~ 8]
+ * @param mDataBits Data bit (default 8)
+ */
+mBaseSerial.setmDataBits( int mDataBits);
+
+/**
+ * Parity【0 None； 1 Odd； 2 Even】
+ * @param mParity Parity (default 0)
+ */
+mBaseSerial.setmParity( int mParity);
+
+/**
+ * Flow control [No flow control (NONE), hardware flow control (RTS/CTS), software flow control (XON/XOFF)]
+ * @param mFlowCon Flow control is not used by default
+ */
+mBaseSerial.setmFlowCon(int mFlowCon);
+```
+
+### Step 3: Open the serial port
 ``` java
 /**
  * Open serial port
@@ -78,7 +150,7 @@ BaseSerial mBaseSerial = new BaseSerial(String portStr, int ibaudRate) {
 mBaseSerial.openSerial();
 ```
 
-#### Step 4：Send data to the serial port
+### Step 4: Send data to the serial port
 ``` java
 //Send HEX string
 mBaseSerial.sendHex(String sHex);
@@ -94,27 +166,54 @@ mBaseSerial.sendByteArray(byte[] bOutArray);
 Method Name|Return Parameter|Introduction
 --|:--:|--:
 close()|void|Close the serial port
-getBaudRate()|int|Get the baud rate of the serial port
-getPort()|String|Get the serial port number
-isOpen()|boolean|is open
+getmDataBits()|int|Get data bit
+getmFlowCon()|int|Get flow control
+getmParity()|int|Get parity mode
+getmStopBits()|int|Get stop bit
+getiBaudRate()|int|Get baud rate
+getsPort()|String|Get the serial port number
+isOpen()|boolean|Is open
 onDataBack(String data)|void|Serial data reception callback, the method is in the main thread
-openSerial()|int|0：Open the serial port successfully; -1：Failed to open the serial port: no serial port read/write permission; -2：Failed to open serial port: unknown error; -3：Failed to open the serial port: the parameter is wrong!
+openSerial()|int|Open the serial port; 0=Open the serial port successfully; -1=Unable to open the serial port: No serial port read/write permission; -2=Unable to open serial port: Unknown error; -3=Unable to open serial port: Parameter error!
 sendHex(String sHex)|void|Send a HEX string to the serial port
 sendTxt(String sTxt)|void|Send a string to the serial port
 sendByteArray(byte[] bOutArray)|void|Send a byte array to the serial port
 setDelay(int delay)|void|Serial data transmission interval, default 300ms
+setmDataBits(int mDataBits)|void|Set data bit
+setmFlowCon(int mFlowCon)|void|Set up flow control
+setmParity(int mParity)|void|Set parity mode
+setmStopBits(int mStopBits)|void|Set stop bit
+setiBaudRate(int iBaudRate)|void|Set baud rate
+setsPort(String sPort)|void|Set the serial port number
 setSerialDataListener(OnSerialDataListener dataListener)|void|Listening to the sending and receiving of serial data, this method can be used for log printing; note that the method callback is not in the main thread
 
-### update record
-- 1.0.0 [2019-07-18]
+
+## GOOGLE serial communication API
+
+### Set su path
+``` java
+//Need to call before opening the serial port
+SerialPort.setSuPath("/system/xbin/su");
+```
+
+### View device serial port list
+``` java
+SerialPortFinder serialPortFinder = new SerialPortFinder();
+String[] allDevices = serialPortFinder.getAllDevices();
+String[] allDevicesPath = serialPortFinder.getAllDevicesPath();
+
+```
+
+## Update record
+- 1.0.0 【2019-07-18】
     - Release version 1.0.0
-- 1.1.0 [2019-08-13]
+- 1.1.0 【2019-08-13】
     - minSdkVersion changed to 14
     - Open serial port callback method optimization
     - Internal api update
-- 1.1.1 [2019-08-22]
+- 1.1.1 【2019-08-22】
     - Internal api update
-- 1.2.0 [2019-08-26]
+- 1.2.0 【2019-08-26】
     - Internal api update
 - 1.3.0 【2019-09-19】
     - Increase stop bit, data bit, parity, flow control settings

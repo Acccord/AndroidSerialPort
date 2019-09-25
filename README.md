@@ -1,9 +1,28 @@
 ## 安卓串口通信工具
-简单的串口通信工具，一分钟搞定串口通信。可设置停止位、数据位、奇偶校验、流控。
+由 Google 官方串口通信库迁移而来，并在此基础上做了扩展。提供封装后的API，可在一分钟搞定串口通信。可设置停止位、数据位、奇偶校验、流控。
 - [English](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)
 
-### 快速使用
-#### 第1步：配置
+
+## 目录
+ - 配置
+ - 混淆
+ - 快速使用
+    - 第1步：打开串口
+    - 第2步：往串口发数据
+    - 第3步：串口返回的数据接收
+ - 自定义使用
+    - 第1步：创建实类
+    - 第2步：参数配置
+    - 第3步：打开串口
+    - 第4步：向串口发送数据
+    - 详细API
+ - GOOGLE串口通信API
+    - 设置su路径
+    - 查看设备串口列表
+ - 更新记录
+
+
+## 配置
 在项目的build.gradle添加
 ```
 allprojects {
@@ -15,11 +34,24 @@ allprojects {
 在模块的build.gradle添加
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.2.0'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.3.0'
 }
 ```
 
-#### 第2步：打开串口
+
+## 混淆
+```
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+-keep class android.serialport.* {*;}
+
+```
+
+## 快速使用
+针对没有特殊串口通信设置需求，使用默认串口配置
+
+### 第1步：打开串口
 ``` java
 /**
  * 打开串口
@@ -34,28 +66,31 @@ dependencies {
 NormalSerial.instance().open(String portStr, int ibaudRate);
 ```
 
-#### 第3步：往串口发数据
+### 第2步：往串口发数据
 ``` java
 //data=准备发送的数据，就这样数据就发到串口上了
 NormalSerial.instance().sendData(String data)
 
 ```
 
-#### 第4步：串口返回的数据接收
+### 第3步：串口返回的数据接收
 ``` java
 //dataListener为串口的接收数据回调，默认接收的类型为hex
-//需要其他数据类型的，本项目提供了一个SerialDataUtils工具转换就行了
+//需要其他数据类型的，本项目提供了一个SerialDataUtils工具转换
 NormalSerial.instance().addDataListener(OnNormalDataListener dataListener)
 ```
-总结：快速使用只需要的init成功后，就可以调用sendData往串口发送数据，同时addDataListener来监听串口数据返回。如需使用其他功能使用，可参考下面的**自定义使用**。
+总结：快速使用只需要的open成功后，就可以调用sendData往串口发送数据，同时addDataListener来监听串口数据返回。如需使用其他功能使用，可参考下面的**自定义使用**。
 
-### 自定义使用
-#### 第1步：配置（同上）
 
-#### 第2步：创建实类
+## 自定义使用
+### 第1步：创建实类
 ``` java
-//portStr=串口号；ibaudRate=波特率；
-BaseSerial mBaseSerial = new BaseSerial(String portStr, int ibaudRate) {
+/**
+ * 打开串口
+ * @param portStr   串口号
+ * @param ibaudRate 波特率
+ */
+BaseSerial mBaseSerial = new BaseSerial() {
                            @Override
                            public void onDataBack(String data) {
                                //这里是串口的数据返回，默认返回类型为16进制字符串
@@ -63,7 +98,46 @@ BaseSerial mBaseSerial = new BaseSerial(String portStr, int ibaudRate) {
                        };
 ```
 
-#### 第3步：打开串口
+### 第2步：参数配置
+``` java
+/**
+ * 设置串口
+ * @param portStr 串口号
+ */
+mBaseSerial.setsPort(String sPort);
+
+/**
+ * 设置波特率
+ * @param iBaudRate 波特率
+ */
+mBaseSerial.setiBaudRate( int iBaudRate);
+
+/**
+ * 停止位 【1 或 2】
+ * @param mStopBits 停止位（默认 1）
+ */
+mBaseSerial.setmStopBits( int mStopBits);
+
+/**
+ * 数据位【5 ~ 8】
+ * @param mDataBits 数据位（默认 8）
+ */
+mBaseSerial.setmDataBits( int mDataBits);
+
+/**
+ * 奇偶校验【0 None； 1 Odd； 2 Even】
+ * @param mParity 奇偶校验（默认 0）
+ */
+mBaseSerial.setmParity( int mParity);
+
+/**
+ * 流控 【不使用流控(NONE), 硬件流控(RTS/CTS), 软件流控(XON/XOFF)】
+ * @param mFlowCon 默认不使用流控
+ */
+mBaseSerial.setmFlowCon(int mFlowCon);
+```
+
+### 第3步：打开串口
 ``` java
 /**
  * 打开串口
@@ -76,7 +150,7 @@ BaseSerial mBaseSerial = new BaseSerial(String portStr, int ibaudRate) {
 mBaseSerial.openSerial();
 ```
 
-#### 第4步：向串口发送数据
+### 第4步：向串口发送数据
 ``` java
 //发送HEX字符串
 mBaseSerial.sendHex(String sHex);
@@ -88,12 +162,16 @@ mBaseSerial.sendTxt(String sTxt);
 mBaseSerial.sendByteArray(byte[] bOutArray);
 ```
 
-#### 其他方法介绍
+### 详细API
 方法名|返回参数|介绍
 --|:--:|--:
 close()|void|关闭串口
-getBaudRate()|int|获取连接串口的波特率
-getPort()|String|获取连接串口的串口号
+getmDataBits()|int|获取数据位
+getmFlowCon()|int|获取流控
+getmParity()|int|获取奇偶校验方式
+getmStopBits()|int|获取停止位
+getiBaudRate()|int|获取连接串口的波特率
+getsPort()|String|获取连接串口的串口号
 isOpen()|boolean|串口是否打开
 onDataBack(String data)|void|串口数据接收回调，该方法在主线程
 openSerial()|int|打开串口；0=打开串口成功; -1=无法打开串口：没有串口读/写权限; -2=无法打开串口：未知错误; -3=无法打开串口：参数错误！
@@ -101,9 +179,32 @@ sendHex(String sHex)|void|向串口发送HEX字符串
 sendTxt(String sTxt)|void|向串口发送字符串
 sendByteArray(byte[] bOutArray)|void|向串口发送字节数组
 setDelay(int delay)|void|串口数据的发送间隔，默认300ms
+setmDataBits(int mDataBits)|void|设置数据位
+setmFlowCon(int mFlowCon)|void|设置流控
+setmParity(int mParity)|void|设置奇偶校验方式
+setmStopBits(int mStopBits)|void|设置停止位
+setiBaudRate(int iBaudRate)|void|设置波特率
+setsPort(String sPort)|void|设置串口号
 setSerialDataListener(OnSerialDataListener dataListener)|void|监听串口数据的发送和接收，该方法可用于log打印；注意该方法回调不是在主线程
 
-### 更新记录
+
+## GOOGLE串口通信API
+
+### 设置su路径
+``` java
+//需要在打开串口前调用
+SerialPort.setSuPath("/system/xbin/su");
+```
+
+### 查看设备串口列表
+``` java
+SerialPortFinder serialPortFinder = new SerialPortFinder();
+String[] allDevices = serialPortFinder.getAllDevices();
+String[] allDevicesPath = serialPortFinder.getAllDevicesPath();
+
+```
+
+## 更新记录
 - 1.0.0 【2019-07-18】
     - 发布1.0.0版本
 - 1.1.0 【2019-08-13】
