@@ -1,56 +1,62 @@
 package com.vi.vioserial;
 
 import android.text.TextUtils;
-import com.vi.vioserial.listener.OnNormalDataListener;
+
+import com.vi.vioserial.listener.OnComDataListener;
 import com.vi.vioserial.listener.OnSerialDataListener;
 import com.vi.vioserial.util.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Vi
- * @date 2019-07-17 17:49
+ * @date 2019-11-26 11:43
  * @e-mail cfop_f2l@163.com
  */
 
-public class NormalSerial {
-    private static String TAG = "NormalSerial";
+public class COMSerial {
+    private static String TAG = "COMSerial";
 
-    private volatile static NormalSerial instance;
+    private volatile static COMSerial instance;
 
-    private BaseSerial mBaseSerial;
-    private List<OnNormalDataListener> mListener;
+    private Map<String, BaseSerial> mBaseSerials = new HashMap<String, BaseSerial>();
+    private List<OnComDataListener> mListener;
 
-    public static NormalSerial instance() {
+    public static COMSerial instance() {
         if (instance == null) {
-            synchronized (NormalSerial.class) {
+            synchronized (COMSerial.class) {
                 if (instance == null) {
-                    instance = new NormalSerial();
+                    instance = new COMSerial();
                 }
             }
         }
         return instance;
     }
 
-    public synchronized int open(String portStr, int ibaudRate) {
-        return open(portStr, ibaudRate, 1, 8, 0, 0);
+    public synchronized int addCOM(String portStr, int ibaudRate) {
+        return addCOM(portStr, ibaudRate, 1, 8, 0, 0);
     }
 
-    public synchronized int open(String portStr, int ibaudRate, int mStopBits, int mDataBits, int mParity, int mFlowCon) {
+    public synchronized int addCOM(final String portStr, int ibaudRate, int mStopBits, int mDataBits, int mParity, int mFlowCon) {
         if (TextUtils.isEmpty(portStr) || ibaudRate == 0) {
             throw new IllegalArgumentException("Serial port and baud rate cannot be empty");
         }
-        if (this.mBaseSerial != null) {
-            close();
+
+        BaseSerial baseSerials = mBaseSerials.get(portStr);
+        if (baseSerials != null && baseSerials.isOpen()) {
+            return 1;
         }
-        mBaseSerial = new BaseSerial(portStr, ibaudRate) {
+
+        BaseSerial mBaseSerial = new BaseSerial(portStr, ibaudRate) {
             @Override
             public void onDataBack(String data) {
                 //温度
                 if (mListener != null) {
                     for (int i = mListener.size() - 1; i >= 0; i--) {
-                        mListener.get(i).normalDataBack(data);
+                        mListener.get(i).comDataBack(portStr, data);
                     }
                 }
             }
@@ -61,16 +67,27 @@ public class NormalSerial {
         mBaseSerial.setmFlowCon(mFlowCon);
         int openStatus = mBaseSerial.openSerial();
         if (openStatus != 0) {
-            close();
+            mBaseSerial.close();
+        } else {
+            mBaseSerials.put(portStr, mBaseSerial);
         }
         return openStatus;
+    }
+
+    /**
+     * 串口是否已经打开
+     * Serial port status (open/close)
+     */
+    public boolean isOpenSerial(String portStr) {
+        BaseSerial baseSerials = mBaseSerials.get(portStr);
+        return baseSerials != null && baseSerials.isOpen();
     }
 
     /**
      * 添加串口返回数据回调
      * Add callback
      */
-    public void addDataListener(OnNormalDataListener dataListener) {
+    public void addDataListener(OnComDataListener dataListener) {
         if (mListener == null) {
             mListener = new ArrayList<>();
         }
@@ -81,7 +98,7 @@ public class NormalSerial {
      * 移除串口返回数据回调
      * Remove callback
      */
-    public void removeDataListener(OnNormalDataListener dataListener) {
+    public void removeDataListener(OnComDataListener dataListener) {
         if (mListener != null) {
             mListener.remove(dataListener);
         }
@@ -103,9 +120,10 @@ public class NormalSerial {
      * 该方法必须在串口打开成功后调用
      * This method must be called after the serial port is successfully opened.
      */
-    public void setSerialDataListener(OnSerialDataListener dataListener) {
-        if (mBaseSerial != null) {
-            mBaseSerial.setSerialDataListener(dataListener);
+    public void setSerialDataListener(String portStr, OnSerialDataListener dataListener) {
+        BaseSerial baseSerial = mBaseSerials.get(portStr);
+        if (baseSerial != null) {
+            baseSerial.setSerialDataListener(dataListener);
         } else {
             Logger.getInstace().e(TAG, "The serial port is closed or not initialized");
             //throw new IllegalArgumentException("The serial port is closed or not initialized");
@@ -118,9 +136,10 @@ public class NormalSerial {
      *
      * @return true/false
      */
-    public boolean isOpen() {
-        if (mBaseSerial != null) {
-            return mBaseSerial.isOpen();
+    public boolean isOpen(String portStr) {
+        BaseSerial baseSerial = mBaseSerials.get(portStr);
+        if (baseSerial != null) {
+            return baseSerial.isOpen();
         } else {
             Logger.getInstace().e(TAG, "The serial port is closed or not initialized");
             //throw new IllegalArgumentException("The serial port is closed or not initialized");
@@ -131,10 +150,10 @@ public class NormalSerial {
     /**
      * Close the serial port
      */
-    public void close() {
-        if (mBaseSerial != null) {
-            mBaseSerial.close();
-            mBaseSerial = null;
+    public void close(String portStr) {
+        BaseSerial baseSerial = mBaseSerials.get(portStr);
+        if (baseSerial != null) {
+            baseSerial.close();
         } else {
             Logger.getInstace().e(TAG, "The serial port is closed or not initialized");
             //throw new IllegalArgumentException("The serial port is closed or not initialized");
@@ -144,11 +163,21 @@ public class NormalSerial {
     /**
      * send data
      *
+     * @param portStr
      * @param hexData
      */
-    public void sendHex(String hexData) {
-        if (isOpen()) {
-            mBaseSerial.sendHex(hexData);
+    public void sendHex(String portStr, String hexData) {
+        if (TextUtils.isEmpty(portStr)) {
+            Logger.getInstace().e(TAG, "The serial port is empty");
+            return;
+        }
+
+        BaseSerial baseSerial = mBaseSerials.get(portStr);
+        if (baseSerial != null && baseSerial.isOpen()) {
+            String dateTrim = hexData.trim().replace(" ", "");
+            baseSerial.sendHex(dateTrim);
+        } else {
+            Logger.getInstace().e(TAG, "The serial port is closed or not initialized");
         }
     }
 

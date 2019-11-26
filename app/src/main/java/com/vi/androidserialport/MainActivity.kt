@@ -1,10 +1,8 @@
 package com.vi.androidserialport
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
-import com.vi.androidserialport.test.VioActivity
 import com.vi.vioserial.NormalSerial
 import com.vi.vioserial.listener.OnNormalDataListener
 import kotlinx.android.synthetic.main.activity_main.*
@@ -93,7 +91,7 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
                 return@setOnClickListener
             }
 
-            NormalSerial.instance().sendData(input)
+            NormalSerial.instance().sendHex(input)
             mTvSendData.append("\n$input")
         }
 

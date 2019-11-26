@@ -5,6 +5,7 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.serialport.SerialPort;
 import android.text.TextUtils;
+
 import com.vi.vioserial.listener.OnSerialDataListener;
 
 import java.io.File;
@@ -31,14 +32,14 @@ public abstract class VioSerialHelper {
 
     private boolean _isOpen = false;
     private int iDelay = 300;
+    private int iGap = 30;
 
-    //属性
-    private String sPort;//串口号
-    private int iBaudRate;//波特率
-    private int mStopBits = 1;//停止位，1 或 2  （默认 1）
-    private int mDataBits = 8;// 数据位，5 ~ 8  （默认8）
-    private int mParity = 0;//奇偶校验，0 None（默认）； 1 Odd； 2 Even
-    private int mFlowCon = 0;//流控
+    private String sPort;//Serial port
+    private int iBaudRate;//baud rate
+    private int mStopBits = 1;//StopBits，1 or 2  （default 1）
+    private int mDataBits = 8;// DataBits，5 ~ 8  （default 8）
+    private int mParity = 0;//Parity，0 None（default）； 1 Odd； 2 Even
+    private int mFlowCon = 0;//FlowCon
 
     private Handler mWorkHandler;
     private HandlerThread mHandlerThread;
@@ -158,7 +159,7 @@ public abstract class VioSerialHelper {
                     }
 
                     try {
-                        Thread.sleep(30);
+                        Thread.sleep(iGap);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -191,10 +192,6 @@ public abstract class VioSerialHelper {
 
     public boolean isOpen() {
         return _isOpen;
-    }
-
-    public void setDelay(int delay) {
-        iDelay = delay;
     }
 
     protected abstract void onDataReceived(String ComRecData);
@@ -246,4 +243,13 @@ public abstract class VioSerialHelper {
     public void setmFlowCon(int mFlowCon) {
         this.mFlowCon = mFlowCon;
     }
+
+    public void setDelay(int delay) {
+        iDelay = delay;
+    }
+
+    public void setGap(int gap) {
+        iGap = gap;
+    }
+
 }

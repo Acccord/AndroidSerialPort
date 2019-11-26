@@ -179,6 +179,7 @@ sendHex(String sHex)|void|Send a HEX string to the serial port
 sendTxt(String sTxt)|void|Send a string to the serial port
 sendByteArray(byte[] bOutArray)|void|Send a byte array to the serial port
 setDelay(int delay)|void|Serial data transmission interval, default 300ms
+setGap(int gap)|void|Serial data read interval, default 30ms
 setmDataBits(int mDataBits)|void|Set data bit
 setmFlowCon(int mFlowCon)|void|Set up flow control
 setmParity(int mParity)|void|Set parity mode
@@ -210,10 +211,7 @@ String[] allDevicesPath = serialPortFinder.getAllDevicesPath();
 - 1.1.0 【2019-08-13】
     - minSdkVersion changed to 14
     - Open serial port callback method optimization
-    - Internal api update
-- 1.1.1 【2019-08-22】
-    - Internal api update
-- 1.2.0 【2019-08-26】
-    - Internal api update
 - 1.3.0 【2019-09-19】
     - Increase stop bit, data bit, parity, flow control settings
+- 1.5.0 【2019-11-26】
+    - Release version 1.5.0

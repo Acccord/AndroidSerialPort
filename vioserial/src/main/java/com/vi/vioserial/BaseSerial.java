@@ -57,13 +57,13 @@ public abstract class BaseSerial extends VioSerialHelper {
     }
 
     /**
-     * 打开串口
      * Open serial port
      *
-     * @return 0:success 成功
-     * -1：无法打开串口：没有串口读/写权限！
-     * -2：无法打开串口：未知错误！
-     * -3：无法打开串口：参数错误！
+     * @return 0:success
+     * -1: no serial port read/write permission!
+     * -2: unknown error!
+     * -3: the parameter is wrong!
+     * -4: other error!
      */
     public int openSerial() {
         try {
@@ -79,6 +79,9 @@ public abstract class BaseSerial extends VioSerialHelper {
         } catch (InvalidParameterException e) {
             Logger.getInstace().e(TAG, "Failed to open the serial port: the parameter is wrong!");
             return -3;
+        } catch (Exception e){
+            Logger.getInstace().e(TAG, "Failed to open the serial port: other error!");
+            return -4;
         }
     }
 

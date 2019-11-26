@@ -179,6 +179,7 @@ sendHex(String sHex)|void|向串口发送HEX字符串
 sendTxt(String sTxt)|void|向串口发送字符串
 sendByteArray(byte[] bOutArray)|void|向串口发送字节数组
 setDelay(int delay)|void|串口数据的发送间隔，默认300ms
+setGap(int gap)|void|串口数据的读取间隔，默认30ms
 setmDataBits(int mDataBits)|void|设置数据位
 setmFlowCon(int mFlowCon)|void|设置流控
 setmParity(int mParity)|void|设置奇偶校验方式
@@ -210,10 +211,7 @@ String[] allDevicesPath = serialPortFinder.getAllDevicesPath();
 - 1.1.0 【2019-08-13】
     - minSdkVersion改为14
     - 打开串口回调方法优化
-    - 内部Api更新
-- 1.1.1 【2019-08-22】
-    - 内部Api更新
-- 1.2.0 【2019-08-26】
-    - 内部Api更新
 - 1.3.0 【2019-09-19】
     - 增加停止位、数据位、奇偶校验、流控设置
+- 1.5.0 【2019-11-26】
+    - 发布1.5.0版本

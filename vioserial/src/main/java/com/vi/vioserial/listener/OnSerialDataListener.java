@@ -1,7 +1,7 @@
 package com.vi.vioserial.listener;
 
 /**
- * 串口通信数据监听
+ * Serial communication data monitoring
  *
  * @author Vi
  * @date 2019-07-17 17:38
@@ -11,17 +11,17 @@ package com.vi.vioserial.listener;
 public interface OnSerialDataListener {
 
     /**
-     * 串口发送数据
+     * Data sent by serial port
      */
     void onSend(String hexData);
 
     /**
-     * 串口接收数据
+     * Data received by serial port
      */
     void onReceive(String hexData);
 
     /**
-     * 串口接收数据(返回完整hex字符串)
+     * Data received by serial port (return complete hex string)
      */
     void onReceiveFullData(String hexData);
 
