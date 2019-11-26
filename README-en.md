@@ -34,7 +34,7 @@ allprojects {
 Added in module build.gradle
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.3.0'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.5.0'
 }
 ```
 
