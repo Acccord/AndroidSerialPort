@@ -170,26 +170,26 @@ mBaseSerial.sendByteArray(byte[] bOutArray);
 方法名|返回参数|介绍
 --|:--:|--:
 close()|void|关闭串口
-getmDataBits()|int|获取数据位
-getmFlowCon()|int|获取流控
-getmParity()|int|获取奇偶校验方式
-getmStopBits()|int|获取停止位
-getiBaudRate()|int|获取连接串口的波特率
-getsPort()|String|获取连接串口的串口号
+getBaudRate()|int|获取连接串口的波特率
+getDataBits()|int|获取数据位
+getFlowCon()|int|获取流控
+getParity()|int|获取奇偶校验方式
+getPort()|String|获取连接串口的串口号
+getStopBits()|int|获取停止位
 isOpen()|boolean|串口是否打开
 onDataBack(String data)|void|串口数据接收回调，该方法在主线程
 openSerial()|int|打开串口；0=打开串口成功; -1=无法打开串口：没有串口读/写权限; -2=无法打开串口：未知错误; -3=无法打开串口：参数错误！
 sendHex(String sHex)|void|向串口发送HEX字符串
 sendTxt(String sTxt)|void|向串口发送字符串
 sendByteArray(byte[] bOutArray)|void|向串口发送字节数组
+setBaudRate(int iBaudRate)|void|设置波特率
 setDelay(int delay)|void|串口数据的发送间隔，默认300ms
 setGap(int gap)|void|串口数据的读取间隔，默认30ms
-setmDataBits(int mDataBits)|void|设置数据位
-setmFlowCon(int mFlowCon)|void|设置流控
-setmParity(int mParity)|void|设置奇偶校验方式
-setmStopBits(int mStopBits)|void|设置停止位
-setiBaudRate(int iBaudRate)|void|设置波特率
-setsPort(String sPort)|void|设置串口号
+setDataBits(int mDataBits)|void|设置数据位
+setFlowCon(int mFlowCon)|void|设置流控
+setParity(int mParity)|void|设置奇偶校验方式
+setPort(String sPort)|void|设置串口号
+setStopBits(int mStopBits)|void|设置停止位
 setSerialDataListener(OnSerialDataListener dataListener)|void|监听串口数据的发送和接收，该方法可用于log打印；注意该方法回调不是在主线程
 
 

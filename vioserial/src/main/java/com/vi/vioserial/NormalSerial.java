@@ -55,10 +55,10 @@ public class NormalSerial {
                 }
             }
         };
-        mBaseSerial.setmStopBits(mStopBits);
-        mBaseSerial.setmDataBits(mDataBits);
-        mBaseSerial.setmParity(mParity);
-        mBaseSerial.setmFlowCon(mFlowCon);
+        mBaseSerial.setStopBits(mStopBits);
+        mBaseSerial.setDataBits(mDataBits);
+        mBaseSerial.setParity(mParity);
+        mBaseSerial.setFlowCon(mFlowCon);
         int openStatus = mBaseSerial.openSerial();
         if (openStatus != 0) {
             close();

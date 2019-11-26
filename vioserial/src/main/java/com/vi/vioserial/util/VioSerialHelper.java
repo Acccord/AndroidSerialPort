@@ -196,51 +196,51 @@ public abstract class VioSerialHelper {
 
     protected abstract void onDataReceived(String ComRecData);
 
-    public String getsPort() {
+    public String getPort() {
         return sPort;
     }
 
-    public void setsPort(String sPort) {
+    public void setPort(String sPort) {
         this.sPort = sPort;
     }
 
-    public int getiBaudRate() {
+    public int getBaudRate() {
         return iBaudRate;
     }
 
-    public void setiBaudRate(int iBaudRate) {
+    public void setBaudRate(int iBaudRate) {
         this.iBaudRate = iBaudRate;
     }
 
-    public int getmStopBits() {
+    public int getStopBits() {
         return mStopBits;
     }
 
-    public void setmStopBits(int mStopBits) {
+    public void setStopBits(int mStopBits) {
         this.mStopBits = mStopBits;
     }
 
-    public int getmDataBits() {
+    public int getDataBits() {
         return mDataBits;
     }
 
-    public void setmDataBits(int mDataBits) {
+    public void setDataBits(int mDataBits) {
         this.mDataBits = mDataBits;
     }
 
-    public int getmParity() {
+    public int getParity() {
         return mParity;
     }
 
-    public void setmParity(int mParity) {
+    public void setParity(int mParity) {
         this.mParity = mParity;
     }
 
-    public int getmFlowCon() {
+    public int getFlowCon() {
         return mFlowCon;
     }
 
-    public void setmFlowCon(int mFlowCon) {
+    public void setFlowCon(int mFlowCon) {
         this.mFlowCon = mFlowCon;
     }
 

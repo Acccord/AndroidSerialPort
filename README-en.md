@@ -166,12 +166,12 @@ mBaseSerial.sendByteArray(byte[] bOutArray);
 Method Name|Return Parameter|Introduction
 --|:--:|--:
 close()|void|Close the serial port
-getmDataBits()|int|Get data bit
-getmFlowCon()|int|Get flow control
-getmParity()|int|Get parity mode
-getmStopBits()|int|Get stop bit
-getiBaudRate()|int|Get baud rate
-getsPort()|String|Get the serial port number
+getBaudRate()|int|Get baud rate
+getDataBits()|int|Get data bit
+getFlowCon()|int|Get flow control
+getParity()|int|Get parity mode
+getPort()|String|Get the serial port number
+getStopBits()|int|Get stop bit
 isOpen()|boolean|Is open
 onDataBack(String data)|void|Serial data reception callback, the method is in the main thread
 openSerial()|int|Open the serial port; 0=Open the serial port successfully; -1=Unable to open the serial port: No serial port read/write permission; -2=Unable to open serial port: Unknown error; -3=Unable to open serial port: Parameter error!
@@ -179,13 +179,13 @@ sendHex(String sHex)|void|Send a HEX string to the serial port
 sendTxt(String sTxt)|void|Send a string to the serial port
 sendByteArray(byte[] bOutArray)|void|Send a byte array to the serial port
 setDelay(int delay)|void|Serial data transmission interval, default 300ms
+setBaudRate(int iBaudRate)|void|Set baud rate
 setGap(int gap)|void|Serial data read interval, default 30ms
-setmDataBits(int mDataBits)|void|Set data bit
-setmFlowCon(int mFlowCon)|void|Set up flow control
-setmParity(int mParity)|void|Set parity mode
-setmStopBits(int mStopBits)|void|Set stop bit
-setiBaudRate(int iBaudRate)|void|Set baud rate
-setsPort(String sPort)|void|Set the serial port number
+setDataBits(int mDataBits)|void|Set data bit
+setFlowCon(int mFlowCon)|void|Set up flow control
+setParity(int mParity)|void|Set parity mode
+setPort(String sPort)|void|Set the serial port number
+setStopBits(int mStopBits)|void|Set stop bit
 setSerialDataListener(OnSerialDataListener dataListener)|void|Listening to the sending and receiving of serial data, this method can be used for log printing; note that the method callback is not in the main thread
 
 
