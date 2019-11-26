@@ -8,6 +8,6 @@ package com.vi.vioserial.listener;
 
 public interface OnNormalDataListener {
 
-    void normalDataBack(String data);
+    void normalDataBack(String hexData);
 
 }
