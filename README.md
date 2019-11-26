@@ -68,20 +68,23 @@ NormalSerial.instance().open(String portStr, int ibaudRate);
 
 ### 第2步：往串口发数据
 ``` java
-//data=准备发送的数据，就这样数据就发到串口上了
-NormalSerial.instance().sendData(String data)
+/**
+ * 注意发送的数据类型为hex，字符串需要转成hex在发送
+ * 转换方法：SerialDataUtils.stringToHexString(String s)
+ * @param hexData 发送的数据，
+ */
+NormalSerial.instance().sendHex(String hexData)
 
 ```
 
 ### 第3步：串口返回的数据接收
 ``` java
 //dataListener为串口的接收数据回调，默认接收的类型为hex
-//需要其他数据类型的，本项目提供了一个SerialDataUtils工具转换
 NormalSerial.instance().addDataListener(OnNormalDataListener dataListener)
 ```
 总结：快速使用只需要的open成功后，就可以调用sendData往串口发送数据，同时addDataListener来监听串口数据返回。如需使用其他功能使用，可参考下面的**自定义使用**。
 
-
+<br>
 ## 自定义使用
 ### 第1步：创建实类
 ``` java
