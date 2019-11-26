@@ -71,7 +71,7 @@ NormalSerial.instance().open(String portStr, int ibaudRate);
 /**
  * 注意发送的数据类型为hex，字符串需要转成hex在发送
  * 转换方法：SerialDataUtils.stringToHexString(String s)
- * @param hexData 发送的数据，
+ * @param hexData 发送的数据
  */
 NormalSerial.instance().sendHex(String hexData)
 
@@ -84,8 +84,9 @@ NormalSerial.instance().addDataListener(OnNormalDataListener dataListener)
 ```
 总结：快速使用只需要的open成功后，就可以调用sendData往串口发送数据，同时addDataListener来监听串口数据返回。如需使用其他功能使用，可参考下面的**自定义使用**。
 
-<br>
+
 ## 自定义使用
+
 ### 第1步：创建实类
 ``` java
 /**
