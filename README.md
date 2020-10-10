@@ -10,6 +10,10 @@
     - 第1步：打开串口
     - 第2步：往串口发数据
     - 第3步：串口返回的数据接收
+ - [多个串口使用](#多个串口使用)
+    - 第1步：打开串口
+    - 第2步：往串口发数据
+    - 第3步：串口返回的数据接收
  - [自定义使用](#自定义使用)
     - 第1步：创建实类
     - 第2步：参数配置
@@ -74,7 +78,6 @@ NormalSerial.instance().open(String portStr, int ibaudRate);
  * @param hexData 发送的数据
  */
 NormalSerial.instance().sendHex(String hexData)
-
 ```
 
 ### 第3步：串口返回的数据接收
@@ -82,8 +85,50 @@ NormalSerial.instance().sendHex(String hexData)
 //dataListener为串口的接收数据回调，默认接收的类型为hex
 NormalSerial.instance().addDataListener(OnNormalDataListener dataListener)
 ```
-总结：快速使用只需要的open成功后，就可以调用sendData往串口发送数据，同时addDataListener来监听串口数据返回。如需使用其他功能使用，可参考下面的**自定义使用**。
+总结：快速使用只需要的open成功后，就可以调用sendHex往串口发送数据，同时addDataListener来监听串口数据返回。如需使用其他功能使用，可参考下面的**自定义使用**。
 
+## 多个串口使用
+同时打开多个串口，可以针对每一个串口进行数据收发
+
+### 第1步：打开串口
+``` java
+/**
+ * 打开串口，该方法可以多次调用，用来打开多个串口
+ * @param portStr   串口号
+ * @param ibaudRate 波特率
+ *
+ * @return 0：打开串口成功
+ *        -1：无法打开串口：没有串口读/写权限！
+ *        -2：无法打开串口：未知错误！
+ *        -3：无法打开串口：参数错误！
+ */
+COMSerial.instance().addCOM(String portStr, int ibaudRate);
+//也可以使用该方法添加串口，自定义串口参数
+COMSerial.instance().addCOM(String portStr, int ibaudRate, int mStopBits, int mDataBits, int mParity, int mFlowCon);
+
+//例
+COMSerial.instance().addCOM("/dev/ttyS1", 9600);
+COMSerial.instance().addCOM("/dev/ttyS2", 115200);
+COMSerial.instance().addCOM("/dev/ttyS3", 9600, 1, 8, 0, 0);
+```
+
+### 第2步：往串口发数据
+``` java
+/**
+ * 注意发送的数据类型为hex，字符串需要转成hex在发送
+ * 转换方法：SerialDataUtils.stringToHexString(String s)
+ * @param portStr 串口号（即需要往哪个串口发送数据）
+ * @param hexData 发送的数据
+ */
+COMSerial.instance().sendHex(String portStr, String hexData)
+```
+
+### 第3步：串口返回的数据接收
+``` java
+//dataListener为串口的接收数据回调，打开的所有串口有数据接收就会触发该回调，回调中会区分数据来自哪个串口，默认接收的类型为hex。
+COMSerial.instance().addDataListener(OnComDataListener dataListener)
+```
+总结：多个串口使用只需要多次调用addCOM方法，就可以同时打开多个串口。调用sendHex往不同的串口发送数据，同时addDataListener来监听串口数据返回。如需使用其他功能使用，可参考下面的**自定义使用**。
 
 ## 自定义使用
 
