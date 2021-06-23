@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_main.*
  * Quick use
  * @author Vi
  * @date 2019-07-17 16:50
- * @e-mail cfop_f2l@163.com
+ * @e-mail 380180278@qq.com
  */
 class MainActivity : AppCompatActivity(), OnNormalDataListener {
 
@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        //【移除数据监听 remove listener】
         NormalSerial.instance().removeDataListener(this)
         NormalSerial.instance().close()
     }
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
             }
 
             if (!isOpenSerial) {
-                //打开串口 Open serial port
+                // 【第1步：打开串口 Open serial port 】
                 val openStatus = NormalSerial.instance().open(ck, btl.toInt())
                 if (openStatus == 0) {
                     isOpenSerial = true
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
                     ).show()
                 }
 
-                //添加数据接收回调 Add data receive callback
+                //【添加数据接收回调 Add data receive callback】
                 NormalSerial.instance().addDataListener(this)
             } else {
                 isOpenSerial = false
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
             }
         }
 
-        //往串口发送数据 Send data to the serial port
+        //【往串口发送数据 Send data to the serial port】
         mBtnSend.setOnClickListener {
             val input = mEtInput.text.toString()
             if (input.isBlank()) {
@@ -94,10 +95,6 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
             NormalSerial.instance().sendHex(input)
             mTvSendData.append("\n$input")
         }
-
-//        mTvOther.setOnClickListener {
-//            startActivity(Intent(this@MainActivity, VioActivity::class.java))
-//        }
 
         mTvSendData.setOnClickListener { mTvSendData.text = "" }
         mTvReviData.setOnClickListener { mTvReviData.text = "" }

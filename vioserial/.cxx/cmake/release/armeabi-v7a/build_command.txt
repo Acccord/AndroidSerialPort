@@ -1,0 +1,21 @@
+Executable : /Users/vi/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake
+arguments : 
+-H/Users/vi/StudioProjects/AndroidSerialPort/vioserial
+-DCMAKE_FIND_ROOT_PATH=/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/release/prefab/armeabi-v7a/prefab
+-DCMAKE_BUILD_TYPE=Release
+-DCMAKE_TOOLCHAIN_FILE=/Users/vi/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake
+-DANDROID_ABI=armeabi-v7a
+-DANDROID_NDK=/Users/vi/Library/Android/sdk/ndk/21.0.6113669
+-DANDROID_PLATFORM=android-16
+-DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a
+-DCMAKE_ANDROID_NDK=/Users/vi/Library/Android/sdk/ndk/21.0.6113669
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/Users/vi/StudioProjects/AndroidSerialPort/vioserial/build/intermediates/cmake/release/obj/armeabi-v7a
+-DCMAKE_MAKE_PROGRAM=/Users/vi/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_SYSTEM_VERSION=16
+-B/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/release/armeabi-v7a
+-GNinja
+jvmArgs : 
+
+Build command args:

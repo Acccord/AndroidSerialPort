@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
-        android:layout_height="match_parent"
         tools:context=".MainActivity">
 
     <LinearLayout
@@ -19,7 +17,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
-                android:hint="@string/text_serial_input"/>
+                android:hint="@string/text_serial_input" />
 
         <EditText
                 android:id="@+id/mEtBTL"
@@ -27,14 +25,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
                 android:hint="@string/text_rate_input"
-                android:inputType="number"/>
+                android:inputType="number" />
 
         <Button
                 android:id="@+id/mBtnConnect"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/text_connect"/>
+                android:text="@string/text_connect" />
 
     </LinearLayout>
 
@@ -49,55 +47,48 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:hint="@string/text_write_something"/>
+                android:hint="@string/text_write_something" />
 
         <Button
                 android:id="@+id/mBtnSend"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/text_send"/>
+                android:text="@string/text_send" />
 
     </LinearLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="16dp"
             android:layout_weight="1"
-            android:background="@color/black"
             android:orientation="horizontal">
 
         <TextView
                 android:id="@+id/mTvSendData"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:padding="8dp"
                 android:text="@string/text_send_data"
-                android:textColor="@color/white"/>
+                android:textColor="#43adff" />
 
         <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/white"/>
+                android:layout_margin="8dp"
+                android:background="#aaaaaa" />
 
         <TextView
                 android:id="@+id/mTvReviData"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:padding="8dp"
                 android:text="@string/text_receive_data"
-                android:textColor="@color/white"/>
+                android:textColor="#00cd8c" />
 
     </LinearLayout>
 
-    <TextView
-            android:visibility="gone"
-            android:id="@+id/mTvOther"
-            android:layout_gravity="end"
-            android:layout_marginTop="16dp"
-            android:text="@string/text_other"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
 </LinearLayout>

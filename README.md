@@ -68,6 +68,9 @@ dependencies {
  *        -3：无法打开串口：参数错误！
  */
 NormalSerial.instance().open(String portStr, int ibaudRate);
+
+//例
+int openStatus = NormalSerial.instance().open("/dev/ttyS1", 9600);
 ```
 
 ### 第2步：往串口发数据
@@ -78,12 +81,24 @@ NormalSerial.instance().open(String portStr, int ibaudRate);
  * @param hexData 发送的数据
  */
 NormalSerial.instance().sendHex(String hexData)
+
+//例
+NormalSerial.instance().sendHex("AA033C0000E9")
 ```
 
 ### 第3步：串口返回的数据接收
 ``` java
-//dataListener为串口的接收数据回调，默认接收的类型为hex
-NormalSerial.instance().addDataListener(OnNormalDataListener dataListener)
+/**
+ * OnNormalDataListener 为串口的接收数据回调，建议在当前类去实现这个接口
+ * 不用时记得释放NormalSerial.instance().removeDataListener(this);
+ */
+NormalSerial.instance().addDataListener(new OnNormalDataListener() {
+    @Override
+    public void normalDataBack(String hexData) {
+        //注意，默认接收的类型为hex
+        //需要转换为字符串可调用SerialDataUtils.hexStringToString(hexData)
+    }
+});
 ```
 总结：快速使用只需要的open成功后，就可以调用sendHex往串口发送数据，同时addDataListener来监听串口数据返回。如需使用其他功能使用，可参考下面的**自定义使用**。
 
@@ -121,12 +136,26 @@ COMSerial.instance().addCOM("/dev/ttyS3", 9600, 1, 8, 0, 0);
  * @param hexData 发送的数据
  */
 COMSerial.instance().sendHex(String portStr, String hexData)
+
+//例
+NormalSerial.instance().sendHex("/dev/ttyS1", "AA033C0000E9")
 ```
 
 ### 第3步：串口返回的数据接收
 ``` java
-//dataListener为串口的接收数据回调，打开的所有串口有数据接收就会触发该回调，回调中会区分数据来自哪个串口，默认接收的类型为hex。
-COMSerial.instance().addDataListener(OnComDataListener dataListener)
+/**
+ * OnComDataListener 为串口的接收数据回调，建议在当前类去实现这个接口
+ * 不用时记得释放 COMSerial.instance().removeDataListener(this);
+ *
+ * 打开的所有串口有数据接收就会触发该回调，回调中会区分数据来自哪个串口，默认接收的类型为hex。
+ */
+COMSerial.instance().addDataListener(new OnComDataListener() {
+    @Override
+    public void comDataBack(String com, String hexData) {
+        //com 为串口号
+        //hexData 为接收到的数据
+    }
+});
 ```
 总结：多个串口使用只需要多次调用addCOM方法，就可以同时打开多个串口。调用sendHex往不同的串口发送数据，同时addDataListener来监听串口数据返回。如需使用其他功能使用，可参考下面的**自定义使用**。
 
