@@ -1,5 +1,5 @@
 ## 安卓串口通信工具
-由 Google 官方串口通信库迁移而来，并在此基础上做了扩展。提供封装后的API，可在一分钟搞定串口通信。可设置停止位、数据位、奇偶校验、流控。
+由 Google 官方串口通信库迁移而来，并在此基础上做了扩展。提供封装后的API，可在一分钟搞定串口通信。可设置停止位、数据位、奇偶校验、流控。也不用考虑分包拆包，拿来即用。
 - [English](https://github.com/Acccord/AndroidSerialPort/blob/master/README-en.md)
 
 
