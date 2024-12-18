@@ -12,7 +12,7 @@
 
     <string name="text_full_data">Please input the serial port and baud rate</string>
     <string name="text_open_success">The serial port is successfully opened.</string>
-    <string name="text_open_fail">Serial port failed to open: %s</string>
+    <string name="text_open_fail">Serial port failed to open: %d</string>
     <string name="text_full_send_Data">Sending content cannot be empty</string>
     <string name="text_serial_open_fail">The serial port has not been successfully opened.</string>
     <string name="text_other">Other ></string>

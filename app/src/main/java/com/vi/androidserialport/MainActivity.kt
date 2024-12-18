@@ -1,8 +1,8 @@
 package com.vi.androidserialport
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.vi.vioserial.NormalSerial
 import com.vi.vioserial.listener.OnNormalDataListener
 import kotlinx.android.synthetic.main.activity_main.*
@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_main.*
  * Quick use
  * @author Vi
  * @date 2019-07-17 16:50
- * @e-mail 380180278@qq.com
+ * @e-mail cfop_f2l@163.com
  */
 class MainActivity : AppCompatActivity(), OnNormalDataListener {
 
@@ -39,7 +39,11 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
             val ck = mEtCK.text.toString()
             val btl = mEtBTL.text.toString()
             if (ck.isBlank() || btl.isBlank()) {
-                Toast.makeText(this@MainActivity, resources.getString(R.string.text_full_data), Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this@MainActivity,
+                    resources.getString(R.string.text_full_data),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 return@setOnClickListener
             }
@@ -78,7 +82,11 @@ class MainActivity : AppCompatActivity(), OnNormalDataListener {
         mBtnSend.setOnClickListener {
             val input = mEtInput.text.toString()
             if (input.isBlank()) {
-                Toast.makeText(this@MainActivity, resources.getString(R.string.text_full_send_Data), Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this@MainActivity,
+                    resources.getString(R.string.text_full_send_Data),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 return@setOnClickListener
             }
