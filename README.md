@@ -39,7 +39,7 @@ allprojects {
 在模块的build.gradle添加
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.5.0'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.5.2'
 }
 ```
 
@@ -285,6 +285,8 @@ String[] allDevicesPath = serialPortFinder.getAllDevicesPath();
 ```
 
 ## 更新记录
+- 1.5.2 【2024-12-18】
+    - 解决1.5.0无法依赖的问题
 - 1.5.0 【2019-11-26】
     - 发布1.5.0版本
 - 1.3.0 【2019-09-19】
