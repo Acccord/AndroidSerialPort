@@ -1,4 +1,4 @@
-# Install script for directory: /Users/vi/StudioProjects/AndroidSerialPort/vioserial
+# Install script for directory: /Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/armeabi-v7a/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/armeabi-v7a/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

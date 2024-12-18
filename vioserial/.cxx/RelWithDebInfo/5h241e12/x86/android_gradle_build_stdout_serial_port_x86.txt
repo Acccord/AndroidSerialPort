@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/RelWithDebInfo/5h241e12/x86'
+ninja: no work to do.

@@ -1,0 +1,5 @@
+# ninja log v5
+0	15	0	clean	9e0f5cdf113d263e
+1	86	1733985845	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	6acf1c03a0c41b78
+87	155	1733985845	../../../../build/intermediates/cxx/Debug/2r6ts263/obj/x86/libserial_port.so	9262ed9ca47e943b
+0	16	0	clean	9e0f5cdf113d263e

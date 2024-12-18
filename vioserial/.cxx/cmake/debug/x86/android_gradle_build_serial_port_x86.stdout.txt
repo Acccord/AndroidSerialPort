@@ -1,3 +1,0 @@
-ninja: Entering directory `/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86'
-[1/2] Building C object CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o
-[2/2] Linking C shared library ../../../../build/intermediates/cmake/debug/obj/x86/libserial_port.so

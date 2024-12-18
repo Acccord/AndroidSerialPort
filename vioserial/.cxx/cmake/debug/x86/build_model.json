@@ -1,13 +1,13 @@
 {
   "abi": "X86",
-  "abiPlatformVersion": 16,
+  "abiPlatformVersion": 19,
   "buildSettings": {
     "environmentVariables": []
   },
   "cmake": {
-    "cmakeArtifactsBaseFolder": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86",
-    "cmakeServerLogFile": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86/cmake_server_log.txt",
-    "cmakeWrappingBaseFolder": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cxx/debug/x86",
+    "cmakeArtifactsBaseFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86",
+    "cmakeServerLogFile": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86/cmake_server_log.txt",
+    "cmakeWrappingBaseFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cxx/debug/x86",
     "effectiveConfiguration": {
       "name": "traditional-android-studio-cmake-environment",
       "description": "Composite reified CMakeSettings configuration",
@@ -15,13 +15,13 @@
       "inheritEnvironments": [
         "ndk"
       ],
-      "buildRoot": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86",
-      "cmakeToolchain": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake",
-      "cmakeExecutable": "/Users/vi/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake",
+      "buildRoot": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86",
+      "cmakeToolchain": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/build/cmake/android.toolchain.cmake",
+      "cmakeExecutable": "/Users/jimi/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake",
       "variables": [
         {
           "name": "CMAKE_FIND_ROOT_PATH",
-          "value": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/prefab/x86/prefab"
+          "value": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/prefab/x86/prefab"
         },
         {
           "name": "CMAKE_BUILD_TYPE",
@@ -29,7 +29,7 @@
         },
         {
           "name": "CMAKE_TOOLCHAIN_FILE",
-          "value": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake"
+          "value": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/build/cmake/android.toolchain.cmake"
         },
         {
           "name": "ANDROID_ABI",
@@ -37,11 +37,11 @@
         },
         {
           "name": "ANDROID_NDK",
-          "value": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669"
+          "value": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653"
         },
         {
           "name": "ANDROID_PLATFORM",
-          "value": "android-16"
+          "value": "android-19"
         },
         {
           "name": "CMAKE_ANDROID_ARCH_ABI",
@@ -49,7 +49,7 @@
         },
         {
           "name": "CMAKE_ANDROID_NDK",
-          "value": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669"
+          "value": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653"
         },
         {
           "name": "CMAKE_EXPORT_COMPILE_COMMANDS",
@@ -57,11 +57,11 @@
         },
         {
           "name": "CMAKE_LIBRARY_OUTPUT_DIRECTORY",
-          "value": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/build/intermediates/cmake/debug/obj/x86"
+          "value": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/build/intermediates/cmake/debug/obj/x86"
         },
         {
           "name": "CMAKE_MAKE_PROGRAM",
-          "value": "/Users/vi/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja"
+          "value": "/Users/jimi/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja"
         },
         {
           "name": "CMAKE_SYSTEM_NAME",
@@ -69,19 +69,19 @@
         },
         {
           "name": "CMAKE_SYSTEM_VERSION",
-          "value": "16"
+          "value": "19"
         }
       ]
     }
   },
-  "cxxBuildFolder": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86",
+  "cxxBuildFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86",
   "info": {
     "abi": "X86",
     "bitness": 32,
     "deprecated": false,
     "default": true
   },
-  "originalCxxBuildFolder": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86",
+  "originalCxxBuildFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/x86",
   "variant": {
     "buildSystemArgumentList": [],
     "buildTargetSet": [],
@@ -92,24 +92,24 @@
     "module": {
       "buildSystem": "CMAKE",
       "cmake": {
-        "cmakeExe": "/Users/vi/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake",
+        "cmakeExe": "/Users/jimi/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake",
         "minimumCmakeVersion": "3.10.2",
-        "ninjaExe": "/Users/vi/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja"
+        "ninjaExe": "/Users/jimi/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja"
       },
-      "cmakeToolchainFile": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake",
-      "cxxFolder": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx",
+      "cmakeToolchainFile": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/build/cmake/android.toolchain.cmake",
+      "cxxFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx",
       "gradleModulePathName": ":vioserial",
-      "intermediatesFolder": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/build/intermediates",
-      "makeFile": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/CMakeLists.txt",
-      "moduleBuildFile": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/build.gradle",
-      "moduleRootFolder": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial",
+      "intermediatesFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/build/intermediates",
+      "makeFile": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/CMakeLists.txt",
+      "moduleBuildFile": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/build.gradle",
+      "moduleRootFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial",
       "ndkDefaultAbiList": [
         "ARMEABI_V7A",
         "ARM64_V8A",
         "X86",
         "X86_64"
       ],
-      "ndkFolder": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669",
+      "ndkFolder": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653",
       "ndkMetaAbiList": [
         {
           "abi": "ARMEABI_V7A",
@@ -137,8 +137,8 @@
         }
       ],
       "ndkMetaPlatforms": {
-        "min": 16,
-        "max": 29,
+        "min": 19,
+        "max": 33,
         "aliases": {
           "20": 19,
           "25": 24,
@@ -154,7 +154,11 @@
           "O": 26,
           "O-MR1": 27,
           "P": 28,
-          "Q": 29
+          "Q": 29,
+          "R": 30,
+          "S": 31,
+          "Sv2": 32,
+          "Tiramisu": 33
         }
       },
       "ndkSupportedAbiList": [
@@ -164,31 +168,31 @@
         "X86_64"
       ],
       "ndkDefaultStl": "LIBCXX_STATIC",
-      "ndkVersion": "21.0.6113669",
+      "ndkVersion": "25.2.9519653",
       "project": {
-        "compilerSettingsCacheFolder": "/Users/vi/StudioProjects/AndroidSerialPort/.cxx",
-        "cxxFolder": "/Users/vi/StudioProjects/AndroidSerialPort/.cxx",
+        "compilerSettingsCacheFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/.cxx",
+        "cxxFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/.cxx",
         "isBuildOnlyTargetAbiEnabled": true,
         "isCmakeBuildCohabitationEnabled": false,
         "isNativeCompilerSettingsCacheEnabled": false,
-        "rootBuildGradleFolder": "/Users/vi/StudioProjects/AndroidSerialPort",
-        "sdkFolder": "/Users/vi/Library/Android/sdk",
+        "rootBuildGradleFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort",
+        "sdkFolder": "/Users/jimi/Library/Android/sdk",
         "isPrefabEnabled": false
       },
       "splitsAbiFilterSet": [],
       "stlSharedObjectMap": {
         "LIBCXX_SHARED": {
-          "ARMEABI_V7A": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/arm-linux-androideabi/libc++_shared.so",
-          "ARM64_V8A": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/aarch64-linux-android/libc++_shared.so",
-          "X86": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/libc++_shared.so",
-          "X86_64": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/x86_64-linux-android/libc++_shared.so"
+          "ARMEABI_V7A": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/arm-linux-androideabi/libc++_shared.so",
+          "ARM64_V8A": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/aarch64-linux-android/libc++_shared.so",
+          "X86": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/libc++_shared.so",
+          "X86_64": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/x86_64-linux-android/libc++_shared.so"
         },
         "LIBCXX_STATIC": {},
         "NONE": {},
         "SYSTEM": {}
       }
     },
-    "objFolder": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/build/intermediates/cmake/debug/obj",
+    "objFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/build/intermediates/cmake/debug/obj",
     "variantName": "debug",
     "validAbiList": [
       "ARMEABI_V7A",
@@ -196,8 +200,8 @@
       "X86",
       "X86_64"
     ],
-    "prefabDirectory": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/prefab",
+    "prefabDirectory": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/prefab",
     "prefabPackageDirectoryList": []
   },
-  "prefabFolder": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/prefab/x86"
+  "prefabFolder": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/prefab/x86"
 }

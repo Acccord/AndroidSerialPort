@@ -1,0 +1,7 @@
+# ninja log v5
+0	127	1733984774	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	dde97adac922369e
+127	194	1733984774	../../../../build/intermediates/cxx/Debug/2r6ts263/obj/arm64-v8a/libserial_port.so	f4a1edff4c10e7d2
+0	15	0	clean	9e0f5cdf113d263e
+1	828	1733985843	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	dde97adac922369e
+829	1083	1733985844	../../../../build/intermediates/cxx/Debug/2r6ts263/obj/arm64-v8a/libserial_port.so	f4a1edff4c10e7d2
+0	12	0	clean	9e0f5cdf113d263e

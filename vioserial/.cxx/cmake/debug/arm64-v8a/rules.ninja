@@ -25,7 +25,7 @@ rule CUSTOM_COMMAND
 rule C_COMPILER__serial_port
   depfile = $DEP_FILE
   deps = gcc
-  command = /Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android21 --gcc-toolchain=/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  command = /Users/jimi/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android21 --sysroot=/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/sysroot $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
   description = Building C object $out
 
 
@@ -33,7 +33,7 @@ rule C_COMPILER__serial_port
 # Rule for linking C shared library.
 
 rule C_SHARED_LIBRARY_LINKER__serial_port
-  command = $PRE_LINK && /Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android21 --gcc-toolchain=/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -fPIC $LANGUAGE_COMPILE_FLAGS $ARCH_FLAGS $LINK_FLAGS -shared $SONAME_FLAG$SONAME -o $TARGET_FILE $in $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
+  command = $PRE_LINK && /Users/jimi/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android21 --sysroot=/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -fPIC $LANGUAGE_COMPILE_FLAGS $ARCH_FLAGS $LINK_FLAGS -shared $SONAME_FLAG$SONAME -o $TARGET_FILE $in $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking C shared library $TARGET_FILE
   restat = $RESTAT
 
@@ -42,7 +42,7 @@ rule C_SHARED_LIBRARY_LINKER__serial_port
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /Users/vi/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake -H/Users/vi/StudioProjects/AndroidSerialPort/vioserial -B/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/arm64-v8a
+  command = /Users/jimi/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake -H/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial -B/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/debug/arm64-v8a
   description = Re-running CMake...
   generator = 1
 
@@ -51,7 +51,7 @@ rule RERUN_CMAKE
 # Rule for cleaning all built files.
 
 rule CLEAN
-  command = /Users/vi/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -t clean
+  command = /Users/jimi/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -t clean
   description = Cleaning all built files...
 
 
@@ -59,6 +59,6 @@ rule CLEAN
 # Rule for printing all primary targets available.
 
 rule HELP
-  command = /Users/vi/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -t targets
+  command = /Users/jimi/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -t targets
   description = All primary targets available:
 
