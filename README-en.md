@@ -34,7 +34,7 @@ allprojects {
 Added in module build.gradle
 ```
 dependencies {
-    implementation 'com.github.Acccord:AndroidSerialPort:1.5.0'
+    implementation 'com.github.Acccord:AndroidSerialPort:1.5.2'
 }
 ```
 
@@ -215,3 +215,5 @@ String[] allDevicesPath = serialPortFinder.getAllDevicesPath();
     - Increase stop bit, data bit, parity, flow control settings
 - 1.5.0 【2019-11-26】
     - Release version 1.5.0
+- 1.5.2 【2024-12-18】
+    - Resolve the issue of failing to depend on version 1.5.0
