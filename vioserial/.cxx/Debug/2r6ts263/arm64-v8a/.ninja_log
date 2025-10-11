@@ -20,3 +20,6 @@
 0	14	0	clean	9e0f5cdf113d263e
 0	416	1734516618	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	dde97adac922369e
 418	617	1734516618	../../../../build/intermediates/cxx/Debug/2r6ts263/obj/arm64-v8a/libserial_port.so	f4a1edff4c10e7d2
+0	27	0	clean	9e0f5cdf113d263e
+2	9003	1760167426	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	dde97adac922369e
+9004	13240	1760167431	../../../../build/intermediates/cxx/Debug/2r6ts263/obj/arm64-v8a/libserial_port.so	f4a1edff4c10e7d2
