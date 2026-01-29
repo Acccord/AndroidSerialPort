@@ -34,4 +34,12 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppBottomSheetStyle</item>
+    </style>
+
+    <style name="AppBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
 </resources>

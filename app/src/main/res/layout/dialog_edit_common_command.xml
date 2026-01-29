@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_command_title"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp" />
+
+    <EditText
+            android:id="@+id/mEtCommandTitle"
+            style="@style/Widget.App.Input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:hint="@string/text_command_title_hint"
+            android:inputType="textCapSentences" />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/text_command_content"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp" />
+
+    <EditText
+            android:id="@+id/mEtCommandContent"
+            style="@style/Widget.App.Input"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="6dp"
+            android:gravity="top|start"
+            android:hint="@string/text_command_content_hint"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:maxLines="6"
+            android:singleLine="false" />
+
+</LinearLayout>

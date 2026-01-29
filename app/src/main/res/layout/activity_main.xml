@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -69,163 +70,187 @@
                     android:text="@string/text_connect" />
         </LinearLayout>
 
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/text_mock_mode"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="12sp" />
+
+            <Switch
+                    android:id="@+id/mSwitchMock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+        </LinearLayout>
+
     </LinearLayout>
 
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/bg_card"
-            android:orientation="vertical"
             android:padding="12dp">
 
         <TextView
+                android:id="@+id/sectionSendTitle"
                 style="@style/TextAppearance.App.SectionTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/text_section_send" />
-
-        <EditText
-                android:id="@+id/mEtInput"
-                style="@style/Widget.App.Input"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginTop="8dp"
-                android:gravity="top|start"
-                android:hint="@string/text_write_something"
-                android:inputType="textMultiLine|textNoSuggestions" />
-
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-            <RadioGroup
-                    android:id="@+id/mRgMode"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                <RadioButton
-                        android:id="@+id/mRbHex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="@string/text_mode_hex" />
-
-                <RadioButton
-                        android:id="@+id/mRbAscii"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:text="@string/text_mode_ascii" />
-            </RadioGroup>
-
-            <Button
-                    android:id="@+id/mBtnSend"
-                    style="@style/Widget.App.PrimaryButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="@string/text_send" />
-        </LinearLayout>
+                android:text="@string/text_section_send"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
                 android:id="@+id/mTvCommonCommands"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:text="@string/text_common_commands_entry"
                 android:textColor="@color/colorAccent"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@+id/sectionSendTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sectionSendTitle" />
 
-    </LinearLayout>
+        <EditText
+                android:id="@+id/mEtInput"
+                style="@style/Widget.App.Input"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="8dp"
+                android:gravity="top|start"
+                android:hint="@string/text_write_something"
+                android:inputType="textMultiLine|textNoSuggestions"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sectionSendTitle"
+                app:layout_constraintWidth_percent="1" />
 
-    <LinearLayout
+        <!-- Horizontal group: RadioGroup + Send Button -->
+        <RadioGroup
+                android:id="@+id/mRgMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/mBtnSend"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/mBtnSend">
+
+            <RadioButton
+                    android:id="@+id/mRbHex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/text_mode_hex"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="13sp" />
+
+            <RadioButton
+                    android:id="@+id/mRbAscii"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/text_mode_ascii"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="13sp" />
+        </RadioGroup>
+
+        <Button
+                android:id="@+id/mBtnSend"
+                style="@style/Widget.App.PrimaryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/text_send"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mEtInput" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="12dp"
             android:layout_weight="1"
             android:background="@drawable/bg_card"
-            android:orientation="vertical"
             android:padding="12dp">
 
-        <LinearLayout
-                android:layout_width="match_parent"
+        <TextView
+                android:id="@+id/sectionLogTitle"
+                style="@style/TextAppearance.App.SectionTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:text="@string/text_log_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                    style="@style/TextAppearance.App.SectionTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/text_log_title" />
+        <TextView
+                android:id="@+id/mTvClearLog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_clear_log"
+                android:textColor="@color/textDelete"
+                app:layout_constraintBottom_toBottomOf="@+id/sectionLogTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sectionLogTitle" />
 
-            <TextView
-                    android:id="@+id/mTvClearLog"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/text_clear_log"
-                    android:textColor="@color/textDelete" />
-        </LinearLayout>
-
-        <FrameLayout
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mRvLogs"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
-                android:layout_weight="1"
-                android:background="@color/panelBackground">
+                android:background="@color/panelBackground"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sectionLogTitle" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/mRvLogs"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="6dp" />
+        <Switch
+                android:id="@+id/mSwitchAutoScroll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:checked="true"
+                android:text="@string/text_auto_scroll"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/mRvLogs"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-            <TextView
-                    android:id="@+id/mTvEmpty"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/text_log_empty"
-                    android:textColor="@color/textHint"
-                    android:textSize="13sp" />
+        <Switch
+                android:id="@+id/mSwitchTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp"
+                android:checked="true"
+                android:text="@string/text_show_time"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/mSwitchAutoScroll"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:alpha="0.5"
-                    android:orientation="vertical">
+        <TextView
+                android:id="@+id/mTvEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/panelBackground"
+                android:gravity="center"
+                android:text="@string/text_log_empty"
+                android:textColor="@color/textHint"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@+id/mRvLogs"
+                app:layout_constraintEnd_toEndOf="@+id/mRvLogs"
+                app:layout_constraintStart_toStartOf="@+id/mRvLogs"
+                app:layout_constraintTop_toBottomOf="@+id/sectionLogTitle" />
 
-                <Switch
-                        android:id="@+id/mSwitchAutoScroll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="@string/text_auto_scroll"
-                        android:textSize="12sp" />
-
-                <Switch
-                        android:id="@+id/mSwitchTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:checked="true"
-                        android:text="@string/text_show_time"
-                        android:textSize="12sp" />
-
-            </LinearLayout>
-        </FrameLayout>
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

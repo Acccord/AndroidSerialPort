@@ -7,9 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class CommonCommandAdapter(
-    private val items: MutableList<String>,
-    private val onClick: (String) -> Unit,
-    private val onDelete: (String) -> Unit
+    private val items: MutableList<CommonCommand>,
+    private val onClick: (CommonCommand) -> Unit,
+    private val onEdit: (CommonCommand) -> Unit,
+    private val onDelete: (CommonCommand) -> Unit
 ) : RecyclerView.Adapter<CommonCommandAdapter.CommandViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommandViewHolder {
@@ -19,24 +20,39 @@ class CommonCommandAdapter(
     }
 
     override fun onBindViewHolder(holder: CommandViewHolder, position: Int) {
-        holder.bind(items[position], onClick, onDelete)
+        holder.bind(items[position], onClick, onEdit, onDelete)
     }
 
     override fun getItemCount(): Int = items.size
 
-    fun setItems(newItems: List<String>) {
+    fun setItems(newItems: List<CommonCommand>) {
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()
     }
 
     class CommandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvTitle: TextView = itemView.findViewById(R.id.mTvTitle)
         private val tvCommand: TextView = itemView.findViewById(R.id.mTvCommand)
+        private val tvEdit: TextView = itemView.findViewById(R.id.mTvEdit)
         private val tvDelete: TextView = itemView.findViewById(R.id.mTvDelete)
 
-        fun bind(command: String, onClick: (String) -> Unit, onDelete: (String) -> Unit) {
-            tvCommand.text = command
+        fun bind(
+            command: CommonCommand,
+            onClick: (CommonCommand) -> Unit,
+            onEdit: (CommonCommand) -> Unit,
+            onDelete: (CommonCommand) -> Unit
+        ) {
+            val title = command.title?.trim().orEmpty()
+            if (title.isBlank()) {
+                tvTitle.visibility = View.GONE
+            } else {
+                tvTitle.text = title
+                tvTitle.visibility = View.VISIBLE
+            }
+            tvCommand.text = command.content
             itemView.setOnClickListener { onClick(command) }
+            tvEdit.setOnClickListener { onEdit(command) }
             tvDelete.setOnClickListener { onDelete(command) }
         }
     }

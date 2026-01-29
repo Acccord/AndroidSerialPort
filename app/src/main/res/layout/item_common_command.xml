@@ -1,29 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingHorizontal="8dp"
-    android:paddingVertical="8dp">
-
-    <TextView
-        android:id="@+id/mTvCommand"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="?android:attr/selectableItemBackground"
-        android:paddingVertical="6dp"
-        android:textColor="@color/textPrimary"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/mTvDelete"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="6dp"
-        android:text="@string/text_delete"
-        android:textColor="@color/textDelete"
-        android:textSize="12sp" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="4dp"
+        android:paddingVertical="6dp">
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/mTvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textSecondary"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+        <TextView
+                android:id="@+id/mTvCommand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textPrimary"
+                android:textSize="14sp" />
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/mTvEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingVertical="4dp"
+            android:paddingHorizontal="8dp"
+            android:text="@string/text_edit"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp" />
+
+    <TextView
+            android:id="@+id/mTvDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingVertical="4dp"
+            android:paddingHorizontal="8dp"
+            android:text="@string/text_delete"
+            android:textColor="@color/textDelete"
+            android:textSize="12sp" />
+
 </LinearLayout>

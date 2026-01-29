@@ -3,7 +3,7 @@
         android:id="@+id/mTvLog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="monospace"
-        android:padding="6dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
         android:textColor="@color/textPrimary"
         android:textSize="12sp" />

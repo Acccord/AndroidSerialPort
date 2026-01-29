@@ -1,64 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_card"
-    android:orientation="vertical"
-    android:padding="12dp">
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:background="@drawable/bg_bottom_sheet"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/mTvExport"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?android:attr/selectableItemBackground"
-            android:paddingVertical="6dp"
-            android:text="@string/text_export_commands"
-            android:textColor="@color/textSecondary"
-            android:textSize="13sp" />
+                android:id="@+id/mTvCommonSheetTitle"
+                style="@style/TextAppearance.App.SectionTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/text_common_commands_title" />
 
-        <TextView
-            android:id="@+id/mTvImport"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:background="?android:attr/selectableItemBackground"
-            android:paddingVertical="6dp"
-            android:text="@string/text_import_commands"
-            android:textColor="@color/textSecondary"
-            android:textSize="13sp" />
-    </LinearLayout>
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:id="@+id/mTvExport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="8dp"
+                    android:text="@string/text_export_commands"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="13sp" />
+
+            <TextView
+                    android:id="@+id/mTvImport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="8dp"
+                    android:text="@string/text_import_commands"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="13sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/border" />
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/border" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mRvCommonCommands"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_marginTop="8dp" />
+            android:id="@+id/mRvCommonCommands"
+            android:layout_width="match_parent"
+            android:layout_height="240dp" />
 
     <TextView
-        android:id="@+id/mTvCommonEmpty"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:gravity="center"
-        android:lineSpacingExtra="4dp"
-        android:paddingHorizontal="16dp"
-        android:textAlignment="center"
-        android:text="@string/text_common_empty_guide"
-        android:textColor="@color/textHint"
-        android:textSize="14sp"
-        android:visibility="gone" />
+            android:id="@+id/mTvCommonEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:paddingHorizontal="16dp"
+            android:text="@string/text_common_empty_guide"
+            android:textAlignment="center"
+            android:textColor="@color/textHint"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
 </LinearLayout>

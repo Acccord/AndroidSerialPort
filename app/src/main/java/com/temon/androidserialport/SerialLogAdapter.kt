@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 data class SerialLog(
     val time: String,
     val direction: Direction,
-    val content: String
+    val content: String,
+    val title: String? = null
 )
 
 enum class Direction {
@@ -60,10 +61,16 @@ class SerialLogAdapter(
         fun bind(item: SerialLog, showTime: Boolean, onClick: (SerialLog) -> Unit) {
             val arrow = if (item.direction == Direction.TX) "▶" else "◀"
             val dirText = if (item.direction == Direction.TX) "TX" else "RX"
-            tvLog.text = if (showTime) {
-                "[${item.time}] $arrow $dirText: ${item.content}"
+            val title = item.title?.takeIf { it.isNotBlank() }
+            val displayContent = if (title == null) {
+                item.content
             } else {
-                "$arrow $dirText: ${item.content}"
+                "$title: ${item.content}"
+            }
+            tvLog.text = if (showTime) {
+                "[${item.time}] $arrow $dirText: $displayContent"
+            } else {
+                "$arrow $dirText: $displayContent"
             }
             val colorRes = if (item.direction == Direction.TX) {
                 R.color.sendText

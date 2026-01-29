@@ -7,13 +7,15 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.text.method.DigitsKeyListener
 import android.text.InputType
+import android.graphics.Rect
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -23,18 +25,12 @@ import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.temon.serial.codec.HexCodec
 import com.temon.serial.core.SerialException
 import com.temon.serial.easy.EasySerial
 import com.temon.serial.internal.serialport.SerialPortFinder
-import org.json.JSONArray
-import java.io.File
-import java.io.IOException
-import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -69,7 +65,9 @@ class MainActivity : Activity() {
     private lateinit var mTvEmpty: TextView
     private lateinit var mSwitchAutoScroll: Switch
     private lateinit var mSwitchTime: Switch
+    private lateinit var mSwitchMock: Switch
     private lateinit var mTvCommonCommands: TextView
+    private lateinit var commonCommandsController: CommonCommandsController
 
     private val portPaths = mutableListOf<String>()
     private val defaultBaudRates = listOf(
@@ -87,20 +85,12 @@ class MainActivity : Activity() {
     private lateinit var logAdapter: SerialLogAdapter
     private val timeFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
     private val defaultBaud = 9600
-    private var commonCommandsDialog: BottomSheetDialog? = null
-    private var commonCommandsAdapter: CommonCommandAdapter? = null
-    private var commonCommandsEmptyView: TextView? = null
-    private var commonCommandsRecycler: RecyclerView? = null
-
-    private val commonCommandsKey = "common_commands"
-    private val commonCommandsAddedKey = "common_commands_added"
-    private val exportDirName = "common_commands"
-    private val exportFileName = "common_commands.json"
-    private val importRequestCode = 1001
+    private val mockModeKey = "mock_mode"
+    private var isMockMode = false
 
     private val dataListener = EasySerial.OnDataReceivedListener { _, data, length ->
         val content = if (isHexMode()) {
-            formatHex(HexCodec.encode(data, 0, length))
+            SerialInputUtils.formatHex(HexCodec.encode(data, 0, length))
         } else {
             String(data, 0, length)
         }
@@ -127,8 +117,16 @@ class MainActivity : Activity() {
         mTvEmpty = findViewById<TextView>(R.id.mTvEmpty)
         mSwitchAutoScroll = findViewById<Switch>(R.id.mSwitchAutoScroll)
         mSwitchTime = findViewById<Switch>(R.id.mSwitchTime)
+        mSwitchMock = findViewById<Switch>(R.id.mSwitchMock)
         mTvCommonCommands = findViewById<TextView>(R.id.mTvCommonCommands)
         autoScrollEnabled = mSwitchAutoScroll.isChecked
+        isMockMode = preferences.getBoolean(mockModeKey, false)
+        mSwitchMock.isChecked = isMockMode
+        commonCommandsController = CommonCommandsController(
+            this,
+            preferences,
+            onSendCommand = { command -> sendCommand(command.content, false, command.title) }
+        )
         setupBaudRateSpinner()
         setupLogList()
         setupInputWatcher()
@@ -151,9 +149,24 @@ class MainActivity : Activity() {
         super.onDestroy()
         EasySerial.removeOnDataReceived(dataListener)
         EasySerial.removeOnError(errorListener)
-        if (currentPort.isNotEmpty()) {
+        if (currentPort.isNotEmpty() && !isMockMode) {
             EasySerial.close(currentPort)
         }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            val focusedView = currentFocus
+            if (focusedView is EditText) {
+                val rect = Rect()
+                focusedView.getGlobalVisibleRect(rect)
+                if (!rect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
+                    focusedView.clearFocus()
+                    hideKeyboard(focusedView)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun setupBaudRateSpinner() {
@@ -238,10 +251,9 @@ class MainActivity : Activity() {
                 isConnecting = true
                 lastConnectError = null
                 updateConnectionUi()
-                val openResult = EasySerial.open(selectedPort, baudRate)
-                isConnecting = false
-                if (openResult == EasySerial.OPEN_OK) {
-                    currentPort = selectedPort
+                if (isMockMode) {
+                    isConnecting = false
+                    currentPort = resources.getString(R.string.text_mock_port)
                     currentBaud = baudRate
                     isOpenSerial = true
                     lastConnectError = null
@@ -252,21 +264,38 @@ class MainActivity : Activity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
-                    isOpenSerial = false
-                    currentPort = ""
-                    currentBaud = 0
-                    val reason = openErrorReason(openResult)
-                    lastConnectError = reason
-                    Toast.makeText(
-                        this@MainActivity,
-                        String.format(resources.getString(R.string.text_open_fail), openResult),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val openResult = EasySerial.open(selectedPort, baudRate)
+                    isConnecting = false
+                    if (openResult == EasySerial.OPEN_OK) {
+                        currentPort = selectedPort
+                        currentBaud = baudRate
+                        isOpenSerial = true
+                        lastConnectError = null
+                        saveLastSuccessfulBaud(currentBaud)
+                        Toast.makeText(
+                            this@MainActivity,
+                            resources.getString(R.string.text_open_success),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        isOpenSerial = false
+                        currentPort = ""
+                        currentBaud = 0
+                        val reason = openErrorReason(openResult)
+                        lastConnectError = reason
+                        Toast.makeText(
+                            this@MainActivity,
+                            String.format(resources.getString(R.string.text_open_fail), openResult),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             } else {
                 isOpenSerial = false
                 if (currentPort.isNotEmpty()) {
-                    EasySerial.close(currentPort)
+                    if (!isMockMode) {
+                        EasySerial.close(currentPort)
+                    }
                     currentPort = ""
                     currentBaud = 0
                 }
@@ -299,28 +328,48 @@ class MainActivity : Activity() {
         mSwitchTime.setOnCheckedChangeListener { _, isChecked ->
             logAdapter.setShowTime(isChecked)
         }
+        mSwitchMock.setOnCheckedChangeListener { _, isChecked ->
+            if (isOpenSerial && currentPort.isNotEmpty()) {
+                if (!isMockMode) {
+                    EasySerial.close(currentPort)
+                }
+                isOpenSerial = false
+                currentPort = ""
+                currentBaud = 0
+            }
+            isMockMode = isChecked
+            preferences.edit().putBoolean(mockModeKey, isChecked).apply()
+            lastConnectError = null
+            loadSerialPorts()
+            updateConnectionUi()
+            refreshSendAvailability()
+        }
 
         mTvCommonCommands.setOnClickListener {
-            showCommonCommandsSheet()
+            commonCommandsController.show()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == importRequestCode && resultCode == Activity.RESULT_OK) {
-            val uri = data?.data ?: return
-            importCommonCommands(uri)
+        if (commonCommandsController.handleImportResult(requestCode, resultCode, data)) {
+            return
         }
     }
 
     private fun loadSerialPorts() {
-        val ports = SerialPortFinder().getAllDevicesPath().toList()
         portPaths.clear()
-        hasPorts = ports.isNotEmpty()
-        if (hasPorts) {
-            portPaths.addAll(ports)
+        if (isMockMode) {
+            hasPorts = true
+            portPaths.add(resources.getString(R.string.text_mock_port))
         } else {
-            portPaths.add(resources.getString(R.string.text_no_ports))
+            val ports = SerialPortFinder().getAllDevicesPath().toList()
+            hasPorts = ports.isNotEmpty()
+            if (hasPorts) {
+                portPaths.addAll(ports)
+            } else {
+                portPaths.add(resources.getString(R.string.text_no_ports))
+            }
         }
         val portAdapter = ArrayAdapter(
             this,
@@ -422,15 +471,26 @@ class MainActivity : Activity() {
     }
 
     private fun showCustomBaudDialog() {
+        // Create a container to add left/right padding for the EditText,
+        // matching AlertDialog's title horizontal padding (typically 24dp).
+        val horizontalPadding = (24 * resources.displayMetrics.density).toInt()
         val input = EditText(this).apply {
             hint = resources.getString(R.string.text_rate_input)
             inputType = InputType.TYPE_CLASS_NUMBER
             keyListener = DigitsKeyListener.getInstance("0123456789")
             filters = arrayOf<InputFilter>(InputFilter.LengthFilter(9))
+            setBackgroundResource(R.drawable.bg_input)
+            // Add left and right padding (e.g., 16dp)
+            val lrPadding = (16 * resources.displayMetrics.density).toInt()
+            setPadding(lrPadding, paddingTop, lrPadding, paddingBottom)
+        }
+        val container = android.widget.FrameLayout(this).apply {
+            setPadding(horizontalPadding, horizontalPadding, horizontalPadding, 0)
+            addView(input)
         }
         val dialog = AlertDialog.Builder(this)
             .setTitle(resources.getString(R.string.text_baud_custom))
-            .setView(input)
+            .setView(container)
             .setPositiveButton(android.R.string.ok, null)
             .setNegativeButton(android.R.string.cancel) { _, _ ->
                 setBaudSelection(lastBaudSelection)
@@ -474,29 +534,18 @@ class MainActivity : Activity() {
         return if (value > 0) value else null
     }
 
-    private fun isValidHex(input: String): Boolean {
-        val hex = normalizeHex(input)
-        if (hex.isEmpty()) return false
-        if (hex.length % 2 != 0) return false
-        for (c in hex) {
-            val ok = (c in '0'..'9') || (c in 'a'..'f') || (c in 'A'..'F')
-            if (!ok) return false
-        }
-        return true
-    }
-
     private fun isValidSendInput(): Boolean {
         val input = mEtInput.text.toString()
         val valid = if (input.isBlank()) {
             false
         } else {
             if (isHexMode()) {
-                isValidHex(input)
+                SerialInputUtils.isValidHex(input)
             } else {
                 true
             }
         }
-        if (isHexMode() && input.isNotBlank() && !isValidHex(input)) {
+        if (isHexMode() && input.isNotBlank() && !SerialInputUtils.isValidHex(input)) {
             mEtInput.error = resources.getString(R.string.text_hex_invalid)
         } else {
             mEtInput.error = null
@@ -504,17 +553,8 @@ class MainActivity : Activity() {
         return valid
     }
 
-    private fun normalizeHex(input: String): String {
-        return input.replace("\\s".toRegex(), "")
-    }
-
-    private fun formatHex(hex: String): String {
-        val normalized = normalizeHex(hex)
-        return normalized.chunked(2).joinToString(" ")
-    }
-
-    private fun addLog(direction: Direction, content: String) {
-        val log = SerialLog(timeFormat.format(Date()), direction, content)
+    private fun addLog(direction: Direction, content: String, title: String? = null) {
+        val log = SerialLog(timeFormat.format(Date()), direction, content, title)
         runOnUiThread {
             logAdapter.add(log)
             if (autoScrollEnabled) {
@@ -524,10 +564,22 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun simulateReceive(content: String) {
+        mRvLogs.postDelayed({
+            addLog(Direction.RX, content)
+        }, 200L)
+    }
+
     private fun formatLogLine(log: SerialLog): String {
         val arrow = if (log.direction == Direction.TX) "▶" else "◀"
         val dirText = if (log.direction == Direction.TX) "TX" else "RX"
-        return "[${log.time}] $arrow $dirText: ${log.content}"
+        val title = log.title?.takeIf { it.isNotBlank() }
+        val displayContent = if (title == null) {
+            log.content
+        } else {
+            "$title: ${log.content}"
+        }
+        return "[${log.time}] $arrow $dirText: $displayContent"
     }
 
     private fun copyLogToClipboard(text: String) {
@@ -538,7 +590,10 @@ class MainActivity : Activity() {
     }
 
     private fun showLogActionSheet(log: SerialLog) {
-        val dialog = BottomSheetDialog(this)
+        val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(
+            this,
+            R.style.AppBottomSheetDialogTheme
+        )
         val view = layoutInflater.inflate(R.layout.bottom_sheet_log_actions, null)
         val tvResend = view.findViewById<TextView>(R.id.mTvResend)
         val tvCopy = view.findViewById<TextView>(R.id.mTvCopy)
@@ -551,7 +606,7 @@ class MainActivity : Activity() {
         tvAddCommon.isEnabled = isTx
         tvResend.setOnClickListener {
             if (isTx) {
-                sendCommand(log.content, false)
+                sendCommand(log.content, false, log.title)
             }
             dialog.dismiss()
         }
@@ -561,7 +616,7 @@ class MainActivity : Activity() {
         }
         tvAddCommon.setOnClickListener {
             if (isTx) {
-                addToCommonCommands(log.content)
+                commonCommandsController.addCommand(log.content)
             }
             dialog.dismiss()
         }
@@ -569,180 +624,7 @@ class MainActivity : Activity() {
         dialog.show()
     }
 
-    private fun showCommonCommandsSheet() {
-        if (commonCommandsDialog == null) {
-            val dialog = BottomSheetDialog(this)
-            val view = layoutInflater.inflate(R.layout.bottom_sheet_common_commands, null)
-            val tvExport = view.findViewById<TextView>(R.id.mTvExport)
-            val tvImport = view.findViewById<TextView>(R.id.mTvImport)
-            val recycler = view.findViewById<RecyclerView>(R.id.mRvCommonCommands)
-            val emptyView = view.findViewById<TextView>(R.id.mTvCommonEmpty)
-            recycler.layoutManager = LinearLayoutManager(this)
-            recycler.addItemDecoration(
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-            )
-            val adapter = CommonCommandAdapter(
-                mutableListOf(),
-                onClick = { command ->
-                    sendCommand(command, false)
-                    dialog.dismiss()
-                },
-                onDelete = { command ->
-                    removeCommonCommand(command)
-                }
-            )
-            recycler.adapter = adapter
-            tvExport.setOnClickListener { exportCommonCommands() }
-            tvImport.setOnClickListener { launchImportPicker() }
-            dialog.setContentView(view)
-            commonCommandsDialog = dialog
-            commonCommandsAdapter = adapter
-            commonCommandsEmptyView = emptyView
-            commonCommandsRecycler = recycler
-        }
-        updateCommonCommandsList()
-        commonCommandsDialog?.show()
-    }
-
-    private fun updateCommonCommandsList() {
-        val commands = loadCommonCommands()
-        commonCommandsAdapter?.setItems(commands)
-        val showEmpty = commands.isEmpty() && !hasEverAddedCommon()
-        commonCommandsEmptyView?.visibility = if (showEmpty) View.VISIBLE else View.GONE
-        commonCommandsRecycler?.visibility = if (showEmpty) View.GONE else View.VISIBLE
-    }
-
-    private fun loadCommonCommands(): MutableList<String> {
-        val raw = preferences.getString(commonCommandsKey, "[]") ?: "[]"
-        val result = mutableListOf<String>()
-        try {
-            val array = JSONArray(raw)
-            for (i in 0 until array.length()) {
-                val value = array.optString(i).trim()
-                if (value.isNotBlank()) {
-                    result.add(value)
-                }
-            }
-        } catch (_: Exception) {
-        }
-        return result
-    }
-
-    private fun saveCommonCommands(commands: List<String>) {
-        val array = JSONArray()
-        commands.forEach { array.put(it) }
-        preferences.edit().putString(commonCommandsKey, array.toString()).apply()
-    }
-
-    private fun hasEverAddedCommon(): Boolean {
-        return preferences.getBoolean(commonCommandsAddedKey, false)
-    }
-
-    private fun markEverAddedCommon() {
-        preferences.edit().putBoolean(commonCommandsAddedKey, true).apply()
-    }
-
-    private fun addToCommonCommands(command: String) {
-        val trimmed = command.trim()
-        if (trimmed.isBlank()) return
-        val commands = loadCommonCommands()
-        if (commands.contains(trimmed)) {
-            Toast.makeText(this, resources.getString(R.string.text_common_exists), Toast.LENGTH_SHORT)
-                .show()
-            return
-        }
-        commands.add(0, trimmed)
-        saveCommonCommands(commands)
-        markEverAddedCommon()
-        updateCommonCommandsList()
-        Toast.makeText(this, resources.getString(R.string.text_common_added), Toast.LENGTH_SHORT)
-            .show()
-    }
-
-    private fun removeCommonCommand(command: String) {
-        val commands = loadCommonCommands()
-        if (commands.remove(command)) {
-            saveCommonCommands(commands)
-            updateCommonCommandsList()
-            Toast.makeText(this, resources.getString(R.string.text_common_deleted), Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
-
-    private fun exportCommonCommands() {
-        val commands = loadCommonCommands()
-        val exportDir = File(Environment.getExternalStorageDirectory(), exportDirName)
-        if (!exportDir.exists() && !exportDir.mkdirs()) {
-            Toast.makeText(this, resources.getString(R.string.text_export_failed), Toast.LENGTH_SHORT)
-                .show()
-            return
-        }
-        val file = File(exportDir, exportFileName)
-        val array = JSONArray()
-        commands.forEach { array.put(it) }
-        try {
-            file.writeText(array.toString(), Charset.forName("UTF-8"))
-            Toast.makeText(
-                this,
-                resources.getString(R.string.text_export_done, commands.size),
-                Toast.LENGTH_SHORT
-            ).show()
-        } catch (_: IOException) {
-            Toast.makeText(this, resources.getString(R.string.text_export_failed), Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
-
-    private fun launchImportPicker() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/json"
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/json", "text/json", "text/plain"))
-        }
-        startActivityForResult(intent, importRequestCode)
-    }
-
-    private fun importCommonCommands(uri: android.net.Uri) {
-        try {
-            val inputStream = contentResolver.openInputStream(uri) ?: return
-            val content = inputStream.bufferedReader(Charset.forName("UTF-8")).use { it.readText() }
-            val imported = mutableListOf<String>()
-            val array = JSONArray(content)
-            for (i in 0 until array.length()) {
-                val value = array.optString(i).trim()
-                if (value.isNotBlank()) {
-                    imported.add(value)
-                }
-            }
-            val existing = loadCommonCommands()
-            val existingSet = existing.toMutableSet()
-            var addedCount = 0
-            val uniqueImported = imported.distinct()
-            for (i in uniqueImported.indices.reversed()) {
-                val cmd = uniqueImported[i]
-                if (existingSet.add(cmd)) {
-                    existing.add(0, cmd)
-                    addedCount++
-                }
-            }
-            val skipped = uniqueImported.size - addedCount
-            if (addedCount > 0) {
-                saveCommonCommands(existing)
-                markEverAddedCommon()
-            }
-            updateCommonCommandsList()
-            Toast.makeText(
-                this,
-                resources.getString(R.string.text_import_done, addedCount, skipped),
-                Toast.LENGTH_SHORT
-            ).show()
-        } catch (_: Exception) {
-            Toast.makeText(this, resources.getString(R.string.text_import_failed), Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
-
-    private fun sendCommand(content: String, showInputError: Boolean) {
+    private fun sendCommand(content: String, showInputError: Boolean, title: String? = null) {
         if (!isOpenSerial) {
             Toast.makeText(
                 this@MainActivity,
@@ -759,7 +641,7 @@ class MainActivity : Activity() {
             ).show()
             return
         }
-        if (isHexMode() && !isValidHex(content)) {
+        if (isHexMode() && !SerialInputUtils.isValidHex(content)) {
             if (showInputError) {
                 mEtInput.error = resources.getString(R.string.text_hex_invalid)
             } else {
@@ -774,13 +656,28 @@ class MainActivity : Activity() {
         try {
             if (currentPort.isNotEmpty()) {
                 if (isHexMode()) {
-                    val hex = normalizeHex(content)
+                    val hex = SerialInputUtils.normalizeHex(content)
+                    val formatted = SerialInputUtils.formatHex(hex)
+                    if (isMockMode) {
+                        addLog(Direction.TX, formatted, title)
+                        simulateReceive(formatted)
+                        clearInputAfterSend(showInputError)
+                        return
+                    }
                     EasySerial.send(currentPort, HexCodec.decode(hex))
-                    addLog(Direction.TX, formatHex(hex))
+                    addLog(Direction.TX, formatted, title)
+                    clearInputAfterSend(showInputError)
                 } else {
                     val bytes = content.toByteArray(Charsets.UTF_8)
+                    if (isMockMode) {
+                        addLog(Direction.TX, content, title)
+                        simulateReceive(content)
+                        clearInputAfterSend(showInputError)
+                        return
+                    }
                     EasySerial.send(currentPort, bytes)
-                    addLog(Direction.TX, content)
+                    addLog(Direction.TX, content, title)
+                    clearInputAfterSend(showInputError)
                 }
             }
         } catch (e: SerialException) {
@@ -796,6 +693,19 @@ class MainActivity : Activity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun clearInputAfterSend(shouldClear: Boolean) {
+        if (!shouldClear) return
+        mEtInput.setText("")
+        mEtInput.error = null
+        refreshSendAvailability()
+        hideKeyboard(mEtInput)
+    }
+
+    private fun hideKeyboard(view: View) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun updateEmptyView() {

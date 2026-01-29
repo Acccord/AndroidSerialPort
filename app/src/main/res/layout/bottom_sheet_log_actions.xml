@@ -1,52 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_card"
-    android:orientation="vertical"
-    android:padding="12dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bottom_sheet"
+        android:orientation="vertical"
+        android:padding="12dp">
 
     <TextView
-        android:id="@+id/mTvResend"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="8dp"
-        android:text="@string/text_resend"
-        android:textColor="@color/textPrimary"
-        android:textSize="14sp" />
+            android:id="@+id/mTvLogSheetTitle"
+            style="@style/TextAppearance.App.SectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/text_log_actions_title" />
+
+    <TextView
+            android:id="@+id/mTvResend"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:text="@string/text_resend"
+            android:textColor="@color/textPrimary"
+            android:textSize="14sp" />
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/border" />
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/border" />
 
     <TextView
-        android:id="@+id/mTvCopy"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="8dp"
-        android:text="@string/text_copy"
-        android:textColor="@color/textPrimary"
-        android:textSize="14sp" />
+            android:id="@+id/mTvCopy"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:text="@string/text_copy"
+            android:textColor="@color/textPrimary"
+            android:textSize="14sp" />
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/border" />
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/border" />
 
     <TextView
-        android:id="@+id/mTvAddCommon"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="8dp"
-        android:text="@string/text_add_to_common"
-        android:textColor="@color/textPrimary"
-        android:textSize="14sp" />
+            android:id="@+id/mTvAddCommon"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:text="@string/text_add_to_common"
+            android:textColor="@color/textPrimary"
+            android:textSize="14sp" />
 
 </LinearLayout>
