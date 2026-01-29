@@ -18,8 +18,10 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/select.h>
 #include <fcntl.h>
 #include <string.h>
+#include <errno.h>
 #include <jni.h>
 
 #include "SerialPort.h"
@@ -70,13 +72,13 @@ static speed_t getBaudrate(jint baudrate)
 }
 
 /*
- * Class:     android_serialport_SerialPort
+ * Class:     com_temon_serial_internal_serialport_SerialPort
  * Method:    open
- * Signature: (Ljava/lang/String;II)Ljava/io/FileDescriptor;
+ * Signature: (Ljava/lang/String;IIIIII)Ljava/io/FileDescriptor;
  */
-JNIEXPORT jobject JNICALL Java_android_serialport_SerialPort_open
+JNIEXPORT jobject JNICALL Java_com_temon_serial_internal_serialport_SerialPort_open
 		(JNIEnv *env, jclass thiz, jstring path, jint baudrate, jint stopBits, jint dataBits,
-		 jint parity, jint flowCon, jint flags) {
+		 jint parity, jint flowCon, jint flags, jint readTimeoutMs) {
 	int fd;
 	speed_t speed;
 	jobject mFileDescriptor;
@@ -186,6 +188,25 @@ JNIEXPORT jobject JNICALL Java_android_serialport_SerialPort_open
 				break;
 		}
 
+		// Configure read timeout: VMIN and VTIME
+		// VMIN = 0: non-blocking mode, return immediately if no data
+		// VTIME = readTimeoutMs / 100 (in deciseconds, 0.1s units)
+		// If readTimeoutMs <= 0, use blocking mode (VMIN > 0, VTIME = 0)
+		if (readTimeoutMs > 0) {
+			// Non-blocking with timeout: VMIN=0, VTIME in deciseconds
+			cfg.c_cc[VMIN] = 0;
+			// Convert milliseconds to deciseconds (0.1s units), min 1 decisecond
+			int vtime = (readTimeoutMs + 99) / 100;  // Round up
+			if (vtime < 1) vtime = 1;
+			if (vtime > 255) vtime = 255;  // VTIME is uint8_t
+			cfg.c_cc[VTIME] = (unsigned char)vtime;
+			LOGD("Configured read timeout: %d ms (VTIME=%d)", readTimeoutMs, vtime);
+		} else {
+			// Blocking mode: VMIN > 0, VTIME = 0 (wait for at least 1 byte)
+			cfg.c_cc[VMIN] = 1;
+			cfg.c_cc[VTIME] = 0;
+			LOGD("Configured blocking read mode (no timeout)");
+		}
 
 		if (tcsetattr(fd, TCSANOW, &cfg)) {
 			LOGE("tcsetattr() failed");
@@ -208,11 +229,11 @@ JNIEXPORT jobject JNICALL Java_android_serialport_SerialPort_open
 }
 
 /*
- * Class:     cedric_serial_SerialPort
+ * Class:     com_temon_serial_internal_serialport_SerialPort
  * Method:    close
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_android_serialport_SerialPort_close
+JNIEXPORT void JNICALL Java_com_temon_serial_internal_serialport_SerialPort_close
 		(JNIEnv *env, jobject thiz) {
 	jclass SerialPortClass = (*env)->GetObjectClass(env, thiz);
 	jclass FileDescriptorClass = (*env)->FindClass(env, "java/io/FileDescriptor");
@@ -225,4 +246,60 @@ JNIEXPORT void JNICALL Java_android_serialport_SerialPort_close
 
 	LOGD("close(fd = %d)", descriptor);
 	close(descriptor);
+}
+
+/*
+ * Class:     com_temon_serial_internal_serialport_SerialPort
+ * Method:    isDeviceOnline
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_temon_serial_internal_serialport_SerialPort_isDeviceOnline
+		(JNIEnv *env, jobject thiz) {
+	jclass SerialPortClass = (*env)->GetObjectClass(env, thiz);
+	jclass FileDescriptorClass = (*env)->FindClass(env, "java/io/FileDescriptor");
+
+	jfieldID mFdID = (*env)->GetFieldID(env, SerialPortClass, "mFd", "Ljava/io/FileDescriptor;");
+	jfieldID descriptorID = (*env)->GetFieldID(env, FileDescriptorClass, "descriptor", "I");
+
+	jobject mFd = (*env)->GetObjectField(env, thiz, mFdID);
+	if (mFd == NULL) {
+		return JNI_FALSE;
+	}
+	jint descriptor = (*env)->GetIntField(env, mFd, descriptorID);
+	if (descriptor < 0) {
+		return JNI_FALSE;
+	}
+
+	// Use select() with zero timeout to check if file descriptor is still valid
+	fd_set readfds;
+	struct timeval timeout;
+	FD_ZERO(&readfds);
+	FD_SET(descriptor, &readfds);
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
+
+	// Check if descriptor is still valid by attempting to select on it
+	// If select returns error, device is likely disconnected
+	int result = select(descriptor + 1, &readfds, NULL, NULL, &timeout);
+	if (result < 0) {
+		// Error: device may be disconnected
+		if (errno == EBADF) {
+			LOGD("isDeviceOnline: EBADF - file descriptor invalid");
+			return JNI_FALSE;
+		}
+		// Other errors might be temporary, but log them
+		LOGD("isDeviceOnline: select() error %d", errno);
+		return JNI_FALSE;
+	}
+
+	// Also check if we can still access the file descriptor
+	// by attempting a non-blocking read (peek)
+	char buf[1];
+	ssize_t n = read(descriptor, buf, 0);  // Peek: read 0 bytes
+	if (n < 0 && errno == EBADF) {
+		LOGD("isDeviceOnline: EBADF on read peek - file descriptor invalid");
+		return JNI_FALSE;
+	}
+
+	return JNI_TRUE;
 }

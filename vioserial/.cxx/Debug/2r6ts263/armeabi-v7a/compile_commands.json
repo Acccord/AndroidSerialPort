@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/Debug/2r6ts263/armeabi-v7a",
-  "command": "/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi19 --sysroot=/Users/jimi/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dserial_port_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o -c /Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/src/main/cpp/SerialPort.c",
-  "file": "/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/src/main/cpp/SerialPort.c"
-}
-]

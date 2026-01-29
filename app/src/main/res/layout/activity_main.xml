@@ -3,6 +3,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
         android:orientation="vertical"
         android:padding="16dp"
         tools:context=".MainActivity">
@@ -10,29 +11,63 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="12dp">
 
-        <EditText
-                android:id="@+id/mEtCK"
-                android:layout_width="0dp"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:hint="@string/text_serial_input" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <EditText
-                android:id="@+id/mEtBTL"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:hint="@string/text_rate_input"
-                android:inputType="number" />
+            <TextView
+                    style="@style/TextAppearance.App.SectionTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/text_section_connect" />
 
-        <Button
-                android:id="@+id/mBtnConnect"
-                android:layout_width="0dp"
+            <TextView
+                    android:id="@+id/mTvStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_status_idle"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/text_connect" />
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+            <Spinner
+                    android:id="@+id/mSpPort"
+                    style="@style/Widget.App.Input"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1.6"
+                    android:spinnerMode="dropdown" />
+
+            <Spinner
+                    android:id="@+id/mSpBaud"
+                    style="@style/Widget.App.Input"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.1"
+                    android:spinnerMode="dropdown" />
+
+            <Button
+                    android:id="@+id/mBtnConnect"
+                    style="@style/Widget.App.PrimaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/text_connect" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -40,54 +75,156 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+        <TextView
+                style="@style/TextAppearance.App.SectionTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_section_send" />
 
         <EditText
                 android:id="@+id/mEtInput"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:hint="@string/text_write_something" />
+                style="@style/Widget.App.Input"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="8dp"
+                android:gravity="top|start"
+                android:hint="@string/text_write_something"
+                android:inputType="textMultiLine|textNoSuggestions" />
 
-        <Button
-                android:id="@+id/mBtnSend"
-                android:layout_width="0dp"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/text_send" />
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <RadioGroup
+                    android:id="@+id/mRgMode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                <RadioButton
+                        android:id="@+id/mRbHex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/text_mode_hex" />
+
+                <RadioButton
+                        android:id="@+id/mRbAscii"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/text_mode_ascii" />
+            </RadioGroup>
+
+            <Button
+                    android:id="@+id/mBtnSend"
+                    style="@style/Widget.App.PrimaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/text_send" />
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/mTvCommonCommands"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/text_common_commands_entry"
+                android:textColor="@color/colorAccent"
+                android:textSize="13sp" />
 
     </LinearLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="12dp">
 
-        <TextView
-                android:id="@+id/mTvSendData"
-                android:layout_width="0dp"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="8dp"
-                android:text="@string/text_send_data"
-                android:textColor="#43adff" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_margin="8dp"
-                android:background="#aaaaaa" />
+            <TextView
+                    style="@style/TextAppearance.App.SectionTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/text_log_title" />
 
-        <TextView
-                android:id="@+id/mTvReviData"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <TextView
+                    android:id="@+id/mTvClearLog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/text_clear_log"
+                    android:textColor="@color/textDelete" />
+        </LinearLayout>
+
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
                 android:layout_weight="1"
-                android:padding="8dp"
-                android:text="@string/text_receive_data"
-                android:textColor="#00cd8c" />
+                android:background="@color/panelBackground">
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/mRvLogs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="6dp" />
+
+            <TextView
+                    android:id="@+id/mTvEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/text_log_empty"
+                    android:textColor="@color/textHint"
+                    android:textSize="13sp" />
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:alpha="0.5"
+                    android:orientation="vertical">
+
+                <Switch
+                        android:id="@+id/mSwitchAutoScroll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/text_auto_scroll"
+                        android:textSize="12sp" />
+
+                <Switch
+                        android:id="@+id/mSwitchTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:checked="true"
+                        android:text="@string/text_show_time"
+                        android:textSize="12sp" />
+
+            </LinearLayout>
+        </FrameLayout>
 
     </LinearLayout>
 

@@ -1,14 +1,5 @@
 # ninja log v5
-0	136	1733985846	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	a18cd0e0d988516f
-136	209	1733985846	../../../../build/intermediates/cxx/RelWithDebInfo/5h241e12/obj/arm64-v8a/libserial_port.so	e9275c721b5cdc96
-0	12	0	clean	9e0f5cdf113d263e
-0	13	0	clean	9e0f5cdf113d263e
-0	14	0	clean	9e0f5cdf113d263e
-0	14	0	clean	9e0f5cdf113d263e
-0	204	1734516407	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	a18cd0e0d988516f
-204	335	1734516407	../../../../build/intermediates/cxx/RelWithDebInfo/5h241e12/obj/arm64-v8a/libserial_port.so	e9275c721b5cdc96
-0	29	0	clean	9e0f5cdf113d263e
-0	17	0	clean	9e0f5cdf113d263e
-0	136	1734516619	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	a18cd0e0d988516f
-136	209	1734516619	../../../../build/intermediates/cxx/RelWithDebInfo/5h241e12/obj/arm64-v8a/libserial_port.so	e9275c721b5cdc96
-0	28	0	clean	9e0f5cdf113d263e
+0	300	1769601689	CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o	a18cd0e0d988516f
+300	464	1769601689	../../../../build/intermediates/cxx/RelWithDebInfo/5h241e12/obj/arm64-v8a/libserial_port.so	e9275c721b5cdc96
+1	578	1769601963	../../../../build/intermediates/cxx/RelWithDebInfo/5h241e12/obj/arm64-v8a/libserial_port.so	e9275c721b5cdc96
+0	79	0	clean	9e0f5cdf113d263e

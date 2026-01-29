@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/.cxx/cmake/release/x86",
-  "command": "/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=i686-none-linux-android16 --gcc-toolchain=/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/vi/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dserial_port_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -O2 -DNDEBUG  -fPIC   -o CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o   -c /Users/vi/StudioProjects/AndroidSerialPort/vioserial/src/main/cpp/SerialPort.c",
-  "file": "/Users/vi/StudioProjects/AndroidSerialPort/vioserial/src/main/cpp/SerialPort.c"
-}
-]

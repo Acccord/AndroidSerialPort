@@ -1,3 +1,0 @@
-ninja: Entering directory `/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/Debug/2r6ts263/armeabi-v7a'
-[1/2] Building C object CMakeFiles/serial_port.dir/src/main/cpp/SerialPort.c.o
-[2/2] Linking C shared library ../../../../build/intermediates/cxx/Debug/2r6ts263/obj/armeabi-v7a/libserial_port.so

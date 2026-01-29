@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#2A7DE1</color>
+    <color name="colorPrimaryDark">#1F5FB0</color>
+    <color name="colorAccent">#0F9B6D</color>
+
+    <color name="background">#F7F8FA</color>
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="panelBackground">#F5F7FB</color>
+    <color name="border">#E6E8EC</color>
+    <color name="inputBackground">#FAFAFB</color>
+    <color name="inputBorder">#DADDE3</color>
+    <color name="buttonDisabled">#BFC8D6</color>
+
+    <color name="textPrimary">#1F2937</color>
+    <color name="textSecondary">#5A6B7B</color>
+    <color name="textHint">#9AA4B2</color>
+    <color name="textDelete">#E91E63</color>
+    <color name="sendText">#2A7DE1</color>
+    <color name="receiveText">#0F9B6D</color>
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>

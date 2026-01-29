@@ -24,4 +24,4 @@
     native <methods>;
 }
 
--keep class android.serialport.* {*;}
+-keep class com.temon.serial.internal.serialport.** {*;}

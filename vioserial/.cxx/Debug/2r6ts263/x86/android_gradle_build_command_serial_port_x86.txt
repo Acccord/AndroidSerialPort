@@ -1,7 +1,0 @@
-Executable : /Users/jimi/Library/Android/sdk/cmake/3.18.1/bin/ninja
-arguments : 
--C
-/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/Debug/2r6ts263/x86
-serial_port
-jvmArgs : 
-
