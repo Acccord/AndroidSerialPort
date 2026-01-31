@@ -1,3 +1,0 @@
-/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/Debug/2r6ts263/arm64-v8a/CMakeFiles/rebuild_cache.dir
-/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/Debug/2r6ts263/arm64-v8a/CMakeFiles/edit_cache.dir
-/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/Debug/2r6ts263/arm64-v8a/CMakeFiles/serial_port.dir

@@ -22,6 +22,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <errno.h>
+#include <stdio.h>
 #include <jni.h>
 
 #include "SerialPort.h"
@@ -32,6 +33,13 @@ static const char *TAG = "serial_port";
 #define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO,  TAG, fmt, ##args)
 #define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, TAG, fmt, ##args)
 #define LOGE(fmt, args...) __android_log_print(ANDROID_LOG_ERROR, TAG, fmt, ##args)
+
+static void throwIOException(JNIEnv *env, const char *msg) {
+	jclass exClass = (*env)->FindClass(env, "java/io/IOException");
+	if (exClass != NULL) {
+		(*env)->ThrowNew(env, exClass, msg);
+	}
+}
 
 static speed_t getBaudrate(jint baudrate)
 {
@@ -89,6 +97,7 @@ JNIEXPORT jobject JNICALL Java_com_temon_serial_internal_serialport_SerialPort_o
 		if (speed == -1) {
 			/* TODO: throw an exception */
 			LOGE("Invalid baudrate");
+			throwIOException(env, "Invalid baudrate");
 			return NULL;
 		}
 	}
@@ -104,7 +113,11 @@ JNIEXPORT jobject JNICALL Java_com_temon_serial_internal_serialport_SerialPort_o
 		if (fd == -1) {
 			/* Throw an exception */
 			LOGE("Cannot open port");
-			/* TODO: throw an exception */
+			{
+				char buf[256];
+				snprintf(buf, sizeof(buf), "Cannot open port: %s", strerror(errno));
+				throwIOException(env, buf);
+			}
 			return NULL;
 		}
 	}
@@ -116,7 +129,11 @@ JNIEXPORT jobject JNICALL Java_com_temon_serial_internal_serialport_SerialPort_o
 		if (tcgetattr(fd, &cfg)) {
 			LOGE("tcgetattr() failed");
 			close(fd);
-			/* TODO: throw an exception */
+			{
+				char buf[256];
+				snprintf(buf, sizeof(buf), "tcgetattr failed: %s", strerror(errno));
+				throwIOException(env, buf);
+			}
 			return NULL;
 		}
 
@@ -211,7 +228,11 @@ JNIEXPORT jobject JNICALL Java_com_temon_serial_internal_serialport_SerialPort_o
 		if (tcsetattr(fd, TCSANOW, &cfg)) {
 			LOGE("tcsetattr() failed");
 			close(fd);
-			/* TODO: throw an exception */
+			{
+				char buf[256];
+				snprintf(buf, sizeof(buf), "tcsetattr failed: %s", strerror(errno));
+				throwIOException(env, buf);
+			}
 			return NULL;
 		}
 	}

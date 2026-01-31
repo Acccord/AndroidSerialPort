@@ -56,7 +56,7 @@ public final class SerialConnection {
     
     // Statistics and monitoring
     private final SerialStatistics statistics = new SerialStatistics();
-    private int adaptiveBufferSize;  // Adaptive buffer size
+    private volatile int adaptiveBufferSize;  // Adaptive buffer size
 
     private SerialConnection(Builder b) {
         this.config = b.config;
@@ -570,14 +570,16 @@ public final class SerialConnection {
         if (selector != null) {
             try {
                 selector.close();
-            } catch (Throwable ignored) {
+            } catch (Throwable t) {
+                logger.logError(config.port, "Failed to close selector", t);
             }
             selector = null;
         }
         if (readChannel != null) {
             try {
                 readChannel.close();
-            } catch (Throwable ignored) {
+            } catch (Throwable t) {
+                logger.logError(config.port, "Failed to close read channel", t);
             }
             readChannel = null;
         }
@@ -590,7 +592,8 @@ public final class SerialConnection {
                 if (in != null) {
                     in.close();
                 }
-            } catch (Throwable ignored) {
+            } catch (Throwable t) {
+                logger.logError(config.port, "Failed to close input stream during shutdown", t);
             }
             // Wake up selector if in NIO mode
             if (selector != null) {
@@ -621,15 +624,18 @@ public final class SerialConnection {
         }
         try {
             if (in != null) in.close();
-        } catch (Throwable ignored) {
+        } catch (Throwable t) {
+            logger.logError(config.port, "Failed to close input stream", t);
         }
         try {
             if (out != null) out.close();
-        } catch (Throwable ignored) {
+        } catch (Throwable t) {
+            logger.logError(config.port, "Failed to close output stream", t);
         }
         try {
             if (serialPort != null) serialPort.close();
-        } catch (Throwable ignored) {
+        } catch (Throwable t) {
+            logger.logError(config.port, "Failed to close serial port", t);
         }
         serialPort = null;
         in = null;

@@ -311,8 +311,11 @@ public final class SerialManager {
                                 for (OnBytesListener l : list) {
                                     try {
                                         l.onBytes(data, length);
-                                    } catch (Throwable ignored) {
+                                    } catch (Throwable t) {
                                         // Protect IO thread from listener errors
+                                        if (logger.isEnabled()) {
+                                            logger.logError(port, "OnBytesListener threw", t);
+                                        }
                                     }
                                 }
                             }
@@ -323,8 +326,11 @@ public final class SerialManager {
                                     for (OnHexDataListener l : hexList) {
                                         try {
                                             l.onData(hex);
-                                        } catch (Throwable ignored) {
+                                        } catch (Throwable t) {
                                             // Protect IO thread from listener errors
+                                            if (logger.isEnabled()) {
+                                                logger.logError(port, "OnHexDataListener threw", t);
+                                            }
                                         }
                                     }
                                 }
@@ -339,8 +345,11 @@ public final class SerialManager {
                                 for (OnFrameListener l : frameList) {
                                     try {
                                         l.onFrame(frame, length);
-                                    } catch (Throwable ignored) {
+                                    } catch (Throwable t) {
                                         // Protect IO thread from listener errors
+                                        if (logger.isEnabled()) {
+                                            logger.logError(port, "OnFrameListener threw", t);
+                                        }
                                     }
                                 }
                             }
@@ -350,8 +359,11 @@ public final class SerialManager {
                                 for (OnHexDataListener l : list) {
                                     try {
                                         l.onData(hex);
-                                    } catch (Throwable ignored) {
+                                    } catch (Throwable t) {
                                         // Protect IO thread from listener errors
+                                        if (logger.isEnabled()) {
+                                            logger.logError(port, "OnHexDataListener threw", t);
+                                        }
                                     }
                                 }
                             }
@@ -366,8 +378,11 @@ public final class SerialManager {
                             for (OnErrorListener l : errorListeners) {
                                 try {
                                     l.onError(port, info.error, info.message, t);
-                                } catch (Throwable ignored) {
+                                } catch (Throwable t2) {
                                     // Don't let listener exceptions break the system
+                                    if (logger.isEnabled()) {
+                                        logger.logError(port, "OnErrorListener threw", t2);
+                                    }
                                 }
                             }
                         }

@@ -1,3 +1,0 @@
-/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/RelWithDebInfo/5h241e12/armeabi-v7a/CMakeFiles/rebuild_cache.dir
-/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/RelWithDebInfo/5h241e12/armeabi-v7a/CMakeFiles/edit_cache.dir
-/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/RelWithDebInfo/5h241e12/armeabi-v7a/CMakeFiles/serial_port.dir

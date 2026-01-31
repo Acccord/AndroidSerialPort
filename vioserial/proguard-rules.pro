@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep public API and JNI bindings for the serial library.
+-keep class com.temon.serial.** { *; }
+-keepclassmembers class * { native <methods>; }
+
+# Preserve useful debugging information.
+-keepattributes SourceFile,LineNumberTable,Signature,InnerClasses,EnclosingMethod

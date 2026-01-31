@@ -1,7 +1,0 @@
-Executable : /Users/jimi/Library/Android/sdk/cmake/3.18.1/bin/ninja
-arguments : 
--C
-/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/RelWithDebInfo/5h241e12/armeabi-v7a
-serial_port
-jvmArgs : 
-

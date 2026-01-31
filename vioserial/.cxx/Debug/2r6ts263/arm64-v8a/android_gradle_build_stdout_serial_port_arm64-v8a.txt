@@ -1,2 +1,0 @@
-ninja: Entering directory `/Users/jimi/AndroidStudioProjects/AndroidSerialPort/vioserial/.cxx/Debug/2r6ts263/arm64-v8a'
-ninja: no work to do.

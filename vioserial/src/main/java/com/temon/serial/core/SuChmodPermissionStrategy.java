@@ -29,9 +29,13 @@ public final class SuChmodPermissionStrategy implements PermissionStrategy {
         if (device.canRead() && device.canWrite()) {
             return;
         }
+        String devicePath = device.getAbsolutePath();
+        if (!isSafePath(devicePath)) {
+            throw new SecurityException("Unsafe device path for su chmod: " + devicePath);
+        }
         try {
             Process su = Runtime.getRuntime().exec(suPath);
-            String cmd = "chmod 666 " + device.getAbsolutePath() + "\n"
+            String cmd = "chmod 666 " + devicePath + "\n"
                     + "exit\n";
             su.getOutputStream().write(cmd.getBytes());
             su.getOutputStream().flush();
@@ -45,5 +49,10 @@ public final class SuChmodPermissionStrategy implements PermissionStrategy {
         } catch (IOException e) {
             throw new SecurityException("Failed to run su chmod: " + device.getAbsolutePath(), e);
         }
+    }
+
+    private static boolean isSafePath(String path) {
+        // Allow only common device-node path characters to avoid command injection.
+        return path != null && path.matches("[A-Za-z0-9_./-]+");
     }
 }
