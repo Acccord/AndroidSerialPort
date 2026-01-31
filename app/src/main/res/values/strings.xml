@@ -19,11 +19,11 @@
     <string name="text_channel_correct">请输入正确的货道号</string>
     <string name="text_section_connect">连接设置</string>
     <string name="text_section_send">发送设置</string>
-    <string name="text_status_connected">🟢 已连接：%1$s @ %2$d</string>
-    <string name="text_status_idle">🟡 串口未连接</string>
-    <string name="text_status_no_ports">🔴 未检测到串口</string>
-    <string name="text_status_connecting">🟡 正在连接…</string>
-    <string name="text_status_failed">🔴 连接失败：%1$s</string>
+    <string name="text_status_connected">已连接：%1$s @ %2$d</string>
+    <string name="text_status_idle">串口未连接</string>
+    <string name="text_status_no_ports">未检测到串口</string>
+    <string name="text_status_connecting">正在连接…</string>
+    <string name="text_status_failed">连接失败：%1$s</string>
     <string name="text_no_ports">未检测到可用串口</string>
     <string name="text_mode_hex">HEX</string>
     <string name="text_mode_ascii">ASCII</string>
@@ -34,13 +34,14 @@
     <string name="text_connecting">连接中…</string>
     <string name="text_auto_scroll">自动滚动</string>
     <string name="text_show_time">显示时间</string>
+    <string name="text_show_title">显示标题</string>
+    <string name="text_log_settings">日志显示设置</string>
     <string name="text_log_empty">暂无通信日志，开始发送或接收后会显示</string>
     <string name="text_reason_no_permission">无权限</string>
     <string name="text_reason_invalid_param">参数非法</string>
     <string name="text_reason_unknown">未知错误</string>
     <string name="text_baud_custom">自定义</string>
     <string name="text_baud_invalid">请输入正确的波特率</string>
-    <string name="text_mock_mode">模拟串口模式</string>
     <string name="text_mock_port">模拟串口</string>
 
     <string name="text_common_commands_entry">常用命令</string>

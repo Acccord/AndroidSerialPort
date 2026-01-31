@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        tools:context=".MainActivity">
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                <TextView
+                        style="@style/TextAppearance.App.SectionTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/text_section_connect" />
+
+                <TextView
+                        android:id="@+id/mTvStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_status_idle"
+                        android:textColor="@color/textSecondary"
+                        android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                <Spinner
+                        android:id="@+id/mSpPort"
+                        style="@style/Widget.App.Input"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.6"
+                        android:spinnerMode="dropdown" />
+
+                <Spinner
+                        android:id="@+id/mSpBaud"
+                        style="@style/Widget.App.Input"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1.1"
+                        android:spinnerMode="dropdown" />
+
+                <TextView
+                        android:id="@+id/mBtnConnect"
+                        style="@style/Widget.App.PrimaryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/text_connect" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_card"
+                android:padding="12dp">
+
+            <TextView
+                    android:id="@+id/sectionSendTitle"
+                    style="@style/TextAppearance.App.SectionTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_section_send"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioGroup
+                    android:id="@+id/mRgMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="@+id/sectionSendTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/sectionSendTitle">
+
+                <RadioButton
+                        android:id="@+id/mRbHex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/text_mode_hex"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="13sp" />
+
+                <RadioButton
+                        android:id="@+id/mRbAscii"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/text_mode_ascii"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="13sp" />
+            </RadioGroup>
+
+            <EditText
+                    android:id="@+id/mEtInput"
+                    style="@style/Widget.App.Input"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="top|start"
+                    android:hint="@string/text_write_something"
+                    android:inputType="textMultiLine|textNoSuggestions"
+                    app:layout_constraintBottom_toTopOf="@+id/mBtnCommonCommands"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sectionSendTitle" />
+
+            <TextView
+                    android:id="@+id/mBtnCommonCommands"
+                    style="@style/Widget.App.PrimaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_button_green"
+                    android:text="@string/text_common_commands_entry"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                    android:id="@+id/mBtnSend"
+                    style="@style/Widget.App.PrimaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/text_send"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:background="@drawable/bg_card"
+            android:padding="12dp">
+
+        <TextView
+                android:id="@+id/sectionLogTitle"
+                style="@style/TextAppearance.App.SectionTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_log_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+                android:id="@+id/mTvClearLog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_clear_log"
+                android:textColor="@color/textSecondary"
+                app:layout_constraintBottom_toBottomOf="@+id/sectionLogTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sectionLogTitle" />
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mRvLogs"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/panelBackground"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sectionLogTitle" />
+
+        <LinearLayout
+                android:id="@+id/mLogSettingsPanel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_card"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/mBtnLogSettings"
+                app:layout_constraintEnd_toEndOf="parent">
+
+            <Switch
+                    android:id="@+id/mSwitchTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/text_show_title"
+                    android:textSize="12sp" />
+
+            <Switch
+                    android:id="@+id/mSwitchTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:checked="true"
+                    android:text="@string/text_show_time"
+                    android:textSize="12sp" />
+
+            <Switch
+                    android:id="@+id/mSwitchAutoScroll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:checked="true"
+                    android:text="@string/text_auto_scroll"
+                    android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+                android:id="@+id/mBtnLogSettings"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:alpha="0.5"
+                android:padding="6dp"
+                android:src="@drawable/ic_settings"
+                app:layout_constraintBottom_toBottomOf="@+id/mRvLogs"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+                android:id="@+id/mTvEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/panelBackground"
+                android:gravity="center"
+                android:text="@string/text_log_empty"
+                android:textColor="@color/textHint"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@+id/mRvLogs"
+                app:layout_constraintEnd_toEndOf="@+id/mRvLogs"
+                app:layout_constraintStart_toStartOf="@+id/mRvLogs"
+                app:layout_constraintTop_toBottomOf="@+id/sectionLogTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

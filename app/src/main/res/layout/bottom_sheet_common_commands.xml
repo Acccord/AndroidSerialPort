@@ -1,75 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_bottom_sheet"
-        android:orientation="vertical"
         android:padding="12dp">
 
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        <TextView
-                android:id="@+id/mTvCommonSheetTitle"
-                style="@style/TextAppearance.App.SectionTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/text_common_commands_title" />
-
-        <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:orientation="horizontal">
-
-            <TextView
-                    android:id="@+id/mTvExport"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:padding="8dp"
-                    android:text="@string/text_export_commands"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="13sp" />
-
-            <TextView
-                    android:id="@+id/mTvImport"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:padding="8dp"
-                    android:text="@string/text_import_commands"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="13sp" />
-        </LinearLayout>
-
-    </RelativeLayout>
-
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/border" />
-
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/mRvCommonCommands"
-            android:layout_width="match_parent"
-            android:layout_height="240dp" />
+    <TextView
+            android:id="@+id/mTvCommonSheetTitle"
+            style="@style/TextAppearance.App.SectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/text_common_commands_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-            android:id="@+id/mTvCommonEmpty"
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:gravity="center"
-            android:lineSpacingExtra="4dp"
-            android:paddingHorizontal="16dp"
-            android:text="@string/text_common_empty_guide"
-            android:textAlignment="center"
-            android:textColor="@color/textHint"
-            android:textSize="14sp"
-            android:visibility="gone" />
+            android:id="@+id/mTvExport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="8dp"
+            android:text="@string/text_export_commands"
+            android:textColor="@color/textSecondary"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/mTvCommonSheetTitle"
+            app:layout_constraintEnd_toStartOf="@+id/mTvImport"
+            app:layout_constraintTop_toTopOf="@+id/mTvCommonSheetTitle" />
 
-</LinearLayout>
+    <TextView
+            android:id="@+id/mTvImport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="8dp"
+            android:text="@string/text_import_commands"
+            android:textColor="@color/textSecondary"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/mTvCommonSheetTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/mTvCommonSheetTitle" />
+
+    <View
+            android:id="@+id/viewCommonCommandsDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mTvCommonSheetTitle" />
+
+    <FrameLayout
+            android:id="@+id/mCommonContentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewCommonCommandsDivider">
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mRvCommonCommands"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        <TextView
+                android:id="@+id/mTvCommonEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:text="@string/text_common_empty_guide"
+                android:textAlignment="center"
+                android:textColor="@color/textHint"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,19 +2,27 @@ package com.temon.androidserialport
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.json.JSONArray
 import org.json.JSONObject
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -26,16 +34,18 @@ class CommonCommandsController(
 ) {
 
     val importRequestCode: Int = 1001
+    val exportPermissionRequestCode: Int = 2001
 
     private val commonCommandsKey = "common_commands"
     private val commonCommandsAddedKey = "common_commands_added"
-    private val exportDirName = "common_commands"
-    private val exportFileName = "common_commands.json"
+    private val exportFileName = "common_commands.txt"
 
     private var dialog: BottomSheetDialog? = null
     private var adapter: CommonCommandAdapter? = null
     private var emptyView: TextView? = null
     private var recyclerView: RecyclerView? = null
+    private var contentContainer: View? = null
+    private var exportView: TextView? = null
 
     fun show() {
         if (dialog == null) {
@@ -50,8 +60,9 @@ class CommonCommandsController(
         if (trimmed.isBlank()) return
         val commands = loadCommands()
         if (commands.any { it.content == trimmed }) {
-            Toast.makeText(activity, activity.getString(R.string.text_common_exists), Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(
+                activity, activity.getString(R.string.text_common_exists), Toast.LENGTH_SHORT
+            ).show()
             return
         }
         commands.add(0, CommonCommand(content = trimmed))
@@ -68,8 +79,9 @@ class CommonCommandsController(
         if (removed) {
             saveCommands(commands)
             updateList()
-            Toast.makeText(activity, activity.getString(R.string.text_common_deleted), Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(
+                activity, activity.getString(R.string.text_common_deleted), Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -77,7 +89,9 @@ class CommonCommandsController(
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/json"
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/json", "text/json", "text/plain"))
+            putExtra(
+                Intent.EXTRA_MIME_TYPES, arrayOf("application/json", "text/json", "text/plain")
+            )
         }
         activity.startActivityForResult(intent, importRequestCode)
     }
@@ -90,46 +104,83 @@ class CommonCommandsController(
         return true
     }
 
+    fun handlePermissionResult(requestCode: Int, grantResults: IntArray): Boolean {
+        if (requestCode != exportPermissionRequestCode) return false
+        val granted =
+            grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+        if (granted) {
+            exportCommonCommandsToDownloadsInternal()
+        } else {
+            Toast.makeText(
+                activity, activity.getString(R.string.text_export_failed), Toast.LENGTH_SHORT
+            ).show()
+        }
+        return true
+    }
+
     private fun buildDialog() {
         val sheet = BottomSheetDialog(activity, R.style.AppBottomSheetDialogTheme)
         val view = activity.layoutInflater.inflate(R.layout.bottom_sheet_common_commands, null)
         val tvExport = view.findViewById<TextView>(R.id.mTvExport)
         val tvImport = view.findViewById<TextView>(R.id.mTvImport)
+        val container = view.findViewById<View>(R.id.mCommonContentContainer)
         val recycler = view.findViewById<RecyclerView>(R.id.mRvCommonCommands)
         val empty = view.findViewById<TextView>(R.id.mTvCommonEmpty)
+        applyBottomSheetMaxHeight(container)
         recycler.layoutManager = LinearLayoutManager(activity)
         recycler.addItemDecoration(
             DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
         )
-        val cmdAdapter = CommonCommandAdapter(
-            mutableListOf(),
-            onClick = { command ->
-                onSendCommand(command)
-                sheet.dismiss()
-            },
-            onEdit = { command ->
-                showEditDialog(command)
-            },
-            onDelete = { command ->
-                removeCommand(command)
-            }
-        )
+        val cmdAdapter = CommonCommandAdapter(mutableListOf(), onClick = { command ->
+            onSendCommand(command)
+            sheet.dismiss()
+        }, onEdit = { command ->
+            showEditDialog(command)
+        }, onDelete = { command ->
+            removeCommand(command)
+        })
         recycler.adapter = cmdAdapter
-        tvExport.setOnClickListener { exportCommonCommands() }
-        tvImport.setOnClickListener { launchImportPicker() }
+        tvExport.setOnClickListener {
+            exportCommonCommandsToDownloads()
+            sheet.dismiss()
+        }
+        tvImport.setOnClickListener {
+            launchImportPicker()
+            sheet.dismiss()
+        }
         sheet.setContentView(view)
         dialog = sheet
         adapter = cmdAdapter
         emptyView = empty
         recyclerView = recycler
+        contentContainer = container
+        exportView = tvExport
+    }
+
+    private fun applyBottomSheetMaxHeight(vararg targets: View) {
+        val maxHeight =
+            (activity.resources.displayMetrics.heightPixels * 0.65f).toInt()
+        targets.forEach { target ->
+            val params = target.layoutParams
+            if (params is ConstraintLayout.LayoutParams) {
+                params.height = maxHeight
+                target.layoutParams = params
+            } else {
+                params.height = maxHeight
+                target.layoutParams = params
+            }
+        }
     }
 
     private fun updateList() {
         val commands = loadCommands()
         adapter?.setItems(commands)
-        val showEmpty = commands.isEmpty() && !hasEverAddedCommon()
+        val showEmpty = commands.isEmpty()
         emptyView?.visibility = if (showEmpty) View.VISIBLE else View.GONE
         recyclerView?.visibility = if (showEmpty) View.GONE else View.VISIBLE
+        val hasCommands = commands.isNotEmpty()
+        exportView?.isEnabled = hasCommands
+        exportView?.alpha = if (hasCommands) 1f else 0.5f
     }
 
     private fun showEditDialog(command: CommonCommand) {
@@ -139,11 +190,9 @@ class CommonCommandsController(
         etTitle.setText(command.title.orEmpty())
         etContent.setText(command.content)
         val dialog = AlertDialog.Builder(activity)
-            .setTitle(activity.getString(R.string.text_edit_common_command))
-            .setView(view)
+            .setTitle(activity.getString(R.string.text_edit_common_command)).setView(view)
             .setPositiveButton(android.R.string.ok, null)
-            .setNegativeButton(android.R.string.cancel, null)
-            .create()
+            .setNegativeButton(android.R.string.cancel, null).create()
         dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val newContent = etContent.text.toString().trim()
@@ -184,12 +233,14 @@ class CommonCommandsController(
                 val entry = array.opt(i)
                 when (entry) {
                     is JSONObject -> {
-                        val content = entry.optString("content", entry.optString("command", "")).trim()
+                        val content =
+                            entry.optString("content", entry.optString("command", "")).trim()
                         val title = entry.optString("title", "").trim().takeIf { it.isNotBlank() }
                         if (content.isNotBlank()) {
                             result.add(CommonCommand(title = title, content = content))
                         }
                     }
+
                     is String -> {
                         val value = entry.trim()
                         if (value.isNotBlank()) {
@@ -222,15 +273,25 @@ class CommonCommandsController(
         preferences.edit().putBoolean(commonCommandsAddedKey, true).apply()
     }
 
-    private fun exportCommonCommands() {
-        val commands = loadCommands()
-        val exportDir = File(Environment.getExternalStorageDirectory(), exportDirName)
-        if (!exportDir.exists() && !exportDir.mkdirs()) {
-            Toast.makeText(activity, activity.getString(R.string.text_export_failed), Toast.LENGTH_SHORT)
-                .show()
-            return
+    private fun exportCommonCommandsToDownloads() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+            val granted = ContextCompat.checkSelfPermission(
+                activity,
+                permission
+            ) == PackageManager.PERMISSION_GRANTED
+            if (!granted) {
+                ActivityCompat.requestPermissions(
+                    activity, arrayOf(permission), exportPermissionRequestCode
+                )
+                return
+            }
         }
-        val file = File(exportDir, exportFileName)
+        exportCommonCommandsToDownloadsInternal()
+    }
+
+    private fun exportCommonCommandsToDownloadsInternal() {
+        val commands = loadCommands()
         val array = JSONArray()
         commands.forEach { command ->
             val obj = JSONObject()
@@ -239,15 +300,50 @@ class CommonCommandsController(
             array.put(obj)
         }
         try {
-            file.writeText(array.toString(), Charset.forName("UTF-8"))
+            val data = array.toString().toByteArray(Charset.forName("UTF-8"))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val resolver = activity.contentResolver
+                val values = ContentValues().apply {
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, exportFileName)
+                    put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+                }
+                val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                    ?: throw IOException("export uri unavailable")
+                try {
+                    resolver.openOutputStream(uri)?.use { output ->
+                        output.write(data)
+                        output.flush()
+                    } ?: throw IOException("export stream unavailable")
+                } catch (e: IOException) {
+                    resolver.delete(uri, null, null)
+                    throw e
+                }
+            } else {
+                val downloadDir =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                if (!downloadDir.exists() && !downloadDir.mkdirs()) {
+                    throw IOException("create download dir failed")
+                }
+                val file = File(downloadDir, exportFileName)
+                file.writeBytes(data)
+            }
+            val dirLabel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                "${Environment.DIRECTORY_DOWNLOADS}/$exportFileName"
+            } else {
+                val downloadDir =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                "${downloadDir.absolutePath}/${exportFileName}"
+            }
             Toast.makeText(
                 activity,
-                activity.getString(R.string.text_export_done, commands.size),
+                "${activity.getString(R.string.text_export_done, commands.size)}，保存至：$dirLabel",
                 Toast.LENGTH_SHORT
             ).show()
         } catch (_: IOException) {
-            Toast.makeText(activity, activity.getString(R.string.text_export_failed), Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(
+                activity, activity.getString(R.string.text_export_failed), Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -261,12 +357,14 @@ class CommonCommandsController(
                 val entry = array.opt(i)
                 when (entry) {
                     is JSONObject -> {
-                        val contentValue = entry.optString("content", entry.optString("command", "")).trim()
+                        val contentValue =
+                            entry.optString("content", entry.optString("command", "")).trim()
                         val title = entry.optString("title", "").trim().takeIf { it.isNotBlank() }
                         if (contentValue.isNotBlank()) {
                             imported.add(CommonCommand(title = title, content = contentValue))
                         }
                     }
+
                     is String -> {
                         val value = entry.trim()
                         if (value.isNotBlank()) {
@@ -298,8 +396,9 @@ class CommonCommandsController(
                 Toast.LENGTH_SHORT
             ).show()
         } catch (_: Exception) {
-            Toast.makeText(activity, activity.getString(R.string.text_import_failed), Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(
+                activity, activity.getString(R.string.text_import_failed), Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }

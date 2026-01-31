@@ -24,6 +24,7 @@ class SerialLogAdapter(
     private val onClick: (SerialLog) -> Unit
 ) : RecyclerView.Adapter<SerialLogAdapter.LogViewHolder>() {
     private var showTime: Boolean = true
+    private var showTitle: Boolean = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -33,7 +34,7 @@ class SerialLogAdapter(
 
     override fun onBindViewHolder(holder: LogViewHolder, position: Int) {
         val item = items[position]
-        holder.bind(item, showTime, onClick)
+        holder.bind(item, showTime, showTitle, onClick)
     }
 
     override fun getItemCount(): Int = items.size
@@ -55,13 +56,29 @@ class SerialLogAdapter(
         }
     }
 
+    fun setShowTitle(show: Boolean) {
+        if (showTitle != show) {
+            showTitle = show
+            notifyDataSetChanged()
+        }
+    }
+
     class LogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvLog: TextView = itemView.findViewById(R.id.mTvLog)
 
-        fun bind(item: SerialLog, showTime: Boolean, onClick: (SerialLog) -> Unit) {
+        fun bind(
+            item: SerialLog,
+            showTime: Boolean,
+            showTitle: Boolean,
+            onClick: (SerialLog) -> Unit
+        ) {
             val arrow = if (item.direction == Direction.TX) "▶" else "◀"
             val dirText = if (item.direction == Direction.TX) "TX" else "RX"
-            val title = item.title?.takeIf { it.isNotBlank() }
+            val title = if (showTitle) {
+                item.title?.takeIf { it.isNotBlank() }
+            } else {
+                null
+            }
             val displayContent = if (title == null) {
                 item.content
             } else {

@@ -25,9 +25,13 @@ android {
     android.applicationVariants.all {
         variant ->
             variant.outputs.all {
-                outputFileName = "SerialPortTest.apk"
+                outputFileName = "SerialPortTest_${releaseTime()}.apk"
             }
     }
+}
+
+static def releaseTime() {
+    return new Date().format("yyMMddHHmm")
 }
 
 dependencies {

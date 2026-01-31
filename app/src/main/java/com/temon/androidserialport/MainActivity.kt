@@ -18,19 +18,22 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.temon.serial.codec.HexCodec
 import com.temon.serial.core.SerialException
 import com.temon.serial.easy.EasySerial
 import com.temon.serial.internal.serialport.SerialPortFinder
+import com.temon.androidserialport.ScreenAdaptationUtil
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -51,9 +54,11 @@ class MainActivity : Activity() {
     private var isConnecting = false
     private var autoScrollEnabled = true
     private var lastConnectError: String? = null
+    private var showLogTime = true
+    private var showLogTitle = true
 
-    private lateinit var mBtnConnect: Button
-    private lateinit var mBtnSend: Button
+    private lateinit var mBtnConnect: TextView
+    private lateinit var mBtnSend: TextView
     private lateinit var mTvClearLog: TextView
     private lateinit var mSpPort: Spinner
     private lateinit var mSpBaud: Spinner
@@ -65,8 +70,10 @@ class MainActivity : Activity() {
     private lateinit var mTvEmpty: TextView
     private lateinit var mSwitchAutoScroll: Switch
     private lateinit var mSwitchTime: Switch
-    private lateinit var mSwitchMock: Switch
-    private lateinit var mTvCommonCommands: TextView
+    private lateinit var mSwitchTitle: Switch
+    private lateinit var mBtnLogSettings: ImageView
+    private lateinit var mLogSettingsPanel: View
+    private lateinit var mBtnCommonCommands: TextView
     private lateinit var commonCommandsController: CommonCommandsController
 
     private val portPaths = mutableListOf<String>()
@@ -85,7 +92,6 @@ class MainActivity : Activity() {
     private lateinit var logAdapter: SerialLogAdapter
     private val timeFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
     private val defaultBaud = 9600
-    private val mockModeKey = "mock_mode"
     private var isMockMode = false
 
     private val dataListener = EasySerial.OnDataReceivedListener { _, data, length ->
@@ -103,9 +109,10 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ScreenAdaptationUtil.setCustomDensity(this, application)
         setContentView(R.layout.activity_main)
-        mBtnConnect = findViewById<Button>(R.id.mBtnConnect)
-        mBtnSend = findViewById<Button>(R.id.mBtnSend)
+        mBtnConnect = findViewById<TextView>(R.id.mBtnConnect)
+        mBtnSend = findViewById<TextView>(R.id.mBtnSend)
         mTvClearLog = findViewById<TextView>(R.id.mTvClearLog)
         mSpPort = findViewById<Spinner>(R.id.mSpPort)
         mSpBaud = findViewById<Spinner>(R.id.mSpBaud)
@@ -117,11 +124,15 @@ class MainActivity : Activity() {
         mTvEmpty = findViewById<TextView>(R.id.mTvEmpty)
         mSwitchAutoScroll = findViewById<Switch>(R.id.mSwitchAutoScroll)
         mSwitchTime = findViewById<Switch>(R.id.mSwitchTime)
-        mSwitchMock = findViewById<Switch>(R.id.mSwitchMock)
-        mTvCommonCommands = findViewById<TextView>(R.id.mTvCommonCommands)
-        autoScrollEnabled = mSwitchAutoScroll.isChecked
-        isMockMode = preferences.getBoolean(mockModeKey, false)
-        mSwitchMock.isChecked = isMockMode
+        mSwitchTitle = findViewById<Switch>(R.id.mSwitchTitle)
+        mBtnLogSettings = findViewById<ImageView>(R.id.mBtnLogSettings)
+        mLogSettingsPanel = findViewById<View>(R.id.mLogSettingsPanel)
+        mBtnCommonCommands = findViewById<TextView>(R.id.mBtnCommonCommands)
+        loadLogPreferences()
+        loadInputModePreference()
+        mSwitchAutoScroll.isChecked = autoScrollEnabled
+        mSwitchTime.isChecked = showLogTime
+        mSwitchTitle.isChecked = showLogTitle
         commonCommandsController = CommonCommandsController(
             this,
             preferences,
@@ -156,6 +167,17 @@ class MainActivity : Activity() {
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.action == MotionEvent.ACTION_DOWN) {
+            if (mLogSettingsPanel.visibility == View.VISIBLE) {
+                val panelRect = Rect()
+                val buttonRect = Rect()
+                mLogSettingsPanel.getGlobalVisibleRect(panelRect)
+                mBtnLogSettings.getGlobalVisibleRect(buttonRect)
+                val touchX = ev.rawX.toInt()
+                val touchY = ev.rawY.toInt()
+                if (!panelRect.contains(touchX, touchY) && !buttonRect.contains(touchX, touchY)) {
+                    mLogSettingsPanel.visibility = View.GONE
+                }
+            }
             val focusedView = currentFocus
             if (focusedView is EditText) {
                 val rect = Rect()
@@ -207,6 +229,7 @@ class MainActivity : Activity() {
         mRvLogs.layoutManager = LinearLayoutManager(this)
         mRvLogs.adapter = logAdapter
         logAdapter.setShowTime(mSwitchTime.isChecked)
+        logAdapter.setShowTitle(mSwitchTitle.isChecked)
         updateEmptyView()
     }
 
@@ -315,39 +338,91 @@ class MainActivity : Activity() {
             updateEmptyView()
         }
 
-        mRbHex.setOnCheckedChangeListener { _, _ ->
+        mRbHex.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                saveInputModePreference(true)
+            }
             refreshSendAvailability()
         }
-        mRbAscii.setOnCheckedChangeListener { _, _ ->
+        mRbAscii.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                saveInputModePreference(false)
+            }
             refreshSendAvailability()
         }
 
         mSwitchAutoScroll.setOnCheckedChangeListener { _, isChecked ->
             autoScrollEnabled = isChecked
+            saveLogPreferences()
         }
         mSwitchTime.setOnCheckedChangeListener { _, isChecked ->
             logAdapter.setShowTime(isChecked)
+            showLogTime = isChecked
+            saveLogPreferences()
         }
-        mSwitchMock.setOnCheckedChangeListener { _, isChecked ->
-            if (isOpenSerial && currentPort.isNotEmpty()) {
-                if (!isMockMode) {
-                    EasySerial.close(currentPort)
-                }
-                isOpenSerial = false
-                currentPort = ""
-                currentBaud = 0
+        mSwitchTitle.setOnCheckedChangeListener { _, isChecked ->
+            logAdapter.setShowTitle(isChecked)
+            showLogTitle = isChecked
+            saveLogPreferences()
+        }
+        mBtnLogSettings.setOnClickListener {
+            toggleLogSettingsPanel()
+        }
+        mTvStatus.setOnClickListener {
+            if (isMockMode) {
+                toggleMockMode(false)
+                Toast.makeText(this, "已关闭模拟串口", Toast.LENGTH_SHORT).show()
             }
-            isMockMode = isChecked
-            preferences.edit().putBoolean(mockModeKey, isChecked).apply()
-            lastConnectError = null
-            loadSerialPorts()
-            updateConnectionUi()
-            refreshSendAvailability()
+        }
+        mTvStatus.setOnLongClickListener {
+            if (isMockMode || !hasPorts) {
+                val next = !isMockMode
+                toggleMockMode(next)
+                val tip = if (next) "已开启模拟串口" else "已关闭模拟串口"
+                Toast.makeText(this, tip, Toast.LENGTH_SHORT).show()
+                true
+            } else {
+                false
+            }
         }
 
-        mTvCommonCommands.setOnClickListener {
+        mBtnCommonCommands.setOnClickListener {
             commonCommandsController.show()
         }
+    }
+
+    private fun toggleLogSettingsPanel() {
+        mLogSettingsPanel.visibility = if (mLogSettingsPanel.visibility == View.VISIBLE) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+    }
+
+    private fun loadLogPreferences() {
+        autoScrollEnabled = preferences.getBoolean("pref_log_auto_scroll", true)
+        showLogTime = preferences.getBoolean("pref_log_show_time", true)
+        showLogTitle = preferences.getBoolean("pref_log_show_title", true)
+    }
+
+    private fun saveLogPreferences() {
+        preferences.edit()
+            .putBoolean("pref_log_auto_scroll", autoScrollEnabled)
+            .putBoolean("pref_log_show_time", showLogTime)
+            .putBoolean("pref_log_show_title", showLogTitle)
+            .apply()
+    }
+
+    private fun loadInputModePreference() {
+        val isHex = preferences.getBoolean("pref_input_mode_hex", true)
+        mRbHex.isChecked = isHex
+        mRbAscii.isChecked = !isHex
+    }
+
+    private fun saveInputModePreference(isHex: Boolean) {
+        preferences.edit()
+            .putBoolean("pref_input_mode_hex", isHex)
+            .apply()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -355,6 +430,17 @@ class MainActivity : Activity() {
         if (commonCommandsController.handleImportResult(requestCode, resultCode, data)) {
             return
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (commonCommandsController.handlePermissionResult(requestCode, grantResults)) {
+            return
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun loadSerialPorts() {
@@ -385,10 +471,12 @@ class MainActivity : Activity() {
     private fun updateConnectionUi() {
         if (isConnecting) {
             mTvStatus.text = resources.getString(R.string.text_status_connecting)
+            mTvStatus.setTextColor(ContextCompat.getColor(this, R.color.textHint))
             mBtnConnect.text = resources.getString(R.string.text_connecting)
             mBtnConnect.isEnabled = false
         } else if (!hasPorts) {
             mTvStatus.text = resources.getString(R.string.text_status_no_ports)
+            mTvStatus.setTextColor(ContextCompat.getColor(this, R.color.textDelete))
             mBtnConnect.text = resources.getString(R.string.text_connect)
             mBtnConnect.isEnabled = false
         } else if (isOpenSerial && currentPort.isNotEmpty()) {
@@ -397,6 +485,7 @@ class MainActivity : Activity() {
                 currentPort,
                 currentBaud
             )
+            mTvStatus.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
             mBtnConnect.text = resources.getString(R.string.text_disconnect)
             mBtnConnect.isEnabled = true
         } else if (lastConnectError != null) {
@@ -404,10 +493,12 @@ class MainActivity : Activity() {
                 R.string.text_status_failed,
                 lastConnectError
             )
+            mTvStatus.setTextColor(ContextCompat.getColor(this, R.color.textDelete))
             mBtnConnect.text = resources.getString(R.string.text_connect)
             mBtnConnect.isEnabled = true
         } else {
             mTvStatus.text = resources.getString(R.string.text_status_idle)
+            mTvStatus.setTextColor(ContextCompat.getColor(this, R.color.textSecondary))
             mBtnConnect.text = resources.getString(R.string.text_connect)
             mBtnConnect.isEnabled = true
         }
@@ -422,6 +513,22 @@ class MainActivity : Activity() {
             mEtInput.error = null
         }
         mBtnSend.isEnabled = sendEnabled && isValidSendInput()
+    }
+
+    private fun toggleMockMode(enabled: Boolean) {
+        if (isOpenSerial && currentPort.isNotEmpty()) {
+            if (!isMockMode) {
+                EasySerial.close(currentPort)
+            }
+            isOpenSerial = false
+            currentPort = ""
+            currentBaud = 0
+        }
+        isMockMode = enabled
+        lastConnectError = null
+        loadSerialPorts()
+        updateConnectionUi()
+        refreshSendAvailability()
     }
 
     private fun isHexMode(): Boolean = mRbHex.isChecked
