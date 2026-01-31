@@ -5,6 +5,7 @@ import com.temon.serial.core.ReconnectPolicy;
 import com.temon.serial.core.SerialError;
 import com.temon.serial.core.SerialException;
 import com.temon.serial.core.SerialFraming;
+import com.temon.serial.core.SerialConfig;
 import com.temon.serial.core.SerialDefaults;
 import com.temon.serial.core.SerialManager;
 
@@ -29,6 +30,7 @@ public final class EasySerial {
     private static final long DEFAULT_RECONNECT_INITIAL_MS = SerialDefaults.RECONNECT_INITIAL_MS;
     private static final long DEFAULT_RECONNECT_MAX_MS = SerialDefaults.RECONNECT_MAX_MS;
     private static final double DEFAULT_RECONNECT_MULTIPLIER = SerialDefaults.RECONNECT_MULTIPLIER;
+    private static final int DEFAULT_SEND_INTERVAL_MS = SerialDefaults.SEND_INTERVAL_MS;
 
     private final SerialManager manager;
     private final AtomicBoolean defaultsInited = new AtomicBoolean(false);
@@ -123,7 +125,15 @@ public final class EasySerial {
         }
         try {
             ensureDefaults();
-            manager.open(port, baudRate);
+            SerialConfig config = new SerialConfig.Builder()
+                    .port(port)
+                    .baudRate(baudRate)
+                    .sendIntervalMs(DEFAULT_SEND_INTERVAL_MS)
+                    .build();
+            manager.open(config, SerialFraming.idleGap(
+                    DEFAULT_IDLE_GAP_MS,
+                    DEFAULT_MAX_FRAME_LEN
+            ));
             ensureFrameListener(port);
             return OPEN_OK;
         } catch (SerialException e) {

@@ -11,6 +11,7 @@ public final class SerialDefaults {
     public static final int READ_TIMEOUT_MS = 1000;
     public static final int DEVICE_CHECK_INTERVAL_MS = 5000;
     public static final int READ_BUFFER_SIZE = 1024;
+    public static final int SEND_INTERVAL_MS = 300;
 
     // EasySerial defaults
     public static final int IDLE_GAP_MS = 50;
