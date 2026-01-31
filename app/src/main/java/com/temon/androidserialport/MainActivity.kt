@@ -29,6 +29,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.temon.serial.codec.HexCodec
 import com.temon.serial.core.SerialException
 import com.temon.serial.easy.EasySerial
@@ -85,9 +86,7 @@ class MainActivity : Activity() {
     private lateinit var baudAdapter: ArrayAdapter<String>
     private var lastBaudSelection = 0
     private var ignoreBaudSelection = false
-    private val preferences by lazy {
-        getSharedPreferences("serial_prefs", Context.MODE_PRIVATE)
-    }
+    private val serialPreferences by lazy { SerialPreferences(this) }
     private val logItems = mutableListOf<SerialLog>()
     private lateinit var logAdapter: SerialLogAdapter
     private val timeFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
@@ -135,7 +134,7 @@ class MainActivity : Activity() {
         mSwitchTitle.isChecked = showLogTitle
         commonCommandsController = CommonCommandsController(
             this,
-            preferences,
+            serialPreferences,
             onSendCommand = { command -> sendCommand(command.content, false, command.title) }
         )
         setupBaudRateSpinner()
@@ -280,6 +279,7 @@ class MainActivity : Activity() {
                     currentBaud = baudRate
                     isOpenSerial = true
                     lastConnectError = null
+                    saveLastSuccessfulPort(currentPort)
                     saveLastSuccessfulBaud(currentBaud)
                     Toast.makeText(
                         this@MainActivity,
@@ -294,6 +294,7 @@ class MainActivity : Activity() {
                         currentBaud = baudRate
                         isOpenSerial = true
                         lastConnectError = null
+                        saveLastSuccessfulPort(currentPort)
                         saveLastSuccessfulBaud(currentBaud)
                         Toast.makeText(
                             this@MainActivity,
@@ -400,29 +401,25 @@ class MainActivity : Activity() {
     }
 
     private fun loadLogPreferences() {
-        autoScrollEnabled = preferences.getBoolean("pref_log_auto_scroll", true)
-        showLogTime = preferences.getBoolean("pref_log_show_time", true)
-        showLogTitle = preferences.getBoolean("pref_log_show_title", true)
+        autoScrollEnabled = serialPreferences.getLogAutoScroll()
+        showLogTime = serialPreferences.getLogShowTime()
+        showLogTitle = serialPreferences.getLogShowTitle()
     }
 
     private fun saveLogPreferences() {
-        preferences.edit()
-            .putBoolean("pref_log_auto_scroll", autoScrollEnabled)
-            .putBoolean("pref_log_show_time", showLogTime)
-            .putBoolean("pref_log_show_title", showLogTitle)
-            .apply()
+        serialPreferences.setLogAutoScroll(autoScrollEnabled)
+        serialPreferences.setLogShowTime(showLogTime)
+        serialPreferences.setLogShowTitle(showLogTitle)
     }
 
     private fun loadInputModePreference() {
-        val isHex = preferences.getBoolean("pref_input_mode_hex", true)
+        val isHex = serialPreferences.getInputModeHex()
         mRbHex.isChecked = isHex
         mRbAscii.isChecked = !isHex
     }
 
     private fun saveInputModePreference(isHex: Boolean) {
-        preferences.edit()
-            .putBoolean("pref_input_mode_hex", isHex)
-            .apply()
+        serialPreferences.setInputModeHex(isHex)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -464,6 +461,7 @@ class MainActivity : Activity() {
         )
         portAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         mSpPort.adapter = portAdapter
+        applyPreferredPortSelection()
         mBtnConnect.isEnabled = hasPorts
         mSpPort.isEnabled = hasPorts && !isOpenSerial
     }
@@ -633,12 +631,27 @@ class MainActivity : Activity() {
     }
 
     private fun saveLastSuccessfulBaud(baud: Int) {
-        preferences.edit().putInt("last_success_baud", baud).apply()
+        serialPreferences.setLastSuccessfulBaud(baud)
+    }
+
+    private fun saveLastSuccessfulPort(port: String) {
+        serialPreferences.setLastSuccessfulPort(port)
     }
 
     private fun loadLastSuccessfulBaud(): Int? {
-        val value = preferences.getInt("last_success_baud", -1)
-        return if (value > 0) value else null
+        return serialPreferences.getLastSuccessfulBaud()
+    }
+
+    private fun loadLastSuccessfulPort(): String? {
+        return serialPreferences.getLastSuccessfulPort()
+    }
+
+    private fun applyPreferredPortSelection() {
+        val preferredPort = loadLastSuccessfulPort() ?: return
+        val index = portPaths.indexOfFirst { it == preferredPort }
+        if (index >= 0) {
+            mSpPort.setSelection(index)
+        }
     }
 
     private fun isValidSendInput(): Boolean {
@@ -728,6 +741,17 @@ class MainActivity : Activity() {
             dialog.dismiss()
         }
         dialog.setContentView(view)
+        dialog.setOnShowListener { dialogInterface ->
+            val bottomSheet =
+                (dialogInterface as? com.google.android.material.bottomsheet.BottomSheetDialog)
+                    ?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+                    ?: return@setOnShowListener
+            bottomSheet.post {
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.skipCollapsed = true
+            }
+        }
         dialog.show()
     }
 

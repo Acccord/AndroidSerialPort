@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.view.View
 import android.widget.EditText
@@ -17,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.json.JSONArray
 import org.json.JSONObject
@@ -29,15 +31,14 @@ import java.nio.charset.Charset
 
 class CommonCommandsController(
     private val activity: Activity,
-    private val preferences: android.content.SharedPreferences,
+    private val serialPreferences: SerialPreferences,
     private val onSendCommand: (CommonCommand) -> Unit
 ) {
 
     val importRequestCode: Int = 1001
     val exportPermissionRequestCode: Int = 2001
+    private val pickDirectoryRequestCode: Int = 1002
 
-    private val commonCommandsKey = "common_commands"
-    private val commonCommandsAddedKey = "common_commands_added"
     private val exportFileName = "common_commands.txt"
 
     private var dialog: BottomSheetDialog? = null
@@ -46,6 +47,9 @@ class CommonCommandsController(
     private var recyclerView: RecyclerView? = null
     private var contentContainer: View? = null
     private var exportView: TextView? = null
+    private var clearAllView: TextView? = null
+
+    private val commandsAssetDir = "common_commands"
 
     fun show() {
         if (dialog == null) {
@@ -85,23 +89,43 @@ class CommonCommandsController(
         }
     }
 
-    fun launchImportPicker() {
+    private fun launchImportPicker(initialDir: Uri? = null) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/json"
             putExtra(
                 Intent.EXTRA_MIME_TYPES, arrayOf("application/json", "text/json", "text/plain")
             )
+            if (initialDir != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, initialDir)
+            }
         }
         activity.startActivityForResult(intent, importRequestCode)
     }
 
+    private fun launchDirectoryPicker() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        activity.startActivityForResult(intent, pickDirectoryRequestCode)
+    }
+
     fun handleImportResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode != importRequestCode) return false
+        if (requestCode != importRequestCode && requestCode != pickDirectoryRequestCode) {
+            return false
+        }
         if (resultCode != Activity.RESULT_OK) return true
-        val uri = data?.data ?: return true
-        importCommonCommands(uri)
-        return true
+        return when (requestCode) {
+            pickDirectoryRequestCode -> {
+                val dirUri = data?.data
+                launchImportPicker(dirUri)
+                true
+            }
+
+            else -> {
+                val uri = data?.data ?: return true
+                importCommonCommands(uri)
+                true
+            }
+        }
     }
 
     fun handlePermissionResult(requestCode: Int, grantResults: IntArray): Boolean {
@@ -122,6 +146,7 @@ class CommonCommandsController(
         val sheet = BottomSheetDialog(activity, R.style.AppBottomSheetDialogTheme)
         val view = activity.layoutInflater.inflate(R.layout.bottom_sheet_common_commands, null)
         val tvExport = view.findViewById<TextView>(R.id.mTvExport)
+        val tvClearAll = view.findViewById<TextView>(R.id.mTvClearAll)
         val tvImport = view.findViewById<TextView>(R.id.mTvImport)
         val container = view.findViewById<View>(R.id.mCommonContentContainer)
         val recycler = view.findViewById<RecyclerView>(R.id.mRvCommonCommands)
@@ -145,16 +170,35 @@ class CommonCommandsController(
             sheet.dismiss()
         }
         tvImport.setOnClickListener {
-            launchImportPicker()
+            launchDirectoryPicker()
             sheet.dismiss()
         }
+        tvImport.setOnLongClickListener {
+            showBuiltinAssetPicker(sheet)
+            true
+        }
+        tvClearAll.setOnClickListener {
+            showClearAllDialog()
+        }
         sheet.setContentView(view)
+        sheet.setOnShowListener { dialogInterface ->
+            val bottomSheet =
+                (dialogInterface as? BottomSheetDialog)?.findViewById<View>(
+                    com.google.android.material.R.id.design_bottom_sheet
+                ) ?: return@setOnShowListener
+            bottomSheet.post {
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.skipCollapsed = true
+            }
+        }
         dialog = sheet
         adapter = cmdAdapter
         emptyView = empty
         recyclerView = recycler
         contentContainer = container
         exportView = tvExport
+        clearAllView = tvClearAll
     }
 
     private fun applyBottomSheetMaxHeight(vararg targets: View) {
@@ -181,6 +225,64 @@ class CommonCommandsController(
         val hasCommands = commands.isNotEmpty()
         exportView?.isEnabled = hasCommands
         exportView?.alpha = if (hasCommands) 1f else 0.5f
+        clearAllView?.isEnabled = hasCommands
+        clearAllView?.alpha = if (hasCommands) 1f else 0.5f
+    }
+
+    private fun showClearAllDialog() {
+        if (loadCommands().isEmpty()) return
+        AlertDialog.Builder(activity)
+            .setTitle(activity.getString(R.string.text_clear_common_commands))
+            .setMessage(activity.getString(R.string.text_clear_common_confirm))
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                saveCommands(emptyList())
+                updateList()
+                Toast.makeText(
+                    activity,
+                    activity.getString(R.string.text_common_cleared),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun showBuiltinAssetPicker(sheet: BottomSheetDialog) {
+        val assetFiles = try {
+            activity.assets.list(commandsAssetDir)?.toList().orEmpty()
+        } catch (_: Exception) {
+            emptyList()
+        }
+        val commandFiles = assetFiles.filter {
+            it.endsWith(".txt", ignoreCase = true) || it.endsWith(".json", ignoreCase = true)
+        }
+        if (commandFiles.isEmpty()) {
+            Toast.makeText(
+                activity, activity.getString(R.string.text_import_failed), Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+        AlertDialog.Builder(activity)
+            .setTitle(activity.getString(R.string.text_import_builtin_commands))
+            .setItems(commandFiles.toTypedArray()) { _, which ->
+                importCommandsFromAssets(commandFiles[which])
+                sheet.dismiss()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun importCommandsFromAssets(assetName: String) {
+        try {
+            val content = activity.assets.open("$commandsAssetDir/$assetName")
+                .bufferedReader(Charset.forName("UTF-8"))
+                .use { it.readText() }
+            importCommonCommandsFromContent(content)
+        } catch (_: Exception) {
+            Toast.makeText(
+                activity, activity.getString(R.string.text_import_failed), Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun showEditDialog(command: CommonCommand) {
@@ -225,7 +327,7 @@ class CommonCommandsController(
     }
 
     private fun loadCommands(): MutableList<CommonCommand> {
-        val raw = preferences.getString(commonCommandsKey, "[]") ?: "[]"
+        val raw = serialPreferences.getCommonCommandsJson()
         val result = mutableListOf<CommonCommand>()
         try {
             val array = JSONArray(raw)
@@ -262,15 +364,11 @@ class CommonCommandsController(
             command.title?.trim()?.takeIf { it.isNotBlank() }?.let { obj.put("title", it) }
             array.put(obj)
         }
-        preferences.edit().putString(commonCommandsKey, array.toString()).apply()
-    }
-
-    private fun hasEverAddedCommon(): Boolean {
-        return preferences.getBoolean(commonCommandsAddedKey, false)
+        serialPreferences.setCommonCommandsJson(array.toString())
     }
 
     private fun markEverAddedCommon() {
-        preferences.edit().putBoolean(commonCommandsAddedKey, true).apply()
+        serialPreferences.setCommonCommandsAdded(true)
     }
 
     private fun exportCommonCommandsToDownloads() {
@@ -351,54 +449,58 @@ class CommonCommandsController(
         try {
             val inputStream = activity.contentResolver.openInputStream(uri) ?: return
             val content = inputStream.bufferedReader(Charset.forName("UTF-8")).use { it.readText() }
-            val imported = mutableListOf<CommonCommand>()
-            val array = JSONArray(content)
-            for (i in 0 until array.length()) {
-                val entry = array.opt(i)
-                when (entry) {
-                    is JSONObject -> {
-                        val contentValue =
-                            entry.optString("content", entry.optString("command", "")).trim()
-                        val title = entry.optString("title", "").trim().takeIf { it.isNotBlank() }
-                        if (contentValue.isNotBlank()) {
-                            imported.add(CommonCommand(title = title, content = contentValue))
-                        }
-                    }
-
-                    is String -> {
-                        val value = entry.trim()
-                        if (value.isNotBlank()) {
-                            imported.add(CommonCommand(content = value))
-                        }
-                    }
-                }
-            }
-            val existing = loadCommands()
-            val existingSet = existing.map { it.content }.toMutableSet()
-            var addedCount = 0
-            val uniqueImported = imported.distinctBy { it.content }
-            for (i in uniqueImported.indices.reversed()) {
-                val cmd = uniqueImported[i]
-                if (existingSet.add(cmd.content)) {
-                    existing.add(0, cmd)
-                    addedCount++
-                }
-            }
-            val skipped = uniqueImported.size - addedCount
-            if (addedCount > 0) {
-                saveCommands(existing)
-                markEverAddedCommon()
-            }
-            updateList()
-            Toast.makeText(
-                activity,
-                activity.getString(R.string.text_import_done, addedCount, skipped),
-                Toast.LENGTH_SHORT
-            ).show()
+            importCommonCommandsFromContent(content)
         } catch (_: Exception) {
             Toast.makeText(
                 activity, activity.getString(R.string.text_import_failed), Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun importCommonCommandsFromContent(content: String) {
+        val imported = mutableListOf<CommonCommand>()
+        val array = JSONArray(content)
+        for (i in 0 until array.length()) {
+            val entry = array.opt(i)
+            when (entry) {
+                is JSONObject -> {
+                    val contentValue =
+                        entry.optString("content", entry.optString("command", "")).trim()
+                    val title = entry.optString("title", "").trim().takeIf { it.isNotBlank() }
+                    if (contentValue.isNotBlank()) {
+                        imported.add(CommonCommand(title = title, content = contentValue))
+                    }
+                }
+
+                is String -> {
+                    val value = entry.trim()
+                    if (value.isNotBlank()) {
+                        imported.add(CommonCommand(content = value))
+                    }
+                }
+            }
+        }
+        val existing = loadCommands()
+        val existingSet = existing.map { it.content }.toMutableSet()
+        var addedCount = 0
+        val uniqueImported = imported.distinctBy { it.content }
+        for (i in uniqueImported.indices.reversed()) {
+            val cmd = uniqueImported[i]
+            if (existingSet.add(cmd.content)) {
+                existing.add(0, cmd)
+                addedCount++
+            }
+        }
+        val skipped = uniqueImported.size - addedCount
+        if (addedCount > 0) {
+            saveCommands(existing)
+            markEverAddedCommon()
+        }
+        updateList()
+        Toast.makeText(
+            activity,
+            activity.getString(R.string.text_import_done, addedCount, skipped),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

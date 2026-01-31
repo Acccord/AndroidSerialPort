@@ -17,6 +17,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+            android:id="@+id/mTvClearAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="8dp"
+            android:text="@string/text_clear_common_commands"
+            android:textColor="@color/textDelete"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/mTvCommonSheetTitle"
+            app:layout_constraintEnd_toStartOf="@+id/mTvExport"
+            app:layout_constraintTop_toTopOf="@+id/mTvCommonSheetTitle" />
+
+    <TextView
             android:id="@+id/mTvExport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,6 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:lineSpacingMultiplier="1.2"
                 android:paddingHorizontal="16dp"
                 android:text="@string/text_common_empty_guide"
                 android:textAlignment="center"

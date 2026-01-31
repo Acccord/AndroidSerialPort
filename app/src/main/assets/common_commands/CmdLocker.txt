@@ -1,0 +1,15 @@
+[
+  {"title":"读取门状态(柜子1)","content":"{\"cmd\":\"Read\",\"SubPCB\":1}"},
+  {"title":"读取门状态(柜子2)","content":"{\"cmd\":\"Read\",\"SubPCB\":2}"},
+  {"title":"读取门状态(柜子3)","content":"{\"cmd\":\"Read\",\"SubPCB\":3}"},
+  {"title":"开门(柜子1-门1)","content":"{\"cmd\":\"open\",\"SubPCB\":1,\"box\":1,\"opentime\":100}"},
+  {"title":"开门(柜子1-门2)","content":"{\"cmd\":\"open\",\"SubPCB\":1,\"box\":2,\"opentime\":100}"},
+  {"title":"开门(柜子1-门3)","content":"{\"cmd\":\"open\",\"SubPCB\":1,\"box\":3,\"opentime\":100}"},
+  {"title":"开门(柜子1-门4)","content":"{\"cmd\":\"open\",\"SubPCB\":1,\"box\":4,\"opentime\":100}"},
+  {"title":"开门(柜子1-门5)","content":"{\"cmd\":\"open\",\"SubPCB\":1,\"box\":5,\"opentime\":100}"},
+  {"title":"开门(柜子2-门1)","content":"{\"cmd\":\"open\",\"SubPCB\":2,\"box\":1,\"opentime\":100}"},
+  {"title":"开门(柜子2-门2)","content":"{\"cmd\":\"open\",\"SubPCB\":2,\"box\":2,\"opentime\":100}"},
+  {"title":"开门(柜子2-门3)","content":"{\"cmd\":\"open\",\"SubPCB\":2,\"box\":3,\"opentime\":100}"},
+  {"title":"开门(柜子2-门4)","content":"{\"cmd\":\"open\",\"SubPCB\":2,\"box\":4,\"opentime\":100}"},
+  {"title":"开门(柜子2-门5)","content":"{\"cmd\":\"open\",\"SubPCB\":2,\"box\":5,\"opentime\":100}"}
+]

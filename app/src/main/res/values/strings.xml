@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidSerialPort</string>
+    <string name="app_name">TM串口测试</string>
 
     <string name="text_serial_input">请输入串口</string>
     <string name="text_rate_input">请输入波特率</string>
@@ -52,7 +52,11 @@
     <string name="text_common_commands_title">常用命令</string>
     <string name="text_export_commands">导出命令</string>
     <string name="text_import_commands">导入命令</string>
-    <string name="text_common_empty_guide">常用命令需在发送面板点击已发送的命令进行添加</string>
+    <string name="text_import_builtin_commands">内置命令</string>
+    <string name="text_import_from_file">文件选择</string>
+    <string name="text_clear_common_commands">清空全部</string>
+    <string name="text_clear_common_confirm">确定清空全部常用命令？</string>
+    <string name="text_common_empty_guide">添加方式：\n1. 在发送面板点击已发送的命令添加\n2. 选择文件导入，格式为 JSON 数组\n示例：[{\"content\":\"A0 01 00\",\"title\":\"设备状态查询\"},{\"content\":\"A0 02 00\"}]</string>
     <string name="text_common_added">已添加到常用命令</string>
     <string name="text_common_exists">常用命令已存在</string>
     <string name="text_export_done">已导出 %1$d 条命令</string>
@@ -62,6 +66,7 @@
     <string name="text_delete">删除</string>
     <string name="text_edit">编辑</string>
     <string name="text_common_deleted">已删除</string>
+    <string name="text_common_cleared">已清空</string>
     <string name="text_edit_common_command">编辑常用命令</string>
     <string name="text_command_title">协议标题</string>
     <string name="text_command_title_hint">例如：设备状态查询</string>

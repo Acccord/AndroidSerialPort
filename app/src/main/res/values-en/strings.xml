@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidSerialPort</string>
+    <string name="app_name">TM Serial Port Test</string>
 
     <string name="text_serial_input">Serial port</string>
     <string name="text_rate_input">Baud rate</string>
@@ -52,7 +52,11 @@
     <string name="text_common_commands_title">Common commands</string>
     <string name="text_export_commands">Export</string>
     <string name="text_import_commands">Import</string>
-    <string name="text_common_empty_guide">Add from sent commands in the Send panel</string>
+    <string name="text_import_builtin_commands">Built-in commands</string>
+    <string name="text_import_from_file">Choose file</string>
+    <string name="text_clear_common_commands">Clear all</string>
+    <string name="text_clear_common_confirm">Clear all common commands?</string>
+    <string name="text_common_empty_guide">How to add:\n1. Add from sent commands in the Send panel\n2. Import a file as a JSON array\nExample: [{\"content\":\"A0 01 00\",\"title\":\"Device status\"},{\"content\":\"A0 02 00\"}]</string>
     <string name="text_common_added">Added to common</string>
     <string name="text_common_exists">Already in common</string>
     <string name="text_export_done">Exported %1$d commands</string>
@@ -62,6 +66,7 @@
     <string name="text_delete">Delete</string>
     <string name="text_edit">Edit</string>
     <string name="text_common_deleted">Deleted</string>
+    <string name="text_common_cleared">Cleared</string>
     <string name="text_edit_common_command">Edit common command</string>
     <string name="text_command_title">Title</string>
     <string name="text_command_title_hint">e.g. Device status</string>
