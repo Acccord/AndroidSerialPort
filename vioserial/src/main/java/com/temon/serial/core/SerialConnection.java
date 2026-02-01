@@ -1,8 +1,10 @@
 package com.temon.serial.core;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
+import com.temon.serial.internal.framing.IdleGapFrameDecoder;
 import com.temon.serial.internal.serialport.SerialPort;
 
 import com.temon.serial.codec.HexCodec;
@@ -53,6 +55,9 @@ public final class SerialConnection {
     private long sessionId = 0L;
     private volatile Throwable lastError;
     private volatile int reconnectAttemptCount = 0;
+    private long idleGapMs = 0L;
+    private long lastFeedUptimeMs = 0L;
+    private Runnable pendingIdleFlush;
     
     // Statistics and monitoring
     private final SerialStatistics statistics = new SerialStatistics();
@@ -150,6 +155,11 @@ public final class SerialConnection {
             );
             out = serialPort.getOutputStream();
             in = serialPort.getInputStream();
+            if (frameDecoder instanceof IdleGapFrameDecoder) {
+                idleGapMs = ((IdleGapFrameDecoder) frameDecoder).getIdleGapMs();
+            } else {
+                idleGapMs = 0L;
+            }
 
             // Setup NIO if enabled
             if (config.useNioMode && in instanceof FileInputStream) {
@@ -400,6 +410,7 @@ public final class SerialConnection {
                                                 dispatchFrame(session, frameBytes, length);
                                             }
                                         });
+                                        scheduleIdleFlush(session);
                                     }
                                 }
                             }
@@ -483,6 +494,7 @@ public final class SerialConnection {
                                     dispatchFrame(session, frameBytes, length);
                                 }
                             });
+                            scheduleIdleFlush(session);
                         }
                     }
                 } catch (IOException e) {
@@ -528,6 +540,7 @@ public final class SerialConnection {
         }, "serial-reader");
         readThread.start();
     }
+
     
     /**
      * Adaptive buffer size adjustment based on throughput.
@@ -553,6 +566,36 @@ public final class SerialConnection {
                 "Buffer size adjusted: %d -> %d (throughput: %.2f B/s)",
                 currentSize, adaptiveBufferSize, throughput
             ));
+        }
+    }
+
+    private void scheduleIdleFlush(final long session) {
+        if (idleGapMs <= 0 || writeHandler == null) return;
+        lastFeedUptimeMs = SystemClock.uptimeMillis();
+        if (pendingIdleFlush != null) {
+            writeHandler.removeCallbacks(pendingIdleFlush);
+        }
+        pendingIdleFlush = new Runnable() {
+            @Override
+            public void run() {
+                if (session != sessionId || state != State.OPEN) return;
+                long now = SystemClock.uptimeMillis();
+                if (now - lastFeedUptimeMs >= idleGapMs) {
+                    flushPendingFrameIfNeeded(session);
+                }
+            }
+        };
+        writeHandler.postDelayed(pendingIdleFlush, idleGapMs);
+    }
+
+    private void flushPendingFrameIfNeeded(final long session) {
+        if (frameDecoder instanceof FlushableFrameDecoder) {
+            ((FlushableFrameDecoder) frameDecoder).flush(new FrameDecoder.FrameCallback() {
+                @Override
+                public void onFrame(byte[] frameBytes, int length) {
+                    dispatchFrame(session, frameBytes, length);
+                }
+            });
         }
     }
 
@@ -643,7 +686,11 @@ public final class SerialConnection {
         readThread = null;
 
         if (writeThread != null) {
-            writeThread.quitSafely();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                writeThread.quitSafely();
+            } else {
+                writeThread.quit();
+            }
             if (Thread.currentThread() != writeThread) {
                 try {
                     writeThread.join(5000);
@@ -658,6 +705,7 @@ public final class SerialConnection {
         }
         writeThread = null;
         writeHandler = null;
+        pendingIdleFlush = null;
         if (frameDecoder != null) {
             frameDecoder.reset();
         }

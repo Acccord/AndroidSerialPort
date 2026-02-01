@@ -257,6 +257,7 @@ public final class EasySerial {
         manager.addFrameListener(port, listener);
     }
 
+
     private static SerialError toSerialError(Throwable t) {
         if (t instanceof SerialException) {
             return ((SerialException) t).getError();

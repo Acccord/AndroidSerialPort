@@ -31,6 +31,10 @@ public final class IdleGapFrameDecoder implements FlushableFrameDecoder {
         this.maxFrameLength = maxFrameLength;
     }
 
+    public long getIdleGapMs() {
+        return idleGapMs;
+    }
+
     @Override
     public void feed(byte[] data, int offset, int length, FrameCallback callback) {
         if (length <= 0) return;
