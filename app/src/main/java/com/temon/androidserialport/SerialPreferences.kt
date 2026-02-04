@@ -23,6 +23,12 @@ class SerialPreferences(context: Context) {
         prefs.edit().putBoolean(KEY_LOG_SHOW_TITLE, enabled).apply()
     }
 
+    fun getLogHexGroupBold(): Boolean = prefs.getBoolean(KEY_LOG_HEX_GROUP_BOLD, false)
+
+    fun setLogHexGroupBold(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_LOG_HEX_GROUP_BOLD, enabled).apply()
+    }
+
     fun getInputModeHex(): Boolean = prefs.getBoolean(KEY_INPUT_MODE_HEX, true)
 
     fun setInputModeHex(isHex: Boolean) {
@@ -67,6 +73,7 @@ class SerialPreferences(context: Context) {
         private const val KEY_LOG_AUTO_SCROLL = "pref_log_auto_scroll"
         private const val KEY_LOG_SHOW_TIME = "pref_log_show_time"
         private const val KEY_LOG_SHOW_TITLE = "pref_log_show_title"
+        private const val KEY_LOG_HEX_GROUP_BOLD = "pref_log_hex_group_bold"
         private const val KEY_INPUT_MODE_HEX = "pref_input_mode_hex"
         private const val KEY_LAST_SUCCESS_BAUD = "last_success_baud"
         private const val KEY_LAST_SUCCESS_PORT = "last_success_port"

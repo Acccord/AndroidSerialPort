@@ -25,3 +25,7 @@
 }
 
 -keep class com.temon.serial.internal.serialport.** {*;}
+
+# Keep public serial APIs to avoid any accidental stripping with R8.
+-keep class com.temon.serial.easy.** {*;}
+-keep class com.temon.serial.core.SerialException {*;}

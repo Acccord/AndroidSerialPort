@@ -35,6 +35,7 @@
     <string name="text_auto_scroll">Auto scroll</string>
     <string name="text_show_time">Show time</string>
     <string name="text_show_title">Show title</string>
+    <string name="text_hex_group_bold">HEX-5B mark</string>
     <string name="text_log_settings">Log display</string>
     <string name="text_log_empty">No logs yet. Send or receive to show.</string>
     <string name="text_reason_no_permission">No permission</string>

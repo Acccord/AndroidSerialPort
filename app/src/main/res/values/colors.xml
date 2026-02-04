@@ -19,6 +19,8 @@
     <color name="textDelete">#E91E63</color>
     <color name="sendText">#2A7DE1</color>
     <color name="receiveText">#0F9B6D</color>
+    <color name="sendTextEmphasis">#1F5FB0</color>
+    <color name="receiveTextEmphasis">#07714E</color>
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>

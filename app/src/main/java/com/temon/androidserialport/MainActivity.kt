@@ -57,6 +57,7 @@ class MainActivity : Activity() {
     private var lastConnectError: String? = null
     private var showLogTime = true
     private var showLogTitle = true
+    private var showHexGroupBold = false
 
     private lateinit var mBtnConnect: TextView
     private lateinit var mBtnSend: TextView
@@ -72,6 +73,7 @@ class MainActivity : Activity() {
     private lateinit var mSwitchAutoScroll: Switch
     private lateinit var mSwitchTime: Switch
     private lateinit var mSwitchTitle: Switch
+    private lateinit var mSwitchHexBold: Switch
     private lateinit var mBtnLogSettings: ImageView
     private lateinit var mLogSettingsPanel: View
     private lateinit var mBtnCommonCommands: TextView
@@ -124,6 +126,7 @@ class MainActivity : Activity() {
         mSwitchAutoScroll = findViewById<Switch>(R.id.mSwitchAutoScroll)
         mSwitchTime = findViewById<Switch>(R.id.mSwitchTime)
         mSwitchTitle = findViewById<Switch>(R.id.mSwitchTitle)
+        mSwitchHexBold = findViewById<Switch>(R.id.mSwitchHexBold)
         mBtnLogSettings = findViewById<ImageView>(R.id.mBtnLogSettings)
         mLogSettingsPanel = findViewById<View>(R.id.mLogSettingsPanel)
         mBtnCommonCommands = findViewById<TextView>(R.id.mBtnCommonCommands)
@@ -132,6 +135,7 @@ class MainActivity : Activity() {
         mSwitchAutoScroll.isChecked = autoScrollEnabled
         mSwitchTime.isChecked = showLogTime
         mSwitchTitle.isChecked = showLogTitle
+        mSwitchHexBold.isChecked = showHexGroupBold
         commonCommandsController = CommonCommandsController(
             this,
             serialPreferences,
@@ -229,6 +233,7 @@ class MainActivity : Activity() {
         mRvLogs.adapter = logAdapter
         logAdapter.setShowTime(mSwitchTime.isChecked)
         logAdapter.setShowTitle(mSwitchTitle.isChecked)
+        logAdapter.setShowHexGroupBold(mSwitchHexBold.isChecked)
         updateEmptyView()
     }
 
@@ -366,6 +371,11 @@ class MainActivity : Activity() {
             showLogTitle = isChecked
             saveLogPreferences()
         }
+        mSwitchHexBold.setOnCheckedChangeListener { _, isChecked ->
+            logAdapter.setShowHexGroupBold(isChecked)
+            showHexGroupBold = isChecked
+            saveLogPreferences()
+        }
         mBtnLogSettings.setOnClickListener {
             toggleLogSettingsPanel()
         }
@@ -404,12 +414,14 @@ class MainActivity : Activity() {
         autoScrollEnabled = serialPreferences.getLogAutoScroll()
         showLogTime = serialPreferences.getLogShowTime()
         showLogTitle = serialPreferences.getLogShowTitle()
+        showHexGroupBold = serialPreferences.getLogHexGroupBold()
     }
 
     private fun saveLogPreferences() {
         serialPreferences.setLogAutoScroll(autoScrollEnabled)
         serialPreferences.setLogShowTime(showLogTime)
         serialPreferences.setLogShowTitle(showLogTitle)
+        serialPreferences.setLogHexGroupBold(showHexGroupBold)
     }
 
     private fun loadInputModePreference() {
@@ -674,7 +686,7 @@ class MainActivity : Activity() {
     }
 
     private fun addLog(direction: Direction, content: String, title: String? = null) {
-        val log = SerialLog(timeFormat.format(Date()), direction, content, title)
+        val log = SerialLog(timeFormat.format(Date()), direction, content, title, isHexMode())
         runOnUiThread {
             logAdapter.add(log)
             if (autoScrollEnabled) {
