@@ -40,6 +40,8 @@ public final class EasySerial {
             new ConcurrentHashMap<>();
     private final CopyOnWriteArrayList<OnDataReceivedListener> dataListeners =
             new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<OnDataSendListener> sendListeners =
+            new CopyOnWriteArrayList<>();
     private final CopyOnWriteArrayList<OnErrorListener> errorListeners =
             new CopyOnWriteArrayList<>();
 
@@ -75,12 +77,24 @@ public final class EasySerial {
         instance().onErrorInternal(listener);
     }
 
+    public static void onDataSend(OnDataSendListener listener) {
+        instance().onDataSendInternal(listener);
+    }
+
     public static void removeOnDataReceived(OnDataReceivedListener listener) {
         instance().removeOnDataReceivedInternal(listener);
     }
 
     public static void clearOnDataReceived() {
         instance().clearOnDataReceivedInternal();
+    }
+
+    public static void removeOnDataSend(OnDataSendListener listener) {
+        instance().removeOnDataSendInternal(listener);
+    }
+
+    public static void clearOnDataSend() {
+        instance().clearOnDataSendInternal();
     }
 
     public static void removeOnError(OnErrorListener listener) {
@@ -104,6 +118,13 @@ public final class EasySerial {
          * A complete frame (best-effort idle-gap framing).
          */
         void onDataReceived(String port, byte[] data, int length);
+    }
+
+    public interface OnDataSendListener {
+        /**
+         * Sent data (not copied). Do not modify the byte[].
+         */
+        void onDataSend(String port, byte[] data, int length);
     }
 
     public interface OnErrorListener {
@@ -158,6 +179,7 @@ public final class EasySerial {
             throw new SerialException(SerialError.INVALID_PARAMETER, "port cannot be empty");
         }
         manager.sendBytes(port, data);
+        dispatchSendListeners(port, data);
     }
 
     private void onDataReceivedInternal(OnDataReceivedListener listener) {
@@ -172,6 +194,12 @@ public final class EasySerial {
         }
     }
 
+    private void onDataSendInternal(OnDataSendListener listener) {
+        if (listener != null) {
+            sendListeners.addIfAbsent(listener);
+        }
+    }
+
     private void removeOnDataReceivedInternal(OnDataReceivedListener listener) {
         if (listener != null) {
             dataListeners.remove(listener);
@@ -180,6 +208,16 @@ public final class EasySerial {
 
     private void clearOnDataReceivedInternal() {
         dataListeners.clear();
+    }
+
+    private void removeOnDataSendInternal(OnDataSendListener listener) {
+        if (listener != null) {
+            sendListeners.remove(listener);
+        }
+    }
+
+    private void clearOnDataSendInternal() {
+        sendListeners.clear();
     }
 
     private void removeOnErrorInternal(OnErrorListener listener) {
@@ -257,6 +295,17 @@ public final class EasySerial {
         manager.addFrameListener(port, listener);
     }
 
+    private void dispatchSendListeners(String port, byte[] data) {
+        if (sendListeners.isEmpty()) return;
+        final int length = data != null ? data.length : 0;
+        for (OnDataSendListener listener : sendListeners) {
+            try {
+                listener.onDataSend(port, data, length);
+            } catch (Throwable ignored) {
+                // Don't let listener exceptions break the system
+            }
+        }
+    }
 
     private static SerialError toSerialError(Throwable t) {
         if (t instanceof SerialException) {

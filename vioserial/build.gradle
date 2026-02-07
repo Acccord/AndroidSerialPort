@@ -14,8 +14,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 34
-        versionCode 203
-        versionName "2.0.3"
+        versionCode Integer.parseInt(project.findProperty("VERSION_CODE") as String)
+        versionName project.findProperty("VERSION_NAME") as String
 
         consumerProguardFiles 'consumer-rules.pro'
         ndk {
